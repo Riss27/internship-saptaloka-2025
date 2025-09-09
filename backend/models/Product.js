@@ -6,7 +6,7 @@ const Product = sequelize.define("Product", {
   // Mendefinisikan atribut/kolom tabel
   name: {
     type: DataTypes.STRING,
-    allowNull: false, // Kolom ini tidak boleh kosong
+    allowNull: false,
   },
   description: {
     type: DataTypes.TEXT,
@@ -18,7 +18,20 @@ const Product = sequelize.define("Product", {
   },
   imageUrl: {
     type: DataTypes.STRING,
-    allowNull: true, // Boleh kosong jika gambar tidak ada
+    allowNull: false,
+  },
+  category: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: "Parfum", // Nilai default jika tidak diisi
+  },
+  linkTokopedia: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  linkShopee: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
 });
 
