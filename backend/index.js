@@ -2,17 +2,15 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database");
-const allRoutes = require("./routes/index"); // <-- 1. Impor pengatur rute utama
+const allRoutes = require("./routes/index");
+const About = require('./models/About');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware PENTING agar Express bisa membaca body request dalam format JSON
 app.use(cors());
-app.use(express.json()); // <-- 2. Tambahkan ini
-
-// Arahkan semua request yang masuk ke /api ke pengatur rute utama
-app.use("/api", allRoutes); // <-- 3. Gunakan rute utama
+app.use(express.json());
+app.use("/api", allRoutes);
 
 // Fungsi untuk menjalankan server
 async function startServer() {

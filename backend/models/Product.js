@@ -1,38 +1,25 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
 // Mendefinisikan model 'Product'
-const Product = sequelize.define("Product", {
+const Product = sequelize.define('Product', {
   // Mendefinisikan atribut/kolom tabel
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false // Kolom ini tidak boleh kosong
   },
   description: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: false
   },
   price: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   imageUrl: {
     type: DataTypes.STRING,
-    allowNull: false,
-  },
-  category: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    defaultValue: "Parfum", // Nilai default jika tidak diisi
-  },
-  linkTokopedia: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  linkShopee: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
+    allowNull: true // Boleh kosong jika gambar tidak ada
+  }
 });
 
 module.exports = Product;
