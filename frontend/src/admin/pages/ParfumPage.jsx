@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom"; // Gunakan Link untuk navigasi
+import { Link } from "react-router-dom";
 import ProductList from "../components/ProductList";
 
-const DashboardPage = () => {
+const ParfumPage = () => {
   const [products, setProducts] = useState([]);
 
   const fetchProducts = async () => {
@@ -31,15 +31,14 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-8">
+    <div>
       <header className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Add Catalogue</h1>
+        <h1 className="text-3xl font-bold text-white">Produk Parfum dan Aromaterapi</h1>
       </header>
 
       <main>
         <div className="mb-6">
-          {/* Ubah 'to' menjadi '/catalogue/add' */}
-          <Link to="/catalogue/add" className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-md font-semibold">
+          <Link to="/catalogue/products/add" className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-md font-semibold text-white no-underline">
             Add New Product
           </Link>
         </div>
@@ -49,4 +48,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default ParfumPage;
