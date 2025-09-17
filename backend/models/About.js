@@ -2,22 +2,34 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const About = sequelize.define('About', {
-  title: {
+  about: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  address: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  description: {
-    type: DataTypes.TEXT, // Pakai TEXT untuk konten yang panjang
-    allowNull: true,
-  },
-  imageUrl1: {
+  phone: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  imageUrl2: {
+  email: {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  instagram: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  whatsapp: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+    logoFooter: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
 });
 
 module.exports = About;
