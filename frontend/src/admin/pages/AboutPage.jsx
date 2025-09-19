@@ -128,7 +128,7 @@ const AboutPage = () => {
   );
 };
 
-// Komponen helper untuk Section (tidak ada perubahan)
+// Komponen helper untuk Section
 const Section = ({ title, children }) => (
   <div className="bg-white/10 p-6 rounded-lg shadow-lg">
     <h2 className="text-xl font-semibold text-cyan-400 mb-4 pb-2 border-b border-slate-600">{title}</h2>
@@ -136,7 +136,7 @@ const Section = ({ title, children }) => (
   </div>
 );
 
-// Komponen helper untuk Input (tidak ada perubahan)
+// Komponen helper untuk Input
 const InputField = ({ label, name, type = "text", value, onChange, placeholder }) => (
   <div>
     <label htmlFor={name} className="block mb-2 font-medium text-slate-300">
@@ -150,7 +150,7 @@ const InputField = ({ label, name, type = "text", value, onChange, placeholder }
   </div>
 );
 
-// Komponen untuk File Upload (tidak ada perubahan)
+// Komponen untuk File Upload
 const FileUploadField = ({ label, name, onChange, currentImageUrl, previewUrl }) => {
   const displayImage = previewUrl || currentImageUrl;
 
