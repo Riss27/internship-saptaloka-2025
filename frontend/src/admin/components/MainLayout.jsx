@@ -16,9 +16,9 @@ const MainLayout = () => {
 
   // Daftar sub-menu untuk Catalogue
   const catalogueSubItems = [
-    { path: "/catalogue/products", name: "Produk Parfum" },
-    { path: "/catalogue/bahan-baku", name: "Bahan Baku" },
-    { path: "/catalogue/assets", name: "Assets" },
+    { path: "/catalogue/products", name: "Produk Parfum dan Aromaterapi" },
+    { path: "/catalogue/bahan-baku", name: "Bahan Produk Parfum dan Aromaterapi" },
+    { path: "/catalogue/assets", name: "Alat Laboratorium Skala Mikro" },
   ];
 
   return (
