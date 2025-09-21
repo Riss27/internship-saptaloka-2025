@@ -1,25 +1,24 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const productController = require("../controllers/productController");
+const productController = require('../controllers/productController');
+// Impor validator kita
+const { createProductRules, validate } = require('../middlewares/validators/productValidator');
 
 // Alamat: GET /api/products/
-// Fungsi: Mengambil semua produk
-router.get("/", productController.getAllProducts);
+router.get('/', productController.getAllProducts);
 
 // Alamat: POST /api/products/
-// Fungsi: Membuat produk baru
-router.post("/", productController.createProduct);
+// Pasang middleware sebelum controller. createProductRules() untuk aturan, validate untuk eksekusi.
+router.post('/', createProductRules(), validate, productController.createProduct);
 
 // Alamat: GET /api/products/:id
-// Fungsi: Mengambil satu produk berdasarkan ID
-router.get("/:id", productController.getProductById);
+router.get('/:id', productController.getProductById);
 
 // Alamat: PUT /api/products/:id
-// Fungsi: Memperbarui produk berdasarkan ID
-router.put("/:id", productController.updateProduct);
+// Aturan validasi bisa dipakai ulang untuk update
+router.put('/:id', createProductRules(), validate, productController.updateProduct);
 
 // Alamat: DELETE /api/products/:id
-// Fungsi: Menghapus produk berdasarkan ID
-router.delete("/:id", productController.deleteProduct);
+router.delete('/:id', productController.deleteProduct);
 
 module.exports = router;

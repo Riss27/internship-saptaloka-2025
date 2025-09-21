@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const galleryController = require("../controllers/galleryImageController");
-const upload = require("../middleware/upload");
+const upload = require("../middlewares/upload");
 
 router.route("/").get(galleryController.getAllImages).post(upload.single("image"), galleryController.createImage); // 'image' adalah nama field di form
 
