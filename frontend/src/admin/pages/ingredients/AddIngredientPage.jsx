@@ -105,8 +105,7 @@ const AddIngredientPage = () => {
                 -- Pilih Kategori Bahan --
               </option>
               <option value="Essential Oil">Essential Oil</option>
-              <option value="Solvent">Solvent</option>
-              <option value="Fixative">Fixative</option>
+              <option value="Non Essential Oil">Non Essential Oil</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
               <FiChevronDown className="h-5 w-5" />
