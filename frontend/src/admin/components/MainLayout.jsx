@@ -4,7 +4,6 @@ import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { FiHome, FiCalendar, FiBriefcase, FiGrid, FiInfo, FiFileText, FiImage, FiLogOut } from "react-icons/fi";
 
 const MainLayout = () => {
-  // State untuk mengontrol visibilitas sub-menu
   const [isCatalogueOpen, setIsCatalogueOpen] = useState(false);
 
   // Daftar menu utama
@@ -14,11 +13,11 @@ const MainLayout = () => {
     { path: "/workshop", name: "Workshop", icon: <FiBriefcase /> },
   ];
 
-  // Daftar sub-menu untuk Catalogue
+  // Sub-items untuk menu Catalogue
   const catalogueSubItems = [
     { path: "/catalogue/products", name: "Produk Parfum dan Aromaterapi" },
-    { path: "/catalogue/bahan-baku", name: "Bahan Produk Parfum dan Aromaterapi" },
-    { path: "/catalogue/assets", name: "Alat Laboratorium Skala Mikro" },
+    { path: "/catalogue/ingredients", name: "Bahan Parfum dan Aromaterapi" },
+    { path: "/catalogue/lab-tools", name: "Alat Laboratorium Skala Mikro" },
   ];
 
   return (
@@ -30,7 +29,6 @@ const MainLayout = () => {
         </div>
 
         <nav className="flex-1 px-4 py-6 space-y-2">
-          {/* Render menu utama */}
           {menuItems.map((item) => (
             <NavLink key={item.name} to={item.path} end className={({ isActive }) => `flex items-center px-4 py-2.5 rounded-lg ${isActive ? "bg-cyan-600/50" : "hover:bg-gray-700/50"}`}>
               <span className="mr-3">{item.icon}</span> {item.name}
@@ -43,12 +41,11 @@ const MainLayout = () => {
               <div className="flex items-center">
                 <span className="mr-3">
                   <FiGrid />
-                </span>{" "}
+                </span>
                 Catalogue
               </div>
               {isCatalogueOpen ? <FiChevronUp /> : <FiChevronDown />}
             </button>
-            {/* Tampilkan sub-menu jika isCatalogueOpen adalah true */}
             {isCatalogueOpen && (
               <div className="pl-8 pt-2 space-y-2">
                 {catalogueSubItems.map((subItem) => (
@@ -60,7 +57,7 @@ const MainLayout = () => {
             )}
           </div>
 
-          {/* Menu lainnya setelah Catalogue */}
+          {/* Menu lainnya */}
           <NavLink to="/about" className={({ isActive }) => `flex items-center px-4 py-2.5 rounded-lg ${isActive ? "bg-cyan-600/50" : "hover:bg-gray-700/50"}`}>
             <span className="mr-3">
               <FiInfo />

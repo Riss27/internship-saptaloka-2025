@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import ProductList from "../components/ProductList";
-import { FiChevronDown } from "react-icons/fi"; // Impor ikon
+import ProductList from "../../components/ProductList";
+import { FiChevronDown } from "react-icons/fi";
 
-const ParfumPage = () => {
+const ProductPage = () => {
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All"); // State untuk menyimpan kategori terpilih
 
@@ -41,7 +41,7 @@ const ParfumPage = () => {
   return (
     <div>
       <header className="flex flex-col md:flex-row justify-between md:items-center mb-8 gap-4">
-        <h1 className="text-3xl font-bold text-white">Produk Parfum dan Aromaterapi</h1>
+        <h1 className="text-3xl font-bold text-white">Add Catalogue</h1>
 
         {/* --- UI UNTUK FILTER DAN TOMBOL ADD --- */}
         <div className="flex items-center gap-4">
@@ -78,4 +78,4 @@ const ParfumPage = () => {
   );
 };
 
-export default ParfumPage;
+export default ProductPage;

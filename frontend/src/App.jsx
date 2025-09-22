@@ -1,11 +1,24 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./admin/components/MainLayout";
-import ParfumPage from "./admin/pages/ParfumPage";
-import ProductFormPage from "./admin/pages/AddProductPage";
-import AboutPage from "./admin/pages/AboutPage";
-import GalleryPage from "./admin/pages/GalleryPage";
-import GalleryFormPage from "./admin/pages/GalleryFormPage";
 
+// Halaman Produk
+import ProductPage from "./admin/pages/products/ProductPage";
+import ProductFormPage from "./admin/pages/products/AddProductPage";
+
+// Halaman About
+import AboutPage from "./admin/pages/about/AboutPage";
+
+// Halaman Gallery
+import GalleryPage from "./admin/pages/gallery/GalleryPage";
+import GalleryFormPage from "./admin/pages/gallery/GalleryFormPage";
+
+// Halaman Ingredients
+import IngredientPage from "./admin/pages/ingredients/IngredientPage";
+import AddIngredientPage from "./admin/pages/ingredients/AddIngredientPage";
+
+// Halaman Lab Tools
+import LabToolPage from "./admin/pages/lab_tools/LabToolPage";
+import AddLabToolPage from "./admin/pages/lab_tools/AddLabToolPage";
 
 const PlaceholderPage = ({ title }) => <h1 className="text-4xl font-bold text-white">{title}</h1>;
 
@@ -17,19 +30,20 @@ function App() {
           <Route index element={<PlaceholderPage title="Homepage" />} />
           <Route path="events" element={<PlaceholderPage title="Events" />} />
           <Route path="workshop" element={<PlaceholderPage title="Workshop" />} />
-
-          <Route path="catalogue/products" element={<ParfumPage />} />
+          <Route path="catalogue/products" element={<ProductPage />} />
           <Route path="catalogue/products/add" element={<ProductFormPage />} />
           <Route path="catalogue/products/edit/:id" element={<ProductFormPage />} />
-
-          {/* Placeholder untuk 2 sub-menu lainnya */}
-          <Route path="catalogue/bahan-baku" element={<PlaceholderPage title="Bahan Baku Management" />} />
-          <Route path="catalogue/assets" element={<PlaceholderPage title="Assets Management" />} />
-
+          <Route path="catalogue/ingredients" element={<IngredientPage />} />
+          <Route path="catalogue/ingredients/add" element={<AddIngredientPage />} />
+          <Route path="catalogue/ingredients/edit/:id" element={<AddIngredientPage />} />
+          <Route path="catalogue/lab-tools" element={<LabToolPage />} />
+          <Route path="catalogue/lab-tools/add" element={<AddLabToolPage />} />
+          <Route path="catalogue/lab-tools/edit/:id" element={<AddLabToolPage />} /> {/* <-- Route yang hilang ditambahkan */}
           <Route path="about" element={<AboutPage />} />
           <Route path="articles" element={<PlaceholderPage title="Articles" />} />
           <Route path="gallery" element={<GalleryPage />} />
           <Route path="gallery/add" element={<GalleryFormPage />} />
+          <Route path="gallery/edit/:id" element={<GalleryFormPage />} />
         </Route>
       </Routes>
     </Router>
