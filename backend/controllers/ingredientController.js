@@ -40,7 +40,17 @@ exports.createIngredient = async (req, res) => {
 // Controller untuk (READ) - Mendapatkan semua ingredient
 exports.getAllIngredients = async (req, res) => {
   try {
-    const ingredients = await Ingredient.findAll();
+    // Ambil query 'category' dari URL
+    const { category } = req.query;
+    const filterOptions = {};
+
+    // Jika ada query 'category', tambahkan kondisi 'where'
+    if (category) {
+      filterOptions.where = { category: category };
+    }
+
+    // Lakukan pencarian dengan opsi filter
+    const ingredients = await Ingredient.findAll(filterOptions);
     res.status(200).json({
       status: "success",
       data: ingredients,

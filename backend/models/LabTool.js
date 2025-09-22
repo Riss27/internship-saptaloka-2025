@@ -21,7 +21,7 @@ const LabTool = sequelize.define("LabTool", {
   },
   category: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   linkTokopedia: {
     type: DataTypes.STRING,
