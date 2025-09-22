@@ -6,14 +6,26 @@ import axios from "axios";
 const AddProductPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [formData, setFormData] = useState({ name: "", price: "", description: "", imageUrl: "", category: "", linkTokopedia: "", linkShopee: "" });
+  // State `imageUrl` dihapus dari sini
+  const [formData, setFormData] = useState({ name: "", price: "", description: "", category: "", linkTokopedia: "", linkShopee: "" });
+  // State baru untuk menampung file gambar
+  const [imageFile, setImageFile] = useState(null);
+  // State baru untuk menampilkan preview gambar
+  const [previewImage, setPreviewImage] = useState("");
   const isEditMode = Boolean(id);
 
   useEffect(() => {
     if (isEditMode) {
       axios
         .get(`http://localhost:3000/api/products/${id}`)
-        .then((response) => setFormData(response.data.data))
+        .then((response) => {
+          const productData = response.data.data;
+          setFormData(productData);
+          // Jika sudah ada gambar, tampilkan sebagai preview
+          if (productData.imageUrl) {
+            setPreviewImage(`http://localhost:3000${productData.imageUrl}`);
+          }
+        })
         .catch((error) => console.error("Gagal mengambil detail produk:", error));
     }
   }, [id, isEditMode]);
@@ -23,19 +35,50 @@ const AddProductPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handler untuk input file gambar
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    console.log("File dipilih:", file);
+
+    if (file) {
+      setImageFile(file);
+      const previewUrl = URL.createObjectURL(file);
+
+      console.log("URL Preview dibuat:", previewUrl);
+      setPreviewImage(previewUrl);
+    }
+  };
+
+  // `handleSubmit` diubah untuk mengirim FormData
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const productData = { ...formData, price: parseInt(formData.price) || 0 };
+
+    const submissionData = new FormData();
+    submissionData.append("name", formData.name);
+    submissionData.append("price", parseInt(formData.price) || 0);
+    submissionData.append("description", formData.description);
+    submissionData.append("category", formData.category);
+    submissionData.append("linkTokopedia", formData.linkTokopedia);
+    submissionData.append("linkShopee", formData.linkShopee);
+
+    if (imageFile) {
+      submissionData.append("image", imageFile);
+    }
+
     try {
+      const config = {
+        headers: { "Content-Type": "multipart/form-data" },
+      };
+
       if (isEditMode) {
-        await axios.put(`http://localhost:3000/api/products/${id}`, productData);
+        await axios.put(`http://localhost:3000/api/products/${id}`, submissionData, config);
       } else {
-        await axios.post("http://localhost:3000/api/products", productData);
+        await axios.post("http://localhost:3000/api/products", submissionData, config);
       }
       navigate("/catalogue/products");
     } catch (error) {
       console.error("Gagal menyimpan produk:", error);
-      alert("Gagal menyimpan. Pastikan semua kolom wajib diisi.");
+      alert("Gagal menyimpan. Pastikan semua kolom wajib diisi, termasuk gambar.");
     }
   };
 
@@ -47,13 +90,24 @@ const AddProductPage = () => {
           BACK
         </Link>
       </header>
+
       <form onSubmit={handleSubmit} className="bg-white/10 p-8 rounded-lg shadow-lg text-white">
-        <InputField label="Image URL" name="imageUrl" value={formData.imageUrl} onChange={handleChange} placeholder="https://..." />
+        {/* Input URL diganti menjadi input file */}
+        <div className="mb-4">
+          <label className="block mb-2 font-medium text-slate-300">Product Image</label>
+          <input
+            type="file"
+            name="image"
+            onChange={handleImageChange}
+            className="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
+          />
+          {previewImage && <img src={previewImage} alt="Preview" className="mt-4 rounded-md max-h-48" />}
+        </div>
+
         <InputField label="Title" name="name" value={formData.name} onChange={handleChange} required={true} placeholder="Nama produk..." />
         <InputField label="Price" name="price" type="number" value={formData.price} onChange={handleChange} required={true} placeholder="Contoh: 50000" />
         <InputField label="Description" name="description" type="textarea" value={formData.description} onChange={handleChange} required={true} placeholder="Deskripsi produk..." />
 
-        {/* --- BLOK DROPDOWN YANG SUDAH DIPERBARUI --- */}
         <div className="mb-4">
           <label htmlFor="category" className="block mb-2 font-medium text-slate-300">
             Category
@@ -85,6 +139,7 @@ const AddProductPage = () => {
 
         <InputField label="Link Tokopedia" name="linkTokopedia" value={formData.linkTokopedia} onChange={handleChange} placeholder="https://..." />
         <InputField label="Link Shopee" name="linkShopee" value={formData.linkShopee} onChange={handleChange} placeholder="https://..." />
+
         <div className="mt-8">
           <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-md font-bold text-lg">
             {isEditMode ? "SAVE CHANGES" : "ADD"}
@@ -95,9 +150,6 @@ const AddProductPage = () => {
   );
 };
 
-{
-  /* --- KOMPONEN INPUTFIELD YANG SUDAH DIPERBARUI --- */
-}
 const InputField = ({ label, name, value, onChange, type = "text", required = false, placeholder }) => (
   <div className="mb-4">
     <label className="block mb-2 font-medium text-slate-300">{label}</label>
