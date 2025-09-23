@@ -32,10 +32,14 @@ const LabToolPage = () => {
   };
 
   return (
-    <div>
-      <header className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-white">Manage Lab Tools</h1>
-        <Link to="/catalogue/lab-tools/add" className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-md font-semibold text-white no-underline flex items-center">
+    <div className="max-w-7xl mx-auto">
+      <header className="flex flex-col md:flex-row justify-between md:items-center mb-8 gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white">Manage Lab Tools</h1>
+          <p className="text-slate-400 mt-1">Tambahkan, edit, atau hapus alat-alat laboratorium.</p>
+        </div>
+
+        <Link to="/catalogue/lab-tools/add" className="bg-cyan-600 hover:bg-cyan-700 px-5 py-2 rounded-md font-semibold text-white no-underline whitespace-nowrap flex items-center justify-center transition-colors duration-300">
           <FiPlus className="mr-2" /> Add New Tool
         </Link>
       </header>

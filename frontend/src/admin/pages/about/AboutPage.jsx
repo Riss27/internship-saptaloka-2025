@@ -1,175 +1,143 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FiSave, FiUpload } from "react-icons/fi";
+import { FiInfo, FiMapPin, FiPhone, FiMail, FiInstagram, FiMessageCircle, FiImage, FiSave } from "react-icons/fi";
+
+// Komponen InputField dengan tambahan ikon
+const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon }) => (
+  <div className="mb-6">
+    <label className="block mb-2 font-medium text-slate-300">{label}</label>
+    <div className="relative">
+      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">{icon}</span>
+      {type === "textarea" ? (
+        <textarea
+          name={name}
+          value={value || ""}
+          onChange={onChange}
+          rows="8"
+          placeholder={placeholder}
+          className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        ></textarea>
+      ) : (
+        <input
+          type={type}
+          name={name}
+          value={value || ""}
+          onChange={onChange}
+          placeholder={placeholder}
+          className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+      )}
+    </div>
+  </div>
+);
 
 const AboutPage = () => {
-  // State untuk menyimpan data teks dari form
-  const [formData, setFormData] = useState({
-    about: "",
-    address: "",
-    phone: "",
-    email: "",
-    instagram: "",
-    whatsapp: "",
-    logoFooter: "", // Untuk menyimpan nama file logo yang sudah ada
-  });
-
-  // State terpisah khusus untuk file yang akan di-upload
+  const [formData, setFormData] = useState({});
   const [logoFile, setLogoFile] = useState(null);
-  // State untuk menampilkan preview gambar yang baru dipilih
-  const [logoPreview, setLogoPreview] = useState("");
+  const [previewLogo, setPreviewLogo] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Fungsi untuk mengambil data dari backend
-  const fetchAboutContent = async () => {
+  const fetchAboutInfo = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/about");
-      if (response.data.data) {
-        setFormData(response.data.data);
+      setFormData(response.data.data);
+      if (response.data.data.logoFooter) {
+        setPreviewLogo(`http://localhost:3000${response.data.data.logoFooter}`);
       }
     } catch (error) {
       console.error("Gagal mengambil data About:", error);
     }
   };
 
-  // Jalankan fungsi fetch saat halaman pertama kali dimuat
   useEffect(() => {
-    fetchAboutContent();
+    fetchAboutInfo();
   }, []);
 
-  // Fungsi untuk menangani perubahan data teks
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Fungsi untuk menangani saat user memilih file gambar
-  const handleFileChange = (e) => {
+  const handleLogoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setLogoFile(file); // Simpan object filenya
-      setLogoPreview(URL.createObjectURL(file)); // Buat URL sementara untuk preview
+      setLogoFile(file);
+      setPreviewLogo(URL.createObjectURL(file));
     }
   };
 
-  // Fungsi untuk menyimpan SEMUA perubahan (teks dan file)
-  const handleSave = async () => {
-    // Gunakan FormData karena kita akan mengirim file
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
     const submissionData = new FormData();
 
-    // Tambahkan semua data teks dari state ke FormData
-    submissionData.append("about", formData.about);
-    submissionData.append("address", formData.address);
-    submissionData.append("phone", formData.phone);
-    submissionData.append("email", formData.email);
-    submissionData.append("instagram", formData.instagram);
-    submissionData.append("whatsapp", formData.whatsapp);
+    Object.keys(formData).forEach((key) => {
+      if (key !== "logoFooter") {
+        submissionData.append(key, formData[key] || "");
+      }
+    });
 
-    // Jika ada file baru yang dipilih, tambahkan ke FormData
     if (logoFile) {
       submissionData.append("logoFooter", logoFile);
     }
 
     try {
-      // Kirim FormData ke backend dengan header yang tepat
       await axios.put("http://localhost:3000/api/about", submissionData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      alert('Konten "About" berhasil disimpan!');
-      // Refresh data dari server setelah berhasil menyimpan
-      fetchAboutContent();
-      setLogoPreview(""); // Hapus preview setelah save
+      alert("Informasi berhasil diperbarui!");
+      fetchAboutInfo();
     } catch (error) {
-      console.error("Gagal menyimpan konten About:", error);
-      alert("Gagal menyimpan. Cek console untuk detail.");
+      console.error("Gagal memperbarui informasi:", error);
+      alert("Gagal memperbarui informasi.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div>
-      <header className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-white">About</h1>
-        <button onClick={handleSave} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md font-semibold text-white">
-          <FiSave />
-          Save Changes
-        </button>
-      </header>
+    <div className="max-w-7xl mx-auto text-white">
+      <h1 className="text-3xl font-bold mb-8">About</h1>
 
-      <div className="space-y-8">
-        {/* Section: Tentang Kami */}
-        <Section title="Tentang Kami">
-          <InputField label="About" name="about" type="textarea" value={formData.about} onChange={handleChange} />
-        </Section>
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 bg-white/10 p-8 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Company Information</h2>
+            <InputField label="About Section" name="about" type="textarea" value={formData.about} onChange={handleChange} placeholder="Tulis deskripsi tentang perusahaan..." icon={<FiInfo />} />
+            <InputField label="Address" name="address" value={formData.address} onChange={handleChange} placeholder="Jalan, Kota, Kode Pos" icon={<FiMapPin />} />
+            <InputField label="Phone" name="phone" value={formData.phone} onChange={handleChange} placeholder="0812-3456-7890" icon={<FiPhone />} />
+            <InputField label="Email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="kontak@perusahaan.com" icon={<FiMail />} />
+          </div>
 
-        {/* Section: Kontak */}
-        <Section title="Kontak">
-          <InputField label="Phone" name="phone" value={formData.phone} onChange={handleChange} />
-          <InputField label="Email" name="email" value={formData.email} onChange={handleChange} />
-        </Section>
-
-        {/* Section: Alamat */}
-        <Section title="Alamat">
-          <InputField label="Address" name="address" type="textarea" value={formData.address} onChange={handleChange} />
-        </Section>
-
-        {/* Section: Sosial Media */}
-        <Section title="Sosial Media">
-          <InputField label="Instagram" name="instagram" value={formData.instagram} onChange={handleChange} placeholder="Contoh: https://instagram.com/akun" />
-          <InputField label="Whatsapp" name="whatsapp" value={formData.whatsapp} onChange={handleChange} placeholder="Contoh: 6281234567890 (tanpa +)" />
-        </Section>
-
-        {/* Section: Logo Footer */}
-        <Section title="Logo Footer">
-          <FileUploadField label="Upload Logo" name="logoFooter" onChange={handleFileChange} currentImageUrl={formData.logoFooter ? `http://localhost:3000/uploads/${formData.logoFooter}` : null} previewUrl={logoPreview} />
-        </Section>
-      </div>
-    </div>
-  );
-};
-
-// Komponen helper untuk Section
-const Section = ({ title, children }) => (
-  <div className="bg-white/10 p-6 rounded-lg shadow-lg">
-    <h2 className="text-xl font-semibold text-cyan-400 mb-4 pb-2 border-b border-slate-600">{title}</h2>
-    <div className="space-y-4">{children}</div>
-  </div>
-);
-
-// Komponen helper untuk Input
-const InputField = ({ label, name, type = "text", value, onChange, placeholder }) => (
-  <div>
-    <label htmlFor={name} className="block mb-2 font-medium text-slate-300">
-      {label}
-    </label>
-    {type === "textarea" ? (
-      <textarea id={name} name={name} value={value || ""} onChange={onChange} placeholder={placeholder} rows="5" className="w-full p-2 bg-white/20 rounded border border-slate-500 text-white"></textarea>
-    ) : (
-      <input type={type} id={name} name={name} value={value || ""} onChange={onChange} placeholder={placeholder} className="w-full p-2 bg-white/20 rounded border border-slate-500 text-white" />
-    )}
-  </div>
-);
-
-// Komponen untuk File Upload
-const FileUploadField = ({ label, name, onChange, currentImageUrl, previewUrl }) => {
-  const displayImage = previewUrl || currentImageUrl;
-
-  return (
-    <div>
-      <label htmlFor={name} className="block mb-2 font-medium text-slate-300">
-        {label}
-      </label>
-      <div className="flex items-center gap-4">
-        <div className="w-32 h-32 flex items-center justify-center bg-white/10 rounded border-2 border-dashed border-slate-500">
-          {displayImage ? <img src={displayImage} alt="Logo Preview" className="max-w-full max-h-full object-contain" /> : <span className="text-slate-400 text-sm">No Image</span>}
+          <div className="bg-white/10 p-8 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Social & Branding</h2>
+            <InputField label="Instagram URL" name="instagram" value={formData.instagram} onChange={handleChange} placeholder="https://instagram.com/username" icon={<FiInstagram />} />
+            <InputField label="WhatsApp URL (API Link)" name="whatsapp" value={formData.whatsapp} onChange={handleChange} placeholder="https://wa.me/6281234567890" icon={<FiMessageCircle />} />
+            <div className="mb-6">
+              <label className="block mb-2 font-medium text-slate-300">Logo Footer</label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <FiImage />
+                </span>
+                <input
+                  type="file"
+                  name="logoFooter"
+                  onChange={handleLogoChange}
+                  className="w-full pl-10 text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
+                />
+              </div>
+              {previewLogo && <img src={previewLogo} alt="Logo Preview" className="mt-4 rounded-md max-h-24 bg-white p-2" />}
+            </div>
+          </div>
         </div>
-        <label htmlFor={name} className="cursor-pointer flex items-center gap-2 bg-slate-600 hover:bg-slate-700 px-4 py-2 rounded-md font-semibold text-white">
-          <FiUpload />
-          Choose File
-          <input type="file" id={name} name={name} onChange={onChange} className="hidden" accept="image/png, image/jpeg, image/gif, image/svg+xml" />
-        </label>
-      </div>
-      {previewUrl && <p className="text-xs text-yellow-400 mt-2">Gambar baru dipilih. Klik "Save Changes" untuk menyimpan.</p>}
+
+        <div className="mt-8">
+          <button type="submit" disabled={isLoading} className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed py-3 rounded-md font-bold text-lg flex items-center justify-center">
+            <FiSave className="mr-2" />
+            {isLoading ? "Saving..." : "SAVE CHANGES"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
