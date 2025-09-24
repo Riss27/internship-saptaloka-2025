@@ -24,6 +24,10 @@ import AddLabToolPage from "./admin/pages/lab_tools/AddLabToolPage";
 import Homepage from "./admin/pages/homepage/Homepage";
 import AddLandingHeadingPage from "./admin/pages/homepage/AddLandingHeadingPage";
 
+// Halaman Articles
+import ArticlePage from "./admin/pages/articles/ArticlePage";
+import AddArticlePage from "./admin/pages/articles/AddArticlePage";
+
 const PlaceholderPage = ({ title }) => <h1 className="text-4xl font-bold text-white">{title}</h1>;
 
 function App() {
@@ -35,7 +39,9 @@ function App() {
           <Route path="homepage" element={<Homepage />} />
           <Route path="homepage/add" element={<AddLandingHeadingPage />} />
           <Route path="homepage/edit/:id" element={<AddLandingHeadingPage />} />
-          <Route path="events" element={<PlaceholderPage title="Events" />} />
+          <Route path="articles" element={<ArticlePage />} />
+          <Route path="articles/add" element={<AddArticlePage />} />
+          <Route path="articles/edit/:id" element={<AddArticlePage />} />
           <Route path="workshop" element={<PlaceholderPage title="Workshop" />} />
           <Route path="catalogue/products" element={<ProductPage />} />
           <Route path="catalogue/products/add" element={<ProductFormPage />} />
