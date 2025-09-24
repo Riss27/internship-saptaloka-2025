@@ -7,11 +7,13 @@ const aboutRoutes = require("./aboutRoutes");
 const galleryRoutes = require("./galleryRoutes");
 const ingredientRoutes = require("./ingredientRoutes");
 const labToolRoutes = require("./labToolRoutes");
+const landingPageRoutes = require("./landingPageRoutes");
 
 // Atur agar semua request ke /path sesuai diarahkan ke rute yang benar
 router.use("/products", productRoutes);
 router.use("/about", aboutRoutes);
 router.use("/gallery", galleryRoutes);
+router.use("/landing-page", landingPageRoutes);
 router.use("/ingredients", ingredientRoutes);
 router.use("/lab-tools", labToolRoutes);
 
