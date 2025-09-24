@@ -8,7 +8,7 @@ const MainLayout = () => {
 
   // Daftar menu utama
   const menuItems = [
-    { path: "/", name: "Homepage", icon: <FiHome /> },
+    { path: "/homepage", name: "Homepage", icon: <FiHome /> },
     { path: "/events", name: "Events", icon: <FiCalendar /> },
     { path: "/workshop", name: "Workshop", icon: <FiBriefcase /> },
   ];
