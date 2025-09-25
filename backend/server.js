@@ -10,6 +10,9 @@ const GalleryImage = require("./models/GalleryImage");
 const Product = require("./models/Product");
 const Article = require("./models/Article");
 const ArticleContent = require("./models/ArticleContent");
+const Event = require("./models/Event");
+const EventContent = require("./models/EventContent");
+const EventRegistration = require("./models/EventRegistration");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,9 +23,18 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api", allRoutes);
 
-// Definisikan relasi antar model
+// Relasi antar model
+
+// Satu Article punya banyak ArticleContent
 Article.hasMany(ArticleContent, { onDelete: "CASCADE", hooks: true });
 ArticleContent.belongsTo(Article);
+
+// Satu Event punya banyak Content
+Event.hasMany(EventContent, { onDelete: 'CASCADE', hooks: true });
+EventContent.belongsTo(Event);
+// Satu Event punya banyak Pendaftar
+Event.hasMany(EventRegistration, { onDelete: 'CASCADE', hooks: true });
+EventRegistration.belongsTo(Event);
 
 // Fungsi untuk menjalankan server
 async function startServer() {
