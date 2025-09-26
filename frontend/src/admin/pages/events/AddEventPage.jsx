@@ -220,7 +220,7 @@ const AddEventPage = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
             <div>
-              <label className="block mb-2 font-medium text-slate-300 flex items-center">
+              <label className="flex mb-2 font-medium text-slate-300 items-center">
                 <FiCalendar className="mr-2" /> Start Date & Time
               </label>
               <DatePicker

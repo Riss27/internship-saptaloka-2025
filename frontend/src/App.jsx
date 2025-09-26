@@ -33,6 +33,10 @@ import EventPage from "./admin/pages/events/EventPage";
 import AddEventPage from "./admin/pages/events/AddEventPage";
 import RegisteredPeoplePage from "./admin/pages/events/RegisteredPeoplePage";
 
+// Workshop
+import WorkshopPage from "./admin/pages/workshop/WorkshopPage";
+import AddWorkshopPage from "./admin/pages/workshop/AddWorkshopPage";
+
 const PlaceholderPage = ({ title }) => <h1 className="text-4xl font-bold text-white">{title}</h1>;
 
 function App() {
@@ -75,7 +79,9 @@ function App() {
           <Route path="about" element={<AboutPage />} />
 
           {/* workshop */}
-          <Route path="workshop" element={<PlaceholderPage title="Workshop" />} />
+          <Route path="workshop" element={<WorkshopPage />} />
+          <Route path="workshop/add" element={<AddWorkshopPage />} />
+          <Route path="workshop/edit/:id" element={<AddWorkshopPage />} />
 
           {/* Events */}
           <Route path="events" element={<EventPage />} />
