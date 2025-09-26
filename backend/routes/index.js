@@ -10,6 +10,7 @@ const labToolRoutes = require("./labToolRoutes");
 const landingPageRoutes = require("./landingPageRoutes");
 const articleRoutes = require("./articleRoutes");
 const eventRoutes = require("./eventRoutes");
+const workshopRoutes = require("./workshopRoutes");
 
 // Atur agar semua request ke /path sesuai diarahkan ke rute yang benar
 router.use("/products", productRoutes);
@@ -20,5 +21,6 @@ router.use("/articles", articleRoutes);
 router.use("/ingredients", ingredientRoutes);
 router.use("/lab-tools", labToolRoutes);
 router.use("/events", eventRoutes);
+router.use("/workshops", workshopRoutes);
 
 module.exports = router;

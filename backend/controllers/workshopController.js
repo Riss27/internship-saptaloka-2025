@@ -1,4 +1,5 @@
-const { Workshop, Event } = require("../models");
+const workshop = require("../models/Workshop");
+const event = require("../models/Event");
 const upload = require("../middleware/upload");
 const fs = require("fs");
 const path = require("path");
@@ -103,7 +104,6 @@ exports.deleteWorkshop = async (req, res) => {
 };
 
 // Update workshop
-// Update workshop (edit data, ganti poster, update relasi event)
 exports.updateWorkshop = async (req, res) => {
   const uploader = upload.single("imageUrl");
 
