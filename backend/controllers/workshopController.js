@@ -1,5 +1,5 @@
-const workshop = require("../models/Workshop");
-const event = require("../models/Event");
+const Workshop = require("../models/Workshop");
+const Event = require("../models/Event");
 const upload = require("../middleware/upload");
 const fs = require("fs");
 const path = require("path");
