@@ -39,7 +39,7 @@ const LabToolPage = () => {
           <p className="text-slate-400 mt-1">Tambahkan, edit, atau hapus alat-alat laboratorium.</p>
         </div>
 
-        <Link to="/catalogue/lab-tools/add" className="bg-cyan-600 hover:bg-cyan-700 px-5 py-2 rounded-md font-semibold text-white no-underline whitespace-nowrap flex items-center justify-center transition-colors duration-300">
+        <Link to="/admin/catalogue/lab-tools/add" className="bg-cyan-600 hover:bg-cyan-700 px-5 py-2 rounded-md font-semibold text-white no-underline whitespace-nowrap flex items-center justify-center transition-colors duration-300">
           <FiPlus className="mr-2" /> Add New Tool
         </Link>
       </header>

@@ -10,9 +10,9 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder, 
     <div className="relative">
       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">{icon}</span>
       {type === "textarea" ? (
-        <textarea name={name} value={value || ""} onChange={onChange} rows="6" placeholder={placeholder} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        <textarea name={name} value={value || ""} onChange={onChange} rows="6" placeholder={placeholder} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
       ) : (
-        <input type={type} name={name} value={value || ""} onChange={onChange} placeholder={placeholder} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        <input type={type} name={name} value={value || ""} onChange={onChange} placeholder={placeholder} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
       )}
     </div>
   </div>
@@ -29,7 +29,8 @@ const AddLabToolPage = () => {
 
   useEffect(() => {
     if (isEditMode) {
-      axios.get(`http://localhost:3000/api/lab-tools/${id}`)
+      axios
+        .get(`http://localhost:3000/api/lab-tools/${id}`)
         .then((response) => {
           const data = response.data.data;
           setFormData(data);
@@ -58,7 +59,7 @@ const AddLabToolPage = () => {
     e.preventDefault();
     setIsLoading(true);
     const submissionData = new FormData();
-    Object.keys(formData).forEach(key => submissionData.append(key, formData[key] || ''));
+    Object.keys(formData).forEach((key) => submissionData.append(key, formData[key] || ""));
     if (imageFile) {
       submissionData.append("image", imageFile);
     }
@@ -69,7 +70,7 @@ const AddLabToolPage = () => {
       } else {
         await axios.post("http://localhost:3000/api/lab-tools", submissionData, config);
       }
-      navigate("/catalogue/lab-tools");
+      navigate("/admin/catalogue/lab-tools");
     } catch (error) {
       console.error("Gagal menyimpan alat:", error);
       alert("Gagal menyimpan. Pastikan semua kolom wajib diisi.");
@@ -82,7 +83,7 @@ const AddLabToolPage = () => {
     <div className="max-w-7xl mx-auto text-white">
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">{isEditMode ? "Edit Lab Tool" : "Add New Lab Tool"}</h1>
-        <Link to="/catalogue/lab-tools" className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold text-white no-underline">
+        <Link to="/admin/catalogue/lab-tools" className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold text-white no-underline">
           BACK
         </Link>
       </header>
@@ -110,16 +111,21 @@ const AddLabToolPage = () => {
                   </div>
                 )}
               </div>
-              <input type="file" name="image" onChange={handleImageChange} className="w-full mt-4 text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"/>
+              <input
+                type="file"
+                name="image"
+                onChange={handleImageChange}
+                className="w-full mt-4 text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
+              />
             </div>
-             <InputField label="Link Tokopedia" name="linkTokopedia" value={formData.linkTokopedia} onChange={handleChange} placeholder="https://..." icon={<FiLink />} />
-             <InputField label="Link Shopee" name="linkShopee" value={formData.linkShopee} onChange={handleChange} placeholder="https://..." icon={<FiLink />} />
+            <InputField label="Link Tokopedia" name="linkTokopedia" value={formData.linkTokopedia} onChange={handleChange} placeholder="https://..." icon={<FiLink />} />
+            <InputField label="Link Shopee" name="linkShopee" value={formData.linkShopee} onChange={handleChange} placeholder="https://..." icon={<FiLink />} />
           </div>
         </div>
         <div className="mt-8">
           <button type="submit" disabled={isLoading} className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 py-3 rounded-md font-bold text-lg flex items-center justify-center">
-            <FiSave className="mr-2"/>
-            {isLoading ? "Saving..." : (isEditMode ? "SAVE CHANGES" : "ADD TOOL")}
+            <FiSave className="mr-2" />
+            {isLoading ? "Saving..." : isEditMode ? "SAVE CHANGES" : "ADD TOOL"}
           </button>
         </div>
       </form>

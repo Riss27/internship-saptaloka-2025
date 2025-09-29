@@ -37,7 +37,7 @@ const ArticlePage = () => {
           <h1 className="text-3xl font-bold text-white">Manage Articles</h1>
           <p className="text-slate-400 mt-1">Buat, edit, atau hapus artikel untuk website.</p>
         </div>
-        <Link to="/articles/add" className="bg-cyan-600 hover:bg-cyan-700 px-5 py-2 rounded-md font-semibold text-white no-underline whitespace-nowrap flex items-center justify-center transition-colors duration-300">
+        <Link to="/admin/articles/add" className="bg-cyan-600 hover:bg-cyan-700 px-5 py-2 rounded-md font-semibold text-white no-underline whitespace-nowrap flex items-center justify-center transition-colors duration-300">
           <FiPlus className="mr-2" /> Add New Article
         </Link>
       </header>
@@ -63,7 +63,7 @@ const ArticlePage = () => {
                     <td className="p-4 align-middle font-medium text-white">{article.title}</td>
                     <td className="p-4 align-middle">{article.author}</td>
                     <td className="p-4 align-middle text-center">
-                      <Link to={`/articles/edit/${article.id}`} className="inline-block p-2 text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 rounded-full transition-colors duration-200 mr-2">
+                      <Link to={`/admin/articles/edit/${article.id}`} className="inline-block p-2 text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 rounded-full transition-colors duration-200 mr-2">
                         <FiEdit size={18} />
                       </Link>
                       <button onClick={() => deleteArticle(article.id)} className="p-2 text-red-500 hover:text-red-400 hover:bg-red-500/10 rounded-full transition-colors duration-200">

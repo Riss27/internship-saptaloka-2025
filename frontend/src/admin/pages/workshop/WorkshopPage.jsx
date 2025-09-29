@@ -38,7 +38,7 @@ const WorkshopPage = () => {
           <h1 className="text-3xl font-bold text-white">Manage Workshops</h1>
           <p className="text-slate-400 mt-1">Kelola semua workshop yang menggabungkan beberapa event.</p>
         </div>
-        <Link to="/workshop/add" className="bg-cyan-600 hover:bg-cyan-700 px-5 py-2 rounded-md font-semibold text-white no-underline whitespace-nowrap flex items-center justify-center transition-colors duration-300">
+        <Link to="/admin/workshop/add" className="bg-cyan-600 hover:bg-cyan-700 px-5 py-2 rounded-md font-semibold text-white no-underline whitespace-nowrap flex items-center justify-center transition-colors duration-300">
           <FiPlus className="mr-2" /> New Workshop
         </Link>
       </header>

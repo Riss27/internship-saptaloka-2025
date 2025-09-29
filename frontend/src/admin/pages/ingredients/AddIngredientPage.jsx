@@ -70,7 +70,7 @@ const AddIngredientPage = () => {
       } else {
         await axios.post("http://localhost:3000/api/ingredients", submissionData, config);
       }
-      navigate("/catalogue/ingredients");
+      navigate("/admin/catalogue/ingredients");
     } catch (error) {
       console.error("Gagal menyimpan bahan:", error);
       alert("Gagal menyimpan. Pastikan semua kolom wajib diisi.");
@@ -83,7 +83,7 @@ const AddIngredientPage = () => {
     <div className="max-w-7xl mx-auto text-white">
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">{isEditMode ? "Edit Ingredient" : "Add New Ingredient"}</h1>
-        <Link to="/catalogue/ingredients" className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold text-white no-underline">
+        <Link to="/admin/catalogue/ingredients" className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold text-white no-underline">
           BACK
         </Link>
       </header>

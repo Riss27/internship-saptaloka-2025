@@ -162,7 +162,7 @@ const AddEventPage = () => {
       } else {
         await axios.post("http://localhost:3000/api/events", formData, { headers: { "Content-Type": "multipart/form-data" } });
       }
-      navigate("/events");
+      navigate("/admin/events");
     } catch (err) {
       console.error("Gagal menyimpan event:", err.response?.data || err);
       alert("Gagal menyimpan event. Periksa semua kolom wajib.");
@@ -175,7 +175,7 @@ const AddEventPage = () => {
     <div className="max-w-7xl mx-auto text-white">
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">{isEditMode ? "Edit Event" : "Create New Event"}</h1>
-        <Link to="/events" className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold no-underline">
+        <Link to="/admin/events" className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold no-underline">
           BACK
         </Link>
       </header>

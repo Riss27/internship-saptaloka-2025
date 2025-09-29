@@ -53,7 +53,7 @@ const EventPage = () => {
           </p>
         </div>
         <Link
-          to="/events/add"
+          to="/admin/events/add"
           className="bg-cyan-600 hover:bg-cyan-700 px-5 py-2 rounded-md font-semibold text-white no-underline whitespace-nowrap flex items-center justify-center transition-colors duration-300"
         >
           <FiPlus className="mr-2" /> New Event

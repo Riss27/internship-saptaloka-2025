@@ -70,7 +70,7 @@ const Homepage = () => {
           </div>
 
           <Link
-            to="/homepage/add"
+            to="/admin/homepage/add"
             className="bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 px-6 py-3 rounded-lg font-semibold text-white no-underline whitespace-nowrap flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-cyan-500/25 transform hover:scale-105"
           >
             <FiPlus className="mr-2" size={18} />
@@ -103,7 +103,7 @@ const Homepage = () => {
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Belum Ada Slide Homepage</h3>
               <p className="text-slate-400 mb-6 leading-relaxed">Mulai buat slide pertama Anda untuk menampilkan konten menarik di halaman utama website.</p>
-              <Link to="/homepage/add" className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-medium text-white transition-colors duration-200">
+              <Link to="/admin/homepage/add" className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-medium text-white transition-colors duration-200">
                 <FiPlus size={18} />
                 Buat Slide Pertama
               </Link>
@@ -124,7 +124,7 @@ const Homepage = () => {
 
                     {/* Action Buttons */}
                     <div className="flex items-center gap-2">
-                      <Link to={`/homepage/edit/${slide.id}`} className="p-2.5 text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 rounded-lg transition-all duration-200 group/edit" title="Edit slide">
+                      <Link to={`/admin/homepage/edit/${slide.id}`} className="p-2.5 text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 rounded-lg transition-all duration-200 group/edit" title="Edit slide">
                         <FiEdit size={18} className="group-hover/edit:scale-110 transition-transform duration-200" />
                       </Link>
                       <button onClick={() => deleteSlide(slide.id)} className="p-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-200 group/delete" title="Hapus slide">

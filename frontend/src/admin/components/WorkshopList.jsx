@@ -35,7 +35,7 @@ const WorkshopList = ({ workshops, deleteWorkshop }) => {
             </div>
 
             <div className="flex justify-end gap-3 mt-6">
-              <Link to={`/workshop/edit/${workshop.id}`} className="inline-flex items-center justify-center p-2 bg-yellow-500/20 text-yellow-300 rounded-full hover:bg-yellow-500/40 transition-colors" title="Edit Workshop">
+              <Link to={`/admin/workshop/edit/${workshop.id}`} className="inline-flex items-center justify-center p-2 bg-yellow-500/20 text-yellow-300 rounded-full hover:bg-yellow-500/40 transition-colors" title="Edit Workshop">
                 <FiEdit />
               </Link>
               <button onClick={() => deleteWorkshop(workshop.id)} className="p-2 bg-red-500/20 text-red-400 rounded-full hover:bg-red-500/40 transition-colors" title="Delete Workshop">

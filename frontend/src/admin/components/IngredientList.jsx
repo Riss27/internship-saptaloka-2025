@@ -24,7 +24,7 @@ const IngredientList = ({ ingredients, deleteIngredient }) => {
               <td className="p-3">{ingredient.category}</td>
               <td className="p-3">Rp {new Intl.NumberFormat("id-ID").format(ingredient.price)}</td>
               <td className="p-3">
-                <Link to={`/catalogue/ingredients/edit/${ingredient.id}`} className="text-yellow-400 hover:text-yellow-300 mr-4 no-underline">
+                <Link to={`/admin/catalogue/ingredients/edit/${ingredient.id}`} className="text-yellow-400 hover:text-yellow-300 mr-4 no-underline">
                   Edit
                 </Link>
                 <button onClick={() => deleteIngredient(ingredient.id)} className="text-red-500 hover:text-red-400 font-semibold">

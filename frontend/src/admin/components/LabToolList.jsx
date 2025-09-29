@@ -24,7 +24,7 @@ const LabToolList = ({ labTools, deleteLabTool }) => {
               <td className="p-3">{tool.category}</td>
               <td className="p-3">Rp {new Intl.NumberFormat("id-ID").format(tool.price)}</td>
               <td className="p-3">
-                <Link to={`/catalogue/lab-tools/edit/${tool.id}`} className="text-yellow-400 hover:text-yellow-300 mr-4 no-underline">
+                <Link to={`/admin/catalogue/lab-tools/edit/${tool.id}`} className="text-yellow-400 hover:text-yellow-300 mr-4 no-underline">
                   Edit
                 </Link>
                 <button onClick={() => deleteLabTool(tool.id)} className="text-red-500 hover:text-red-400 font-semibold">

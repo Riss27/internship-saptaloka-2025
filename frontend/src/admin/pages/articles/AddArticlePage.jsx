@@ -168,7 +168,7 @@ const AddArticlePage = () => {
       } else {
         await axios.post("http://localhost:3000/api/articles", submissionData, config);
       }
-      navigate("/articles");
+      navigate("/admin/articles");
     } catch (error) {
       console.error("Gagal menyimpan artikel:", error.response?.data || error.message);
       alert("Gagal menyimpan. Pastikan semua kolom wajib diisi.");
@@ -181,7 +181,7 @@ const AddArticlePage = () => {
     <div className="max-w-7xl mx-auto text-white">
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">{isEditMode ? "Edit Article" : "Add New Article"}</h1>
-        <Link to="/articles" className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold text-white no-underline">
+        <Link to="/admin/articles" className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold text-white no-underline">
           BACK
         </Link>
       </header>

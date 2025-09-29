@@ -104,7 +104,7 @@ const EventList = ({ events, deleteEvent }) => {
                   <div className="flex items-center justify-center gap-2">
                     {/* View registrations button */}
                     <button
-                      onClick={() => navigate(`/events/registrations/${event.id}`)}
+                      onClick={() => navigate(`/admin/events/registrations/${event.id}`)}
                       className="group/btn flex items-center justify-center w-10 h-10 text-blue-400 hover:text-white hover:bg-blue-500 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-110 hover:shadow-lg hover:shadow-blue-500/25"
                       title="Lihat Peserta Terdaftar"
                     >
@@ -113,7 +113,7 @@ const EventList = ({ events, deleteEvent }) => {
 
                     {/* Edit button */}
                     <Link
-                      to={`/events/edit/${event.id}`}
+                      to={`/admin/events/edit/${event.id}`}
                       className="group/btn flex items-center justify-center w-10 h-10 text-yellow-400 hover:text-white hover:bg-yellow-500 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-110 hover:shadow-lg hover:shadow-yellow-500/25"
                       title="Edit Event"
                     >
