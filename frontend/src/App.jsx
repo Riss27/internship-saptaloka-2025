@@ -5,7 +5,8 @@ import AdminLayout from "./layouts/AdminLayout";
 import PublicLayout from "./layouts/PublicLayout";
 
 // Halaman Publik
-import HomePage from "./pages/public/HomePage";
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
 
 // Halaman Admin
 import Homepage from "./admin/pages/homepage/Homepage";
@@ -34,6 +35,7 @@ function App() {
         {/* Rute Publik */}
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="about" element={<AboutPage />} />
         </Route>
 
         {/* Rute Admin */}
