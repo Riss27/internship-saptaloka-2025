@@ -1,16 +1,36 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+
+const menuItems = [
+  { name: "Beranda", to: "/" },
+  { name: "Kegiatan", to: "/events" },
+  {
+    name: "Layanan",
+    dropdown: [
+      { name: "Workshop Aromaterapi", to: "/workshop/aromaterapi" },
+      { name: "Workshop Parfum", to: "/workshop/parfum" },
+      { name: "Buat Parfum & Aromaterapi", to: "/services/custom" },
+      { name: "Alat Laboratorium", to: "/lab-tools" },
+      { name: "Bahan Parfum & Aromaterapi", to: "/ingredients" },
+      { name: "Produk Parfum & Aromaterapi", to: "/products" },
+    ],
+  },
+  { name: "Artikel", to: "/articles" },
+  { name: "Galeri", to: "/gallery" },
+  { name: "Tentang", to: "/about" },
+  { name: "POS", to: "/pos" },
+];
 
 const Navbar = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
   const [language, setLanguage] = useState("id");
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdown(false);
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(null);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -19,72 +39,72 @@ const Navbar = () => {
 
   const handleNavClick = () => {
     setMobileMenu(false);
-    setDropdown(false);
+    setDropdownOpen(null);
   };
 
-  const menuItems = [
-    { name: "Beranda", to: "/" },
-    { name: "Kegiatan", to: "/events" },
-    {
-      name: "Layanan",
-      dropdown: [
-        { name: "Workshop Aromaterapi", to: "/workshop/aromaterapi" },
-        { name: "Workshop Parfum", to: "/workshop/parfum" },
-        { name: "Buat Parfum & Aromaterapi", to: "/services/custom" },
-        { name: "Alat Laboratorium", to: "/lab-tools" },
-        { name: "Bahan Parfum & Aromaterapi", to: "/ingredients" },
-        { name: "Produk Parfum & Aromaterapi", to: "/products" },
-      ],
-    },
-    { name: "Artikel", to: "/articles" },
-    { name: "Galeri", to: "/gallery" },
-    { name: "Tentang", to: "/about" },
-    { name: "POS", to: "/pos" },
-  ];
+  const renderMenuItem = (item, idx, isMobile = false) => {
+    if (!item.dropdown) {
+      return (
+        <NavLink
+          key={idx}
+          to={item.to}
+          onClick={handleNavClick}
+          className={({ isActive }) =>
+            isActive
+              ? `py-2 px-3 rounded-lg text-emerald-700 font-semibold bg-emerald-50 ${isMobile ? "ml-2" : ""}`
+              : `py-2 px-3 rounded-lg text-gray-700 hover:text-white hover:bg-emerald-700 font-medium transition-all ${isMobile ? "ml-2" : ""}`
+          }
+        >
+          {item.name}
+        </NavLink>
+      );
+    }
+
+    return (
+      <div key={idx} className="relative" ref={dropdownRef}>
+        <button
+          onClick={() => setDropdownOpen(dropdownOpen === idx ? null : idx)}
+          aria-expanded={dropdownOpen === idx}
+          className={`flex items-center justify-between w-full py-2 px-3 rounded-lg text-gray-700 font-medium transition-all hover:bg-emerald-50 hover:text-emerald-700 ${isMobile ? "ml-2" : "hover:bg-emerald-700 hover:text-white"}`}
+        >
+          {item.name}
+          <svg className={`w-4 h-4 ml-1 transition-transform ${dropdownOpen === idx ? "rotate-180 text-emerald-700" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {dropdownOpen === idx && (
+          <div className={`absolute ${isMobile ? "left-0 mt-2 ml-2 flex flex-col" : "top-full left-0 w-56"} bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50`}>
+            {item.dropdown.map((sub, i) => (
+              <NavLink key={i} to={sub.to} onClick={handleNavClick} className={`block px-4 py-2 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50 transition-all`}>
+                {sub.name}
+              </NavLink>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
-    <header className="bg-white shadow sticky top-0 z-50 border-b border-gray-200">
+    <header className="bg-white/95 backdrop-blur-sm shadow sticky top-0 z-50 border-b border-gray-200">
       <nav className="container mx-auto flex justify-between items-center px-6 py-3">
         {/* Logo */}
         <NavLink to="/" className="flex items-center">
-          <div className="w-16 h-16 bg-emerald-800 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-xl">askr</span>
-          </div>
+          <img src="/Assets/asklogo2.png" alt="Logo" className="h-16 w-auto object-contain rounded-xl shadow-sm hover:scale-105 transition-transform" />
         </NavLink>
 
         {/* Desktop Menu */}
-        <div className="hidden lg:flex items-center space-x-8">
-          {menuItems.map((item, idx) =>
-            item.dropdown ? (
-              <div className="relative" key={idx} ref={dropdownRef}>
-                <button onClick={() => setDropdown(!dropdown)} className="flex items-center gap-1 text-gray-700 hover:text-emerald-700 font-medium">
-                  {item.name}
-                  <svg className={`w-4 h-4 transition-transform ${dropdown ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                {dropdown && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 bg-white rounded-lg shadow-lg border border-gray-200 py-2 transition-all duration-200 ease-out opacity-100">
-                    {item.dropdown.map((sub, i) => (
-                      <NavLink key={i} to={sub.to} onClick={handleNavClick} className="block px-4 py-2 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700">
-                        {sub.name}
-                      </NavLink>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <NavLink key={idx} to={item.to} className={({ isActive }) => (isActive ? "text-emerald-700 font-semibold" : "text-gray-700 hover:text-emerald-700 font-medium")}>
-                {item.name}
-              </NavLink>
-            )
-          )}
-        </div>
+        <div className="hidden lg:flex items-center gap-6">{menuItems.map((item, idx) => renderMenuItem(item, idx))}</div>
 
-        {/* Language */}
+        {/* Language Switch */}
         <div className="hidden lg:flex items-center gap-2">
           {["id", "en"].map((lang) => (
-            <button key={lang} onClick={() => setLanguage(lang)} className={`w-8 h-6 rounded border-2 overflow-hidden transition ${language === lang ? "border-emerald-700" : "border-transparent opacity-60 hover:opacity-100"}`}>
+            <button
+              key={lang}
+              onClick={() => setLanguage(lang)}
+              className={`w-8 h-6 rounded-full overflow-hidden border-2 transition shadow-sm hover:ring-2 hover:ring-emerald-700 ${language === lang ? "border-emerald-700" : "border-transparent opacity-60 hover:opacity-100"}`}
+            >
               <img src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`} alt={lang.toUpperCase()} className="w-full h-full object-cover" />
             </button>
           ))}
@@ -100,39 +120,15 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {mobileMenu && (
-        <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg transition-all duration-300 ease-out">
+        <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg">
           <div className="container mx-auto flex flex-col px-6 py-4 space-y-3">
-            {menuItems.map((item, idx) =>
-              item.dropdown ? (
-                <div key={idx}>
-                  <button onClick={() => setDropdown(!dropdown)} className="flex items-center justify-between w-full py-2 text-gray-700 hover:text-emerald-700 font-medium">
-                    {item.name}
-                    <svg className={`w-4 h-4 transition-transform ${dropdown ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {dropdown && (
-                    <div className="flex flex-col ml-4 mt-2 space-y-2">
-                      {item.dropdown.map((sub, i) => (
-                        <NavLink key={i} to={sub.to} onClick={handleNavClick} className="text-gray-600 hover:text-emerald-700 py-1">
-                          {sub.name}
-                        </NavLink>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <NavLink key={idx} to={item.to} onClick={handleNavClick} className={({ isActive }) => (isActive ? "text-emerald-700 font-semibold py-2" : "text-gray-700 hover:text-emerald-700 py-2")}>
-                  {item.name}
-                </NavLink>
-              )
-            )}
+            {menuItems.map((item, idx) => renderMenuItem(item, idx, true))}
 
             {/* Mobile Language */}
             <div className="flex items-center gap-3 pt-3 border-t border-gray-200">
               <span className="text-gray-600 text-sm">Bahasa:</span>
               {["id", "en"].map((lang) => (
-                <button key={lang} onClick={() => setLanguage(lang)} className={`w-8 h-6 rounded overflow-hidden border-2 transition ${language === lang ? "border-emerald-700" : "border-transparent opacity-60"}`}>
+                <button key={lang} onClick={() => setLanguage(lang)} className={`w-8 h-6 rounded-full overflow-hidden border-2 transition ${language === lang ? "border-emerald-700" : "border-transparent opacity-60 hover:opacity-100"}`}>
                   <img src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`} alt={lang.toUpperCase()} className="w-full h-full object-cover" />
                 </button>
               ))}
