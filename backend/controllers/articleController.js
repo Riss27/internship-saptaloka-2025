@@ -18,7 +18,6 @@ const deleteFile = (filePath) => {
 };
 
 // --- Controller Functions ---
-// 1. Mendapatkan semua artikel
 exports.getAllArticles = async (req, res) => {
   try {
     const articles = await Article.findAll({ order: [["createdAt", "DESC"]] });
@@ -28,7 +27,6 @@ exports.getAllArticles = async (req, res) => {
   }
 };
 
-// 2. Mendapatkan detail artikel berdasarkan ID
 exports.getArticleById = async (req, res) => {
   try {
     const article = await Article.findByPk(req.params.id, {
@@ -43,7 +41,6 @@ exports.getArticleById = async (req, res) => {
   }
 };
 
-// 3. Membuat artikel baru
 exports.createArticle = async (req, res) => {
   const uploader = upload.fields([{ name: "featuredImage", maxCount: 1 }, { name: "contentImages" }]);
 
@@ -108,7 +105,6 @@ exports.createArticle = async (req, res) => {
   });
 };
 
-// 4. Menghapus artikel
 exports.deleteArticle = async (req, res) => {
   try {
     const article = await Article.findByPk(req.params.id, {
@@ -134,7 +130,6 @@ exports.deleteArticle = async (req, res) => {
   }
 };
 
-// 5. Memperbarui artikel
 exports.updateArticle = async (req, res) => {
   const uploader = upload.fields([{ name: "featuredImage", maxCount: 1 }, { name: "contentImages" }]);
 
@@ -181,7 +176,7 @@ exports.updateArticle = async (req, res) => {
 
       await ArticleContent.destroy({ where: { ArticleId: article.id }, transaction: t });
 
-      // 3. Buat ulang sub-konten berdasarkan data form baru
+      // Buat ulang sub-konten berdasarkan data form baru
       const newContentImages = req.files.contentImages || [];
       let imageIndex = 0;
 
@@ -202,7 +197,7 @@ exports.updateArticle = async (req, res) => {
           {
             topic: content.topic,
             description: content.description,
-            imageUrls: imageUrls.length > 0 ? JSON.stringify(imageUrls) : null,
+            imageUrls: imageUrls.length > 0 ? imageUrls : null,
             ArticleId: article.id,
           },
           { transaction: t }
