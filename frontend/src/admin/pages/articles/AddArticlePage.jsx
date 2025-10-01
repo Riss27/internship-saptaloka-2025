@@ -61,12 +61,22 @@ const AddArticlePage = () => {
           }
           if (fetchedArticle.ArticleContents && fetchedArticle.ArticleContents.length > 0) {
             const fetchedContents = fetchedArticle.ArticleContents.map((content) => {
-              // Pastikan imageUrls adalah array sebelum di-map
-              let imageUrls = [];
-              if (content.imageUrls) {
-                // Jika data dari DB adalah string, parse dulu. Jika sudah array, langsung gunakan.
-                imageUrls = typeof content.imageUrls === "string" ? JSON.parse(content.imageUrls) : content.imageUrls;
-              }
+              // Fungsi untuk membersihkan data stringified JSON ganda
+              const parseImageUrls = (data) => {
+                if (!data) return [];
+                let parsed = data;
+                while (typeof parsed === "string") {
+                  try {
+                    parsed = JSON.parse(parsed);
+                  } catch (e) {
+                    console.error("Gagal parse imageUrls:", e);
+                    return [];
+                  }
+                }
+                return Array.isArray(parsed) ? parsed : [];
+              };
+
+              const imageUrls = parseImageUrls(content.imageUrls);
 
               return {
                 topic: content.topic,
