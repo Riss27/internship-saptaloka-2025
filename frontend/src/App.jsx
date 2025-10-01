@@ -7,6 +7,11 @@ import PublicLayout from "./layouts/PublicLayout";
 // Halaman Publik
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
+import ProductsPage from "./pages/ProductsPage";
+import IngredientsPage from "./pages/IngredientsPage";
+import LabToolsPage from "./pages/LabToolsPage";
+import WorkshopsPage from "./pages/WorkshopsPage";
+import EventsPage from "./pages/EventsPage";
 
 // Halaman Admin
 import Homepage from "./admin/pages/homepage/Homepage";
@@ -36,6 +41,11 @@ function App() {
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<HomePage />} />
           <Route path="about" element={<AboutPage />} />
+          <Route path="products" element={<ProductsPage />} />
+          <Route path="ingredients" element={<IngredientsPage />} />
+          <Route path="lab-tools" element={<LabToolsPage />} />
+          <Route path="workshops" element={<WorkshopsPage />} />
+          <Route path="events" element={<EventsPage />} />
         </Route>
 
         {/* Rute Admin */}
