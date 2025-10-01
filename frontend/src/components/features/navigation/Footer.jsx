@@ -69,29 +69,6 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Quick Links */}
-            <div>
-              <h4 className="font-bold text-emerald-800 text-lg mb-6 relative inline-block">
-                Quick Links
-                <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-gradient-to-r from-emerald-600 to-transparent" />
-              </h4>
-              <ul className="space-y-3">
-                {[
-                  { name: "Beranda", path: "/" },
-                  { name: "Produk", path: "/produk" },
-                  { name: "Artikel", path: "/products" },
-                  { name: "Tentang", path: "/tentang" },
-                ].map((link) => (
-                  <li key={link.path}>
-                    <Link to={link.path} className="text-gray-600 hover:text-emerald-700 transition-colors duration-200 flex items-center gap-2 group">
-                      <span className="w-0 group-hover:w-2 h-0.5 bg-emerald-600 transition-all duration-200" />
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
             {/* Contact Info */}
             <div>
               <h4 className="font-bold text-emerald-800 text-lg mb-6 relative inline-block">
@@ -143,25 +120,8 @@ const Footer = () => {
               <p className="text-sm text-gray-600 text-center md:text-left">
                 © {new Date().getFullYear()} <span className="text-emerald-800 font-semibold">Askreative Parfum</span>. All Rights Reserved.
               </p>
-
-              {/* Additional Links */}
-              <div className="flex items-center gap-6 text-sm text-gray-600">
-                <a href="#" className="hover:text-emerald-700 transition-colors">
-                  Privacy Policy
-                </a>
-                <span className="text-gray-300">•</span>
-                <a href="#" className="hover:text-emerald-700 transition-colors">
-                  Terms of Service
-                </a>
-              </div>
+              <p className="text-gray-400 text-center md:text-right">Rebuild by Muhammad Faris Fathur Rohman.</p>
             </div>
-          </div>
-
-          {/* Made with love badge */}
-          <div className="text-center mt-6">
-            <p className="text-xs text-gray-500 flex items-center justify-center gap-2">
-              Made with <span className="text-red-500 animate-pulse">❤️</span> in Indonesia
-            </p>
           </div>
         </div>
       </footer>
