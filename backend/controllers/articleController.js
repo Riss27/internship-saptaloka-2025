@@ -20,7 +20,7 @@ const deleteFile = (filePath) => {
 // --- Controller Functions ---
 exports.getAllArticles = async (req, res) => {
   try {
-    const articles = await Article.findAll({ order: [["createdAt", "DESC"]] });
+    const articles = await Article.findAll({ order: [["publishedAt", "DESC"]] });
     res.status(200).json({ status: "success", data: articles });
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
@@ -49,7 +49,7 @@ exports.createArticle = async (req, res) => {
     if (err) return res.status(400).json({ status: "fail", message: err.message || err });
 
     try {
-      const { title, author, mainDescription } = req.body;
+      const { title, author, mainDescription, publishedAt } = req.body;
       if (!req.files || !req.files.featuredImage) {
         return res.status(400).json({ status: "fail", message: "Gambar utama wajib diunggah." });
       }
@@ -61,6 +61,7 @@ exports.createArticle = async (req, res) => {
           author,
           mainDescription,
           featuredImageUrl,
+          publishedAt,
         },
         { transaction: t }
       );
@@ -145,13 +146,13 @@ exports.updateArticle = async (req, res) => {
       }
 
       // 1. Update data utama artikel
-      const { title, author, mainDescription } = req.body;
+      const { title, author, mainDescription, publishedAt } = req.body;
       let featuredImageUrl = article.featuredImageUrl;
       if (req.files.featuredImage) {
         deleteFile(article.featuredImageUrl);
         featuredImageUrl = `/uploads/${req.files.featuredImage[0].filename}`;
       }
-      await article.update({ title, author, mainDescription, featuredImageUrl }, { transaction: t });
+      await article.update({ title, author, mainDescription, featuredImageUrl, publishedAt }, { transaction: t });
 
       // 2. Hapus file gambar dari sub-konten lama yang akan dihapus
       const clientContents = JSON.parse(req.body.contents || "[]");

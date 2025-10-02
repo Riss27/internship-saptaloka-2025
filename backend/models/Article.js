@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../config/database");
 
 const Article = sequelize.define("Article", {
@@ -17,6 +17,11 @@ const Article = sequelize.define("Article", {
   featuredImageUrl: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  publishedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
   },
 });
 
