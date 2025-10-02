@@ -38,7 +38,7 @@ const ArticleDetailPage = () => {
   if (!article) {
     return <div className="text-center py-20 text-white">Artikel tidak ditemukan.</div>;
   }
-  
+
   // Fungsi untuk format tanggal
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("id-ID", {
@@ -52,7 +52,7 @@ const ArticleDetailPage = () => {
   const parseImageUrls = (data) => {
     if (!data) return [];
     let parsed = data;
-    while (typeof parsed === 'string') {
+    while (typeof parsed === "string") {
       try {
         parsed = JSON.parse(parsed);
       } catch (e) {
@@ -93,27 +93,28 @@ const ArticleDetailPage = () => {
 
         {/* === Konten Artikel per Section === */}
         <article className="space-y-12">
-          {article.ArticleContents && article.ArticleContents.map((content, index) => {
-            // Panggil parser untuk membersihkan data gambar
-            const images = parseImageUrls(content.imageUrls);
+          {article.ArticleContents &&
+            article.ArticleContents.map((content, index) => {
+              // Panggil parser untuk membersihkan data gambar
+              const images = parseImageUrls(content.imageUrls);
 
-            return (
-              <section key={index}>
-                <h2 className="text-2xl font-bold text-cyan-400 mb-4 border-l-4 border-cyan-400 pl-4">{content.topic}</h2>
-                {/* Render deskripsi sebagai HTML */}
-                <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: content.description }} />
-                
-                {/* Tampilkan gambar-gambar jika ada */}
-                {images && images.length > 0 && (
-                  <div className="grid grid-cols-2 gap-4 mt-6">
-                    {images.map((url, i) => (
-                      <img key={i} src={`http://localhost:3000${url}`} alt={`${content.topic} ${i + 1}`} className="rounded-lg object-cover w-full" />
-                    ))}
-                  </div>
-                )}
-              </section>
-            );
-          })}
+              return (
+                <section key={index}>
+                  <h2 className="text-2xl font-bold text-cyan-400 mb-4 border-l-4 border-cyan-400 pl-4">{content.topic}</h2>
+                  {/* Render deskripsi sebagai HTML */}
+                  <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: content.description }} />
+
+                  {/* Tampilkan gambar-gambar jika ada */}
+                  {images && images.length > 0 && (
+                    <div className="grid grid-cols-2 gap-4 mt-6">
+                      {images.map((url, i) => (
+                        <img key={i} src={`http://localhost:3000${url}`} alt={`${content.topic} ${i + 1}`} className="rounded-lg object-cover w-full" />
+                      ))}
+                    </div>
+                  )}
+                </section>
+              );
+            })}
         </article>
       </div>
     </div>

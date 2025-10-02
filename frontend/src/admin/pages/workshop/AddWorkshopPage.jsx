@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { FiSave, FiType, FiFileText, FiImage, FiCheckSquare, FiSquare, FiToggleLeft, FiToggleRight } from "react-icons/fi";
+import { FiSave, FiType, FiFileText, FiImage, FiCheckSquare, FiSquare, FiToggleLeft, FiToggleRight, FiTag } from "react-icons/fi";
 
 // Komponen Reusable (InputField & TiptapEditor)
 const InputField = ({ label, name, value, onChange, icon, ...props }) => (
@@ -27,6 +27,7 @@ const TiptapEditor = ({ content, onUpdate }) => {
       attributes: { class: "prose prose-invert max-w-none p-4 min-h-[200px] focus:outline-none" },
     },
   });
+
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
       editor.commands.setContent(content);
@@ -52,7 +53,7 @@ const AddWorkshopPage = () => {
   const { id } = useParams();
   const isEditMode = Boolean(id);
   const [isLoading, setIsLoading] = useState(false);
-  const [workshop, setWorkshop] = useState({ title: "", description: "", status: "draft" });
+  const [workshop, setWorkshop] = useState({ title: "", description: "", status: "draft", category: "" });
   const [image, setImage] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
   const [availableEvents, setAvailableEvents] = useState([]);
@@ -69,7 +70,7 @@ const AddWorkshopPage = () => {
         .get(`http://localhost:3000/api/workshops/${id}`)
         .then((response) => {
           const fetched = response.data.data;
-          setWorkshop({ title: fetched.title, description: fetched.description, status: fetched.status });
+          setWorkshop({ title: fetched.title, description: fetched.description, status: fetched.status, category: fetched.category });
           setPreviewImage(`http://localhost:3000${fetched.imageUrl}`);
           setSelectedEventIds(new Set(fetched.Events.map((e) => e.id)));
         })
@@ -103,6 +104,7 @@ const AddWorkshopPage = () => {
     formData.append("title", workshop.title);
     formData.append("description", workshop.description);
     formData.append("status", workshop.status);
+    formData.append("category", workshop.category);
     if (image) formData.append("imageUrl", image);
     formData.append("eventIds", JSON.stringify(Array.from(selectedEventIds)));
     try {
@@ -135,6 +137,21 @@ const AddWorkshopPage = () => {
           <div className="bg-slate-800/50 p-8 rounded-lg">
             <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Workshop Details</h2>
             <InputField label="Workshop Title" name="title" value={workshop.title} onChange={handleWorkshopChange} icon={<FiType />} required placeholder="Judul workshop..." />
+            <div className="mb-6">
+              <label className="block mb-2 font-medium text-slate-300">Category</label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <FiTag />
+                </span>
+                <select name="category" value={workshop.category} onChange={handleWorkshopChange} required className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                  <option value="" disabled>
+                    -- Pilih Kategori --
+                  </option>
+                  <option value="Aromaterapi">Aromaterapi</option>
+                  <option value="Parfum">Parfum</option>
+                </select>
+              </div>
+            </div>
             <div>
               <label className="block mb-2 font-medium text-slate-300">Workshop Poster</label>
               <div className="mt-2 flex justify-center items-center w-full h-48 border-2 border-dashed border-slate-600 rounded-lg bg-slate-900/50">

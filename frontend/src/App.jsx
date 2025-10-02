@@ -11,6 +11,7 @@ import ProductsPage from "./pages/ProductsPage";
 import IngredientsPage from "./pages/IngredientsPage";
 import LabToolsPage from "./pages/LabToolsPage";
 import WorkshopsPage from "./pages/WorkshopsPage";
+import WorkshopDetailPage from "./pages/WorkshopDetailPage";
 import EventsPage from "./pages/EventsPage";
 import GalleryPage from "./pages/GalleryPage";
 import ArticlesPage from "./pages/ArticlesPage";
@@ -47,7 +48,9 @@ function App() {
           <Route path="products" element={<ProductsPage />} />
           <Route path="ingredients" element={<IngredientsPage />} />
           <Route path="lab-tools" element={<LabToolsPage />} />
-          <Route path="workshops" element={<WorkshopsPage />} />
+          <Route path="workshop/aromaterapi" element={<WorkshopsPage category="Aromaterapi" />} />
+          <Route path="workshop/parfum" element={<WorkshopsPage category="Parfum" />} />
+          <Route path="workshops/:id" element={<WorkshopDetailPage />} />
           <Route path="events" element={<EventsPage />} />
           <Route path="gallery" element={<GalleryPage />} />
           <Route path="articles" element={<ArticlesPage />} />

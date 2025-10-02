@@ -56,8 +56,8 @@ const HomePage = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-2">Layanan Kami</h2>
           <p className="text-center text-gray-600 mb-12">Dari workshop hingga pembuatan parfum personal, kami siap melayani.</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <ServiceCard icon={<FiFeather size={28} className="text-emerald-700" />} title="Workshop Aromaterapi" description="Pelajari seni meracik parfum dengan panduan ahli." linkTo="/workshops" />
-            <ServiceCard icon={<FiBookOpen size={28} className="text-emerald-700" />} title="Workshop Parfum" description="Belajar meracik parfum personal dengan mudah." linkTo="/workshops" />
+            <ServiceCard icon={<FiFeather size={28} className="text-emerald-700" />} title="Workshop Aromaterapi" description="Pelajari seni meracik parfum dengan panduan ahli." linkTo="/workshop/aromaterapi" />
+            <ServiceCard icon={<FiBookOpen size={28} className="text-emerald-700" />} title="Workshop Parfum" description="Belajar meracik parfum personal dengan mudah." linkTo="/workshop/parfum" />
             <ServiceCard icon={<FiLayers size={28} className="text-emerald-700" />} title="Buat Parfum Sendiri" description="Kreasikan aroma unikmu dengan panduan kami." linkTo="/" />
             <ServiceCard icon={<FiBox size={28} className="text-emerald-700" />} title="Produk Parfum & Aromaterapi" description="Temukan koleksi parfum unik kami." linkTo="/products" />
             <ServiceCard icon={<FiDroplet size={28} className="text-emerald-700" />} title="Alat Laboratorium Skala Mikro" description="Peralatan lab skala mikro standar industri." linkTo="/lab-tools" />
