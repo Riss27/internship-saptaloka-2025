@@ -14,6 +14,7 @@ import WorkshopsPage from "./pages/WorkshopsPage";
 import EventsPage from "./pages/EventsPage";
 import GalleryPage from "./pages/GalleryPage";
 import ArticlesPage from "./pages/ArticlesPage";
+import ArticleDetailPage from "./pages/ArticleDetailPage";
 
 // Halaman Admin
 import Homepage from "./admin/pages/homepage/Homepage";
@@ -50,6 +51,7 @@ function App() {
           <Route path="events" element={<EventsPage />} />
           <Route path="gallery" element={<GalleryPage />} />
           <Route path="articles" element={<ArticlesPage />} />
+          <Route path="articles/:id" element={<ArticleDetailPage />} />
         </Route>
 
         {/* Rute Admin */}
