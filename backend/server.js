@@ -4,16 +4,38 @@ const cors = require("cors");
 const path = require("path");
 const sequelize = require("./config/database");
 const allRoutes = require("./routes/index");
-const About = require("./models/About");
-const GalleryImage = require("./models/GalleryImage");
+
+const Article = require("./models/Article");
+const ArticleContent = require("./models/ArticleContent");
+const Event = require("./models/Event");
+const EventContent = require("./models/EventContent");
+const EventRegistration = require("./models/EventRegistration");
+const Workshop = require("./models/Workshop");
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use("/api", allRoutes);
-app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
+
+// Relasi antar model
+// Satu Article punya banyak ArticleContent
+Article.hasMany(ArticleContent, { onDelete: "CASCADE", hooks: true });
+ArticleContent.belongsTo(Article);
+
+// Satu Event punya banyak Content
+Event.hasMany(EventContent, { onDelete: "CASCADE", hooks: true });
+EventContent.belongsTo(Event);
+// Satu Event punya banyak Pendaftar
+Event.hasMany(EventRegistration, { onDelete: "CASCADE", hooks: true });
+EventRegistration.belongsTo(Event);
+
+// Hubungan Many-to-Many antara Workshop dan Event
+Workshop.belongsToMany(Event, { through: "WorkshopEvents" });
+Event.belongsToMany(Workshop, { through: "WorkshopEvents" });
 
 // Fungsi untuk menjalankan server
 async function startServer() {

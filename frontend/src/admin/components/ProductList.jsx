@@ -36,7 +36,7 @@ const ProductList = ({ products, handleDelete }) => {
                   <td className="p-3">Rp {new Intl.NumberFormat("id-ID").format(product.price)}</td>
                   <td className="p-3">
                     <div className="flex justify-center items-center gap-2">
-                      <Link to={`/catalogue/products/edit/${product.id}`}>
+                      <Link to={`/admin/catalogue/products/edit/${product.id}`}>
                         <button className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md">
                           <FiEdit size={16} />
                         </button>

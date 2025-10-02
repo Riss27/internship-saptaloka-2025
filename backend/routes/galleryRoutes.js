@@ -5,6 +5,6 @@ const upload = require("../middlewares/upload");
 
 router.route("/").get(galleryController.getAllImages).post(upload.single("image"), galleryController.createImage); // 'image' adalah nama field di form
 
-router.route("/:id").delete(galleryController.deleteImage);
+router.route("/:id").get(galleryController.getImageById).put(galleryController.updateImage).delete(galleryController.deleteImage);
 
 module.exports = router;
