@@ -1,3 +1,5 @@
+// backend/controllers/workshopController.js (KODE LENGKAP & FINAL)
+
 const Workshop = require("../models/Workshop");
 const Event = require("../models/Event");
 const upload = require("../middleware/upload");
@@ -19,10 +21,11 @@ const deleteFile = (filePath) => {
 
 // Controller Workshop
 
-// Ambil semua workshop + daftar event terkait
+// Ambil semua workshop + daftar event terkait (sudah ada filter kategori)
 exports.getAllWorkshops = async (req, res) => {
   try {
-    const workshops = await Workshop.findAll({
+    const { category } = req.query;
+    const filterOptions = {
       include: {
         model: Event,
         as: "Events",
@@ -30,7 +33,13 @@ exports.getAllWorkshops = async (req, res) => {
         through: { attributes: [] },
       },
       order: [["createdAt", "DESC"]],
-    });
+    };
+
+    if (category) {
+      filterOptions.where = { category: category };
+    }
+
+    const workshops = await Workshop.findAll(filterOptions);
     res.status(200).json({ status: "success", data: workshops });
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
@@ -61,16 +70,17 @@ exports.createWorkshop = async (req, res) => {
     if (err) return res.status(400).json({ status: "fail", message: err.message || err });
 
     try {
-      const { title, description, status, eventIds } = req.body;
+      // UBAH: Tambahkan `category` di sini
+      const { title, description, status, eventIds, category } = req.body;
 
       if (!req.file) {
         return res.status(400).json({ status: "fail", message: "Gambar poster workshop wajib diunggah." });
       }
       const imageUrl = `/uploads/${req.file.filename}`;
 
-      const newWorkshop = await Workshop.create({ title, description, status, imageUrl }, { transaction: t });
+      // UBAH: Tambahkan `category` saat membuat workshop baru
+      const newWorkshop = await Workshop.create({ title, description, status, imageUrl, category }, { transaction: t });
 
-      // Set relasi event jika ada
       if (eventIds) {
         const parsedEventIds = JSON.parse(eventIds);
         if (Array.isArray(parsedEventIds) && parsedEventIds.length > 0) {
@@ -118,19 +128,18 @@ exports.updateWorkshop = async (req, res) => {
         return res.status(404).json({ status: "fail", message: "Workshop tidak ditemukan." });
       }
 
-      const { title, description, status, eventIds } = req.body;
+      // UBAH: Tambahkan `category` di sini
+      const { title, description, status, eventIds, category } = req.body;
       let imageUrl = workshop.imageUrl;
 
-      // Jika ada poster baru, hapus yang lama lalu ganti
       if (req.file) {
         deleteFile(workshop.imageUrl);
         imageUrl = `/uploads/${req.file.filename}`;
       }
 
-      // Update data workshop
-      await workshop.update({ title, description, status, imageUrl }, { transaction: t });
+      // UBAH: Tambahkan `category` saat update data
+      await workshop.update({ title, description, status, imageUrl, category }, { transaction: t });
 
-      // Update relasi event
       if (eventIds) {
         const parsedEventIds = JSON.parse(eventIds);
         await workshop.setEvents(parsedEventIds, { transaction: t });
