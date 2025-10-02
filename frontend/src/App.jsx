@@ -12,6 +12,8 @@ import IngredientsPage from "./pages/IngredientsPage";
 import LabToolsPage from "./pages/LabToolsPage";
 import WorkshopsPage from "./pages/WorkshopsPage";
 import EventsPage from "./pages/EventsPage";
+import GalleryPage from "./pages/GalleryPage";
+import ArticlesPage from "./pages/ArticlesPage";
 
 // Halaman Admin
 import Homepage from "./admin/pages/homepage/Homepage";
@@ -24,7 +26,7 @@ import IngredientPage from "./admin/pages/ingredients/IngredientPage";
 import AddIngredientPage from "./admin/pages/ingredients/AddIngredientPage";
 import LabToolPage from "./admin/pages/lab_tools/LabToolPage";
 import AddLabToolPage from "./admin/pages/lab_tools/AddLabToolPage";
-import GalleryPage from "./admin/pages/gallery/GalleryPage";
+import AdminGalleryPage from "./admin/pages/gallery/GalleryPage";
 import GalleryFormPage from "./admin/pages/gallery/GalleryFormPage";
 import AboutPageAdmin from "./admin/pages/about/AboutPage";
 import EventPage from "./admin/pages/events/EventPage";
@@ -46,6 +48,8 @@ function App() {
           <Route path="lab-tools" element={<LabToolsPage />} />
           <Route path="workshops" element={<WorkshopsPage />} />
           <Route path="events" element={<EventsPage />} />
+          <Route path="gallery" element={<GalleryPage />} />
+          <Route path="articles" element={<ArticlesPage />} />
         </Route>
 
         {/* Rute Admin */}
@@ -81,7 +85,7 @@ function App() {
           <Route path="articles/add" element={<AddArticlePage />} />
           <Route path="articles/edit/:id" element={<AddArticlePage />} />
 
-          <Route path="gallery" element={<GalleryPage />} />
+          <Route path="gallery" element={<AdminGalleryPage />} />
           <Route path="gallery/add" element={<GalleryFormPage />} />
           <Route path="gallery/edit/:id" element={<GalleryFormPage />} />
         </Route>
