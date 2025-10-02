@@ -12,7 +12,7 @@ exports.createLabTool = async (req, res) => {
       return res.status(400).json({ status: "fail", message: err.message || err });
     }
     try {
-      const { name, description, price, category, linkTokopedia, linkShopee } = req.body;
+      const { name, description, price, linkTokopedia, linkShopee } = req.body;
       if (!req.file) {
         return res.status(400).json({ status: "fail", message: "Gambar wajib diunggah." });
       }
@@ -22,7 +22,6 @@ exports.createLabTool = async (req, res) => {
         description,
         price,
         imageUrl,
-        category,
         linkTokopedia,
         linkShopee,
       });
