@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { FiType, FiUser, FiFileText, FiImage, FiSave, FiPlus, FiTrash2, FiX, FiUploadCloud } from "react-icons/fi";
+
+// TAMBAHKAN import untuk DatePicker
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+// TAMBAHKAN FiCalendar untuk ikon
+import { FiType, FiUser, FiFileText, FiImage, FiSave, FiPlus, FiTrash2, FiX, FiUploadCloud, FiCalendar } from "react-icons/fi";
 
 const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon, required = false }) => (
   <div className="mb-6">
@@ -36,14 +42,16 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder, 
 const AddArticlePage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [article, setArticle] = useState({ title: "", author: "", mainDescription: "" });
+
+  // UBAH: Tambahkan `publishedAt` ke state awal
+  const [article, setArticle] = useState({ title: "", author: "", mainDescription: "", publishedAt: new Date() });
+
   const [contents, setContents] = useState([{ topic: "", description: "", images: [], previews: [] }]);
   const [featuredImage, setFeaturedImage] = useState(null);
   const [previewFeaturedImage, setPreviewFeaturedImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = Boolean(id);
 
-  // --- FUNGSI FETCH DATA UNTUK EDIT ---
   useEffect(() => {
     if (isEditMode) {
       setIsLoading(true);
@@ -55,13 +63,14 @@ const AddArticlePage = () => {
             title: fetchedArticle.title,
             author: fetchedArticle.author,
             mainDescription: fetchedArticle.mainDescription,
+            // UBAH: Tambahkan `publishedAt` dari data fetch
+            publishedAt: fetchedArticle.publishedAt ? new Date(fetchedArticle.publishedAt) : new Date(),
           });
           if (fetchedArticle.featuredImageUrl) {
             setPreviewFeaturedImage(`http://localhost:3000${fetchedArticle.featuredImageUrl}`);
           }
           if (fetchedArticle.ArticleContents && fetchedArticle.ArticleContents.length > 0) {
             const fetchedContents = fetchedArticle.ArticleContents.map((content) => {
-              // Fungsi untuk membersihkan data stringified JSON ganda
               const parseImageUrls = (data) => {
                 if (!data) return [];
                 let parsed = data;
@@ -75,9 +84,7 @@ const AddArticlePage = () => {
                 }
                 return Array.isArray(parsed) ? parsed : [];
               };
-
               const imageUrls = parseImageUrls(content.imageUrls);
-
               return {
                 topic: content.topic,
                 description: content.description,
@@ -107,9 +114,7 @@ const AddArticlePage = () => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
       const newContents = [...contents];
-      // Gabungkan gambar yang sudah ada (string/URL) dengan file baru
       const newImages = [...newContents[index].images, ...files];
-      // Buat preview baru: jika string, biarkan. Jika file, buat URL object.
       const newPreviews = newImages.map((img) => (typeof img === "string" ? `http://localhost:3000${img}` : URL.createObjectURL(img)));
 
       newContents[index].images = newImages;
@@ -141,15 +146,14 @@ const AddArticlePage = () => {
     setIsLoading(true);
 
     const submissionData = new FormData();
-    submissionData.append("title", article.title);
-    submissionData.append("author", article.author);
-    submissionData.append("mainDescription", article.mainDescription);
+    // Semua state di `article` otomatis ter-append, termasuk `publishedAt`
+    Object.keys(article).forEach((key) => submissionData.append(key, article[key]));
+
     if (featuredImage) {
       submissionData.append("featuredImage", featuredImage);
     }
 
     const contentData = contents.map((c) => {
-      // Pisahkan antara file baru dan URL lama
       const newImageFiles = c.images.filter((img) => typeof img !== "string");
       const existingImageUrls = c.images.filter((img) => typeof img === "string");
       return {
@@ -163,7 +167,6 @@ const AddArticlePage = () => {
 
     contents.forEach((c) => {
       c.images.forEach((image) => {
-        // Hanya kirim file baru
         if (typeof image !== "string") {
           submissionData.append("contentImages", image);
         }
@@ -173,7 +176,6 @@ const AddArticlePage = () => {
     try {
       const config = { headers: { "Content-Type": "multipart/form-data" } };
       if (isEditMode) {
-        // Menggunakan PUT untuk update, bukan POST
         await axios.put(`http://localhost:3000/api/articles/${id}`, submissionData, config);
       } else {
         await axios.post("http://localhost:3000/api/articles", submissionData, config);
@@ -197,13 +199,30 @@ const AddArticlePage = () => {
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Bagian Artikel Utama */}
         <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Main Article Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <InputField label="Article Title" name="title" value={article.title} onChange={handleArticleChange} required={true} placeholder="Judul utama artikel..." icon={<FiType />} />
               <InputField label="Author" name="author" value={article.author} onChange={handleArticleChange} required={true} placeholder="Nama penulis..." icon={<FiUser />} />
+
+              {/* TAMBAHKAN: Komponen DatePicker */}
+              <div className="mb-6">
+                <label className="block mb-2 font-medium text-slate-300 transition-colors duration-300 focus-within:text-cyan-400">Publication Date</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                    <FiCalendar />
+                  </span>
+                  <DatePicker
+                    selected={article.publishedAt ? new Date(article.publishedAt) : new Date()}
+                    onChange={(date) => setArticle((prev) => ({ ...prev, publishedAt: date }))}
+                    dateFormat="MMMM d, yyyy h:mm aa"
+                    showTimeSelect
+                    className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                  />
+                </div>
+              </div>
+
               <InputField label="Main Description" name="mainDescription" type="textarea" value={article.mainDescription} onChange={handleArticleChange} required={true} placeholder="Deskripsi pembuka artikel..." icon={<FiFileText />} />
             </div>
             <div>
@@ -229,7 +248,6 @@ const AddArticlePage = () => {
           </div>
         </div>
 
-        {/* Bagian Konten Dinamis */}
         <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Content Sections</h2>
           <div className="space-y-6">
