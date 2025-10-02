@@ -12,6 +12,19 @@ exports.getAllImages = async (req, res) => {
   }
 };
 
+// MENDAPATKAN GAMBAR BERDASARKAN ID
+exports.getImageById = async (req, res) => {
+  try {
+    const image = await GalleryImage.findByPk(req.params.id);
+    if (!image) {
+      return res.status(404).json({ status: "fail", message: "Gambar tidak ditemukan." });
+    }
+    res.status(200).json({ status: "success", data: image });
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+};
+
 // MEMBUAT GAMBAR BARU (UPLOAD)
 exports.createImage = async (req, res) => {
   try {
@@ -24,6 +37,23 @@ exports.createImage = async (req, res) => {
       imageUrl: req.file.filename, // Simpan nama file dari Multer
     });
     res.status(201).json({ status: "success", data: newImage });
+  } catch (error) {
+    res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
+// MEMPERBARUI GAMBAR (JUDUL)
+exports.updateImage = async (req, res) => {
+  try {
+    const image = await GalleryImage.findByPk(req.params.id);
+    if (!image) {
+      return res.status(404).json({ status: "fail", message: "Gambar tidak ditemukan." });
+    }
+
+    // Update hanya title-nya
+    await image.update({ title: req.body.title });
+
+    res.status(200).json({ status: "success", data: image });
   } catch (error) {
     res.status(400).json({ status: "fail", message: error.message });
   }
