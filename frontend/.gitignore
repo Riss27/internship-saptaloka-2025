@@ -101,8 +101,6 @@ public/build/
 
 # Gatsby build output
 .cache/
-# Add any sensitive files not covered by the above to prevent accidental commits
-public
 
 # Vite build output
 dist
