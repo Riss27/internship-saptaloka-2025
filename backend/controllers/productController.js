@@ -1,29 +1,48 @@
 const Product = require("../models/Product");
-const upload = require("../middleware/upload");
+const upload = require("../middlewares/upload");
 const fs = require("fs");
 const path = require("path");
 
+// Controller untuk (READ) - Mendapatkan semua produk DENGAN FILTER
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await productService.getAllProducts(req.query);
-    res.status(200).json({ status: "success", data: products });
+    const { category } = req.query;
+    const filterOptions = {};
+
+    if (category) {
+      filterOptions.where = { category: category };
+    }
+
+    const products = await Product.findAll(filterOptions);
+    res.status(200).json({
+      status: "success",
+      data: products,
+    });
   } catch (error) {
-    res.status(500).json({ status: "error", message: "Gagal mengambil data produk." });
+    // Tambahkan ini untuk melihat error detail di terminal backend
+    console.error("ERROR di getAllProducts:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Gagal mengambil data produk.",
+    });
   }
 };
 
+// Controller untuk (READ) - Mendapatkan produk by ID
 exports.getProductById = async (req, res) => {
   try {
-    const product = await productService.getProductById(req.params.id);
+    const product = await Product.findByPk(req.params.id);
     if (!product) {
       return res.status(404).json({ status: "fail", message: "Produk tidak ditemukan." });
     }
     res.status(200).json({ status: "success", data: product });
   } catch (error) {
+    console.error("ERROR di getProductById:", error);
     res.status(500).json({ status: "error", message: error.message });
   }
 };
 
+// Controller untuk (CREATE) - Membuat produk baru
 exports.createProduct = async (req, res) => {
   const uploader = upload.single("image");
 
@@ -52,11 +71,13 @@ exports.createProduct = async (req, res) => {
         data: newProduct,
       });
     } catch (error) {
+      console.error("ERROR di createProduct:", error);
       res.status(500).json({ status: "fail", message: error.message });
     }
   });
 };
 
+// Controller untuk (UPDATE) - Memperbarui produk
 exports.updateProduct = async (req, res) => {
   const uploader = upload.single("image");
 
@@ -94,15 +115,17 @@ exports.updateProduct = async (req, res) => {
       await product.update(updateData);
       res.status(200).json({ status: "success", data: product });
     } catch (error) {
+      console.error("ERROR di updateProduct:", error);
       res.status(500).json({ status: "fail", message: error.message });
     }
   });
 };
 
+// Controller untuk (DELETE) - Menghapus produk
 exports.deleteProduct = async (req, res) => {
   try {
-    const result = await productService.deleteProduct(req.params.id);
-    if (result === 0) {
+    const product = await Product.findByPk(req.params.id);
+    if (!product) {
       return res.status(404).json({ status: "fail", message: "Produk tidak ditemukan." });
     }
 
@@ -126,6 +149,7 @@ exports.deleteProduct = async (req, res) => {
 
     res.status(204).json();
   } catch (error) {
+    console.error("ERROR di deleteProduct:", error);
     res.status(500).json({ status: "error", message: error.message });
   }
 };

@@ -1,6 +1,6 @@
 const Article = require("../models/Article");
 const ArticleContent = require("../models/ArticleContent");
-const upload = require("../middleware/upload");
+const upload = require("../middlewares/upload");
 const fs = require("fs");
 const path = require("path");
 const sequelize = require("../config/database");

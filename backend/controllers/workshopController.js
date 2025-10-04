@@ -2,7 +2,7 @@
 
 const Workshop = require("../models/Workshop");
 const Event = require("../models/Event");
-const upload = require("../middleware/upload");
+const upload = require("../middlewares/upload");
 const fs = require("fs");
 const path = require("path");
 const sequelize = require("../config/database");

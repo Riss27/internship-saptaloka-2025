@@ -1,5 +1,5 @@
 const LandingPage = require("../models/LandingPage");
-const upload = require("../middleware/upload");
+const upload = require("../middlewares/upload");
 const fs = require("fs");
 const path = require("path");
 

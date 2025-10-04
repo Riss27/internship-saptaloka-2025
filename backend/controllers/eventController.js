@@ -1,7 +1,7 @@
 const Event = require("../models/Event");
 const EventContent = require("../models/EventContent");
 const EventRegistration = require("../models/EventRegistration");
-const upload = require("../middleware/upload");
+const upload = require("../middlewares/upload");
 const fs = require("fs");
 const path = require("path");
 const sequelize = require("../config/database");
@@ -61,8 +61,8 @@ exports.getEventById = async (req, res) => {
         { model: EventRegistration, as: "EventRegistrations" },
       ],
       order: [
-        [sequelize.col("EventContents"), "id", "ASC"],
-        [sequelize.col("EventRegistrations"), "createdAt", "ASC"],
+        ["EventContents", "id", "ASC"],
+        ["EventRegistrations", "createdAt", "ASC"],
       ],
     });
     if (!event) {
@@ -70,6 +70,7 @@ exports.getEventById = async (req, res) => {
     }
     res.status(200).json({ status: "success", data: event });
   } catch (error) {
+    console.error("ERROR di getEventById:", error);
     res.status(500).json({ status: "error", message: error.message });
   }
 };

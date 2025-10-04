@@ -1,5 +1,5 @@
 const LabTool = require("../models/LabTool");
-const upload = require("../middleware/upload");
+const upload = require("../middlewares/upload");
 const fs = require("fs");
 const path = require("path");
 
