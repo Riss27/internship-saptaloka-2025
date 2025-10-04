@@ -7,8 +7,8 @@ const createProductRules = () => {
     body("price").isInt({ min: 1 }).withMessage("Harga harus angka dan minimal 1"),
     body("description").notEmpty().withMessage("Deskripsi tidak boleh kosong"),
     body("category").isIn(["Parfum", "Aromaterapi"]).withMessage("Kategori tidak valid"),
-    body("linkTokopedia").isURL().optional({ checkFalsy: true }).withMessage("Link Tokopedia harus URL yang valid"),
-    body("linkShopee").isURL().optional({ checkFalsy: true }).withMessage("Link Shopee harus URL yang valid"),
+    body("linkTokopedia").optional({ checkFalsy: true }).isURL({ require_protocol: false, require_host: true }).withMessage("Link Tokopedia harus URL yang valid"),
+    body("linkShopee").optional({ checkFalsy: true }).isURL({ require_protocol: false, require_host: true }).withMessage("Link Shopee harus URL yang valid"),
   ];
 };
 
@@ -18,7 +18,14 @@ const validate = (req, res, next) => {
   if (errors.isEmpty()) {
     return next();
   }
-  return res.status(400).json({ status: "fail", errors: errors.array() });
+  const extractedErrors = errors
+    .array()
+    .map((err) => err.msg)
+    .join(", ");
+  return res.status(400).json({
+    status: "fail",
+    message: extractedErrors,
+  });
 };
 
 module.exports = {

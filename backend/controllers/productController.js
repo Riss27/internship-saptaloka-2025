@@ -44,81 +44,67 @@ exports.getProductById = async (req, res) => {
 
 // Controller untuk (CREATE) - Membuat produk baru
 exports.createProduct = async (req, res) => {
-  const uploader = upload.single("image");
+  try {
+    const { name, description, price, category, linkTokopedia, linkShopee } = req.body;
 
-  uploader(req, res, async function (err) {
-    if (err) {
-      return res.status(400).json({ status: "fail", message: err.message || err });
+    if (!req.file) {
+      return res.status(400).json({ status: "fail", message: "Gambar produk wajib diunggah." });
     }
-    try {
-      const { name, description, price, category, linkTokopedia, linkShopee } = req.body;
-      if (!req.file) {
-        return res.status(400).json({ status: "fail", message: "Gambar produk wajib diunggah." });
-      }
-      const imageUrl = `/uploads/${req.file.filename}`;
-      const newProduct = await Product.create({
-        name,
-        description,
-        price,
-        imageUrl,
-        category,
-        linkTokopedia,
-        linkShopee,
-      });
-      res.status(201).json({
-        status: "success",
-        message: "Produk berhasil ditambahkan!",
-        data: newProduct,
-      });
-    } catch (error) {
-      console.error("ERROR di createProduct:", error);
-      res.status(500).json({ status: "fail", message: error.message });
+    const imageUrl = `/uploads/${req.file.filename}`;
+
+    const newProduct = await Product.create({
+      name,
+      description,
+      price,
+      imageUrl,
+      category,
+      linkTokopedia,
+      linkShopee,
+    });
+
+    res.status(201).json({
+      status: "success",
+      message: "Produk berhasil ditambahkan!",
+      data: newProduct,
+    });
+  } catch (error) {
+    if (req.file) {
+      fs.unlinkSync(req.file.path);
     }
-  });
+    console.error("ERROR di createProduct:", error);
+    res.status(500).json({ status: "fail", message: "Terjadi kesalahan di server." });
+  }
 };
 
 // Controller untuk (UPDATE) - Memperbarui produk
 exports.updateProduct = async (req, res) => {
-  const uploader = upload.single("image");
-
-  uploader(req, res, async function (err) {
-    if (err) {
-      return res.status(400).json({ status: "fail", message: err.message || err });
+  try {
+    const product = await Product.findByPk(req.params.id);
+    if (!product) {
+      return res.status(404).json({ status: "fail", message: "Produk tidak ditemukan." });
     }
-    try {
-      const product = await Product.findByPk(req.params.id);
-      if (!product) {
-        return res.status(404).json({ status: "fail", message: "Produk tidak ditemukan." });
-      }
 
-      const oldImagePath = product.imageUrl;
-      const updateData = { ...req.body };
+    const oldImagePath = product.imageUrl;
+    const updateData = { ...req.body };
 
-      if (req.file) {
-        updateData.imageUrl = `/uploads/${req.file.filename}`;
-
-        if (oldImagePath) {
-          const fullPathOldImage = path.join(__dirname, "..", "public", oldImagePath);
-
-          if (fs.existsSync(fullPathOldImage)) {
-            fs.unlink(fullPathOldImage, (unlinkErr) => {
-              if (unlinkErr) {
-                console.error("Gagal menghapus gambar lama:", unlinkErr);
-              } else {
-                console.log("Gambar lama berhasil dihapus:", fullPathOldImage);
-              }
-            });
-          }
+    if (req.file) {
+      updateData.imageUrl = `/uploads/${req.file.filename}`;
+      if (oldImagePath) {
+        const fullPathOldImage = path.join(__dirname, "..", "public", oldImagePath);
+        if (fs.existsSync(fullPathOldImage)) {
+          fs.unlink(fullPathOldImage, (err) => {
+            if (err) console.error("Gagal hapus gambar lama:", err);
+          });
         }
       }
-
-      await product.update(updateData);
-      res.status(200).json({ status: "success", data: product });
-    } catch (error) {
-      console.error("ERROR di updateProduct:", error);
-      res.status(500).json({ status: "fail", message: error.message });
     }
-  });
+
+    await product.update(updateData);
+    res.status(200).json({ status: "success", data: product });
+  } catch (error) {
+    console.error("ERROR di updateProduct:", error);
+    res.status(500).json({ status: "fail", message: error.message });
+  }
 };
 
 // Controller untuk (DELETE) - Menghapus produk

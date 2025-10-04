@@ -26,11 +26,11 @@ const Product = sequelize.define("Product", {
   },
   linkTokopedia: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   linkShopee: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 });
 
