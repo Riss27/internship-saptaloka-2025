@@ -16,6 +16,7 @@ import LabToolDetailPage from "./pages/LabToolDetailPage";
 import WorkshopsPage from "./pages/WorkshopsPage";
 import WorkshopDetailPage from "./pages/WorkshopDetailPage";
 import EventsPage from "./pages/EventsPage";
+import EventDetailPage from "./pages/EventDetailPage";
 import GalleryPage from "./pages/GalleryPage";
 import ArticlesPage from "./pages/ArticlesPage";
 import ArticleDetailPage from "./pages/ArticleDetailPage";
@@ -58,6 +59,7 @@ function App() {
           <Route path="workshop/parfum" element={<WorkshopsPage category="Parfum" />} />
           <Route path="workshops/:id" element={<WorkshopDetailPage />} />
           <Route path="events" element={<EventsPage />} />
+          <Route path="events/:id" element={<EventDetailPage />} />
           <Route path="gallery" element={<GalleryPage />} />
           <Route path="articles" element={<ArticlesPage />} />
           <Route path="articles/:id" element={<ArticleDetailPage />} />
