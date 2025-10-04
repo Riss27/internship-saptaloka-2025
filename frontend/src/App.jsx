@@ -8,8 +8,11 @@ import PublicLayout from "./layouts/PublicLayout";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import ProductsPage from "./pages/ProductsPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
 import IngredientsPage from "./pages/IngredientsPage";
+import IngredientDetailPage from "./pages/IngredientDetailPage";
 import LabToolsPage from "./pages/LabToolsPage";
+import LabToolDetailPage from "./pages/LabToolDetailPage";
 import WorkshopsPage from "./pages/WorkshopsPage";
 import WorkshopDetailPage from "./pages/WorkshopDetailPage";
 import EventsPage from "./pages/EventsPage";
@@ -46,8 +49,11 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="products" element={<ProductsPage />} />
+          <Route path="products/:id" element={<ProductDetailPage />} />
           <Route path="ingredients" element={<IngredientsPage />} />
+          <Route path="ingredients/:id" element={<IngredientDetailPage />} />
           <Route path="lab-tools" element={<LabToolsPage />} />
+          <Route path="lab-tools/:id" element={<LabToolDetailPage />} />
           <Route path="workshop/aromaterapi" element={<WorkshopsPage category="Aromaterapi" />} />
           <Route path="workshop/parfum" element={<WorkshopsPage category="Parfum" />} />
           <Route path="workshops/:id" element={<WorkshopDetailPage />} />
