@@ -5,20 +5,33 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FiPlus, FiTrash2, FiSave, FiType, FiUsers, FiMapPin, FiDollarSign, FiCalendar, FiImage, FiX, FiUploadCloud } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiSave, FiType, FiUsers, FiMapPin, FiDollarSign, FiCalendar, FiImage, FiX, FiUploadCloud, FiTag, FiChevronDown } from "react-icons/fi";
 
-// Reusable InputField
-const InputField = ({ label, name, value, onChange, icon, ...props }) => (
+// Komponen InputField
+const InputField = ({ label, name, value, onChange, icon, as = "input", options = [], ...props }) => (
   <div className="mb-6">
     <label className="block mb-2 font-medium text-slate-300">{label}</label>
     <div className="relative">
       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">{icon}</span>
-      <input {...props} name={name} value={value || ""} onChange={onChange} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+
+      {as === "select" ? (
+        <>
+          <select name={name} value={value} onChange={onChange} {...props} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 appearance-none">
+            {options.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <FiChevronDown className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 pointer-events-none" />
+        </>
+      ) : (
+        <input {...props} name={name} value={value || ""} onChange={onChange} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+      )}
     </div>
   </div>
 );
 
-// Reusable TiptapEditor
 const TiptapEditor = ({ content, onUpdate }) => {
   const editor = useEditor({
     extensions: [StarterKit],
@@ -42,14 +55,13 @@ const AddEventPage = () => {
   const isEditMode = Boolean(id);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [event, setEvent] = useState({ title: "", quota: 1, location: "", fee: 0, description: "", startDateTime: new Date(), endDateTime: new Date() });
+  const [event, setEvent] = useState({ title: "", quota: 1, location: "", fee: 0, description: "", startDateTime: new Date(), endDateTime: new Date(), category: "" });
   const [imageBanner, setImageBanner] = useState(null);
   const [previewBanner, setPreviewBanner] = useState("");
   const [roles, setRoles] = useState(["Umum"]);
   const [newRole, setNewRole] = useState("");
   const [contents, setContents] = useState([]);
 
-  // Fetch data if edit mode
   useEffect(() => {
     if (!isEditMode) return;
     setIsLoading(true);
@@ -65,6 +77,7 @@ const AddEventPage = () => {
           description: fetched.description || "",
           startDateTime: fetched.startDateTime ? new Date(fetched.startDateTime) : new Date(),
           endDateTime: fetched.endDateTime ? new Date(fetched.endDateTime) : new Date(),
+          category: fetched.category || "",
         });
         if (fetched.imageBannerUrl) setPreviewBanner(`http://localhost:3000${fetched.imageBannerUrl}`);
         if (fetched.participantRoles) {
@@ -76,21 +89,13 @@ const AddEventPage = () => {
           }
         }
         if (Array.isArray(fetched.EventContents)) {
-          const parseImageUrls = (data) => {
-            if (!data) return [];
-            let parsed = data;
-            while (typeof parsed === "string") {
-              try {
-                parsed = JSON.parse(parsed);
-              } catch {
-                return [];
-              }
-            }
-            return Array.isArray(parsed) ? parsed : [];
-          };
-
           const fetchedContents = fetched.EventContents.map((c) => {
-            const imageUrls = parseImageUrls(c.imageUrls);
+            let imageUrls = [];
+            try {
+              if (c.imageUrls) imageUrls = Array.isArray(c.imageUrls) ? c.imageUrls : JSON.parse(c.imageUrls);
+            } catch {
+              imageUrls = [];
+            }
             return {
               header: c.header || "",
               content: c.content || "",
@@ -105,7 +110,6 @@ const AddEventPage = () => {
       .finally(() => setIsLoading(false));
   }, [id, isEditMode]);
 
-  // Handlers
   const handleEventChange = (e) => setEvent((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   const handleDescriptionChange = (value) => setEvent((prev) => ({ ...prev, description: value }));
   const handleBannerChange = (e) => {
@@ -144,7 +148,6 @@ const AddEventPage = () => {
     setContents(newContents);
   };
 
-  // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -189,12 +192,24 @@ const AddEventPage = () => {
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Event Details */}
         <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Event Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <InputField label="Event Title" name="title" value={event.title} onChange={handleEventChange} icon={<FiType />} required placeholder="Judul event..." />
+              <InputField
+                as="select"
+                label="Category"
+                name="category"
+                value={event.category}
+                onChange={handleEventChange}
+                icon={<FiTag />}
+                options={[
+                  { value: "", label: "-- Tanpa Kategori --" },
+                  { value: "Aromaterapi", label: "Aromaterapi" },
+                  { value: "Parfum", label: "Parfum" },
+                ]}
+              />
               <InputField label="Location" name="location" value={event.location} onChange={handleEventChange} icon={<FiMapPin />} required placeholder="Lokasi event..." />
               <div className="grid grid-cols-2 gap-4">
                 <InputField label="Quota" name="quota" type="number" min="1" value={event.quota} onChange={handleEventChange} icon={<FiUsers />} required />
@@ -253,8 +268,6 @@ const AddEventPage = () => {
             </div>
           </div>
         </div>
-
-        {/* Participant Roles */}
         <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Participant Roles</h2>
           <div className="flex items-center gap-4 mb-4">
@@ -280,8 +293,6 @@ const AddEventPage = () => {
             ))}
           </div>
         </div>
-
-        {/* Content Sections */}
         <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Content Sections</h2>
           <div className="space-y-6">
@@ -327,8 +338,6 @@ const AddEventPage = () => {
             <FiPlus className="mr-2" /> Add Content Section
           </button>
         </div>
-
-        {/* Submit */}
         <div className="mt-8">
           <button
             type="submit"
