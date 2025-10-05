@@ -30,6 +30,7 @@ exports.getAllWorkshops = async (req, res) => {
         through: { attributes: [] },
       },
       order: [["createdAt", "DESC"]],
+      limit: 1,
     };
 
     if (category) {
