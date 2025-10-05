@@ -56,21 +56,22 @@ exports.getAllEvents = async (req, res) => {
 exports.getEventById = async (req, res) => {
   try {
     const event = await Event.findByPk(req.params.id, {
-      attributes: {
-        include: [[sequelize.fn("COUNT", sequelize.col("EventRegistrations.id")), "registeredCount"]],
-      },
       include: [
         { model: EventContent, as: "EventContents" },
-        { model: EventRegistration, as: "EventRegistrations", attributes: [] },
+        { model: EventRegistration, as: "EventRegistrations" },
       ],
-      group: ["Event.id", "EventContents.id"],
-      order: [["EventContents", "id", "ASC"]],
+      order: [
+        ["EventContents", "id", "ASC"],
+        ["EventRegistrations", "createdAt", "ASC"],
+      ],
     });
 
     if (!event) {
       return res.status(404).json({ status: "fail", message: "Event tidak ditemukan." });
     }
+
     res.status(200).json({ status: "success", data: event });
+
   } catch (error) {
     console.error("ERROR di getEventById:", error);
     res.status(500).json({ status: "error", message: error.message });
