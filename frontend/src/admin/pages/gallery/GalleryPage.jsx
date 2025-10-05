@@ -6,6 +6,7 @@ import { FiPlus, FiTrash2, FiEdit } from "react-icons/fi";
 const GalleryPage = () => {
   const [images, setImages] = useState([]);
 
+  // Fungsi untuk mengambil data dari backend
   const fetchImages = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/gallery");
@@ -15,15 +16,17 @@ const GalleryPage = () => {
     }
   };
 
+  // Jalankan fetchImages saat halaman dimuat
   useEffect(() => {
     fetchImages();
   }, []);
 
+  // Fungsi untuk menghapus gambar
   const handleDelete = async (id) => {
     if (window.confirm("Apakah Anda yakin ingin menghapus gambar ini?")) {
       try {
         await axios.delete(`http://localhost:3000/api/gallery/${id}`);
-        fetchImages();
+        fetchImages(); // Refresh data setelah hapus
       } catch (error) {
         console.error("Gagal menghapus gambar:", error);
       }
@@ -47,15 +50,15 @@ const GalleryPage = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {images.map((image) => (
               <div key={image.id} className="group relative bg-slate-800 rounded-lg overflow-hidden shadow-lg">
-                <img src={`http://localhost:3000/uploads/${image.imageUrl}`} alt={image.title} className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center gap-4">
-                  <p className="text-white font-semibold text-center truncate px-2">{image.title}</p>
-                  <div className="flex gap-4">
-                    <Link to={`/admin/gallery/edit/${image.id}`} className="p-3 bg-yellow-500 hover:bg-yellow-600 rounded-full text-white" title="Edit Title">
-                      <FiEdit size={20} />
+                <img src={`http://localhost:3000${image.imageUrl}`} alt={image.title} className="w-full h-48 object-cover group-hover:opacity-75 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
+                  <p className="text-white font-semibold truncate">{image.title}</p>
+                  <div className="self-end flex gap-2">
+                    <Link to={`/admin/gallery/edit/${image.id}`} className="p-2 bg-yellow-500 hover:bg-yellow-600 rounded-full text-white" title="Edit Title">
+                      <FiEdit size={16} />
                     </Link>
-                    <button onClick={() => handleDelete(image.id)} className="p-3 bg-red-600 hover:bg-red-700 rounded-full text-white">
-                      <FiTrash2 size={20} />
+                    <button onClick={() => handleDelete(image.id)} className="self-end p-2 bg-red-600 hover:bg-red-700 rounded-full text-white" title="Delete Image">
+                      <FiTrash2 size={16} />
                     </button>
                   </div>
                 </div>
