@@ -18,11 +18,6 @@ const Workshop = sequelize.define("Workshop", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  status: {
-    type: DataTypes.ENUM("draft", "published"),
-    defaultValue: "draft",
-    allowNull: false,
-  },
 });
 
 module.exports = Workshop;

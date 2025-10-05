@@ -1,5 +1,3 @@
-// backend/controllers/workshopController.js (KODE LENGKAP & FINAL)
-
 const Workshop = require("../models/Workshop");
 const Event = require("../models/Event");
 const upload = require("../middlewares/upload");
@@ -20,7 +18,6 @@ const deleteFile = (filePath) => {
 };
 
 // Controller Workshop
-
 // Ambil semua workshop + daftar event terkait (sudah ada filter kategori)
 exports.getAllWorkshops = async (req, res) => {
   try {
@@ -71,7 +68,7 @@ exports.createWorkshop = async (req, res) => {
 
     try {
       // UBAH: Tambahkan `category` di sini
-      const { title, description, status, eventIds, category } = req.body;
+      const { title, description, eventIds, category } = req.body;
 
       if (!req.file) {
         return res.status(400).json({ status: "fail", message: "Gambar poster workshop wajib diunggah." });
@@ -79,7 +76,7 @@ exports.createWorkshop = async (req, res) => {
       const imageUrl = `/uploads/${req.file.filename}`;
 
       // UBAH: Tambahkan `category` saat membuat workshop baru
-      const newWorkshop = await Workshop.create({ title, description, status, imageUrl, category }, { transaction: t });
+      const newWorkshop = await Workshop.create({ title, description, imageUrl, category }, { transaction: t });
 
       if (eventIds) {
         const parsedEventIds = JSON.parse(eventIds);
@@ -129,7 +126,7 @@ exports.updateWorkshop = async (req, res) => {
       }
 
       // UBAH: Tambahkan `category` di sini
-      const { title, description, status, eventIds, category } = req.body;
+      const { title, description, eventIds, category } = req.body;
       let imageUrl = workshop.imageUrl;
 
       if (req.file) {
@@ -138,7 +135,7 @@ exports.updateWorkshop = async (req, res) => {
       }
 
       // UBAH: Tambahkan `category` saat update data
-      await workshop.update({ title, description, status, imageUrl, category }, { transaction: t });
+      await workshop.update({ title, description, imageUrl, category }, { transaction: t });
 
       if (eventIds) {
         const parsedEventIds = JSON.parse(eventIds);
