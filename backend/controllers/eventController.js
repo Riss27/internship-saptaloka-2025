@@ -229,6 +229,52 @@ exports.deleteEvent = async (req, res) => {
   }
 };
 
+exports.registerForEvent = async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const { id } = req.params;
+    const { name, email, phone, role } = req.body;
+
+    if (!name || !email || !phone || !role) {
+      return res.status(400).json({ status: "fail", message: "Semua field wajib diisi." });
+    }
+
+    const event = await Event.findByPk(id, {
+      include: { model: EventRegistration, as: "EventRegistrations", attributes: ["id"] },
+      transaction: t,
+    });
+
+    if (!event) {
+      return res.status(404).json({ status: "fail", message: "Event tidak ditemukan." });
+    }
+
+    if (event.EventRegistrations.length >= event.quota) {
+      return res.status(400).json({ status: "fail", message: "Maaf, kuota untuk event ini sudah penuh." });
+    }
+
+    const existingRegistration = await EventRegistration.findOne({
+      where: {
+        email: email,
+        EventId: id,
+      },
+      transaction: t,
+    });
+
+    if (existingRegistration) {
+      return res.status(409).json({ status: "fail", message: "Email ini sudah terdaftar untuk event ini." });
+    }
+
+    const newRegistration = await EventRegistration.create({ name, email, phone, role, EventId: id }, { transaction: t });
+
+    await t.commit();
+    res.status(201).json({ status: "success", data: newRegistration });
+  } catch (error) {
+    await t.rollback();
+    console.error("ERROR di registerForEvent:", error);
+    res.status(500).json({ status: "error", message: error.message });
+  }
+};
+
 exports.deleteRegistration = async (req, res) => {
   try {
     const { registrationId } = req.params;
