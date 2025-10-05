@@ -2,7 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 
-const ProductList = ({ products, handleDelete }) => {
+const GenericCatalogueList = ({ items, itemType, deleteItem }) => {
+  // Tentukan path edit berdasarkan tipe item
+  const editPath = `/admin/catalogue/${itemType}s/edit/`;
+
   return (
     <div className="bg-white/10 p-6 rounded-lg shadow-md backdrop-blur-md">
       <div className="overflow-x-auto">
@@ -18,30 +21,30 @@ const ProductList = ({ products, handleDelete }) => {
             </tr>
           </thead>
           <tbody>
-            {products.length === 0 ? (
+            {items.length === 0 ? (
               <tr>
                 <td colSpan="6" className="text-center p-4 text-slate-400">
-                  No products found.
+                  No {itemType}s found.
                 </td>
               </tr>
             ) : (
-              products.map((product, index) => (
-                <tr key={product.id} className="border-b border-slate-700 hover:bg-white/5">
+              items.map((item, index) => (
+                <tr key={item.id} className="border-b border-slate-700 hover:bg-white/5">
                   <td className="p-3">{index + 1}</td>
                   <td className="p-3">
-                    <img src={product.imageUrl || "https://via.placeholder.com/150"} alt={product.name} className="w-16 h-16 object-cover rounded" />
+                    <img src={`http://localhost:3000${item.imageUrl}`} alt={item.name} className="w-16 h-16 object-cover rounded" />
                   </td>
-                  <td className="p-3 font-medium">{product.name}</td>
-                  <td className="p-3">{product.category}</td>
-                  <td className="p-3">Rp {new Intl.NumberFormat("id-ID").format(product.price)}</td>
+                  <td className="p-3 font-medium">{item.name}</td>
+                  <td className="p-3">{item.category || "-"}</td>
+                  <td className="p-3">Rp {new Intl.NumberFormat("id-ID").format(item.price)}</td>
                   <td className="p-3">
                     <div className="flex justify-center items-center gap-2">
-                      <Link to={`/admin/catalogue/products/edit/${product.id}`}>
+                      <Link to={`${editPath}${item.id}`}>
                         <button className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md">
                           <FiEdit size={16} />
                         </button>
                       </Link>
-                      <button onClick={() => handleDelete(product.id)} className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-md">
+                      <button onClick={() => deleteItem(item.id)} className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-md">
                         <FiTrash2 size={16} />
                       </button>
                     </div>
@@ -56,4 +59,4 @@ const ProductList = ({ products, handleDelete }) => {
   );
 };
 
-export default ProductList;
+export default GenericCatalogueList;
