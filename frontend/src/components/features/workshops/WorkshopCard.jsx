@@ -8,7 +8,6 @@ const WorkshopCard = ({ workshop }) => {
       <Link to={`/workshops/${workshop.id}`} className="block">
         <div className="w-full h-56 overflow-hidden relative">
           <img src={`http://localhost:3000${workshop.imageUrl}`} alt={workshop.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-          <span className={`absolute top-3 right-3 px-2 py-1 text-xs font-semibold rounded-full ${workshop.status === "published" ? "bg-green-600/80 text-green-200" : "bg-yellow-600/80 text-yellow-200"}`}>{workshop.status}</span>
         </div>
         <div className="p-4">
           <h3 className="font-bold text-xl text-white mt-2 truncate group-hover:text-cyan-400" title={workshop.title}>

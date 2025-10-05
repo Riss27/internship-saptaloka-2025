@@ -11,9 +11,7 @@ const WorkshopsPage = ({ category }) => {
     axios
       .get(`http://localhost:3000/api/workshops?category=${category}`)
       .then((response) => {
-        // Filter hanya workshop dengan status "published"
-        const publishedWorkshops = response.data.data.filter((ws) => ws.status === "published");
-        setWorkshops(publishedWorkshops);
+        setWorkshops(response.data.data);
         setIsLoading(false);
       })
       .catch((error) => {

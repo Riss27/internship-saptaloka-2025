@@ -41,7 +41,7 @@ const AddWorkshopPage = () => {
   const { id } = useParams();
   const isEditMode = Boolean(id);
   const [isLoading, setIsLoading] = useState(false);
-  const [workshop, setWorkshop] = useState({ title: "", description: "", status: "draft", category: "" });
+  const [workshop, setWorkshop] = useState({ title: "", description: "", category: "" });
   const [image, setImage] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
   const [groupedEvents, setGroupedEvents] = useState({});
@@ -69,7 +69,7 @@ const AddWorkshopPage = () => {
         .get(`http://localhost:3000/api/workshops/${id}`)
         .then((response) => {
           const fetched = response.data.data;
-          setWorkshop({ title: fetched.title, description: fetched.description, status: fetched.status, category: fetched.category });
+          setWorkshop({ title: fetched.title, description: fetched.description, category: fetched.category });
           setPreviewImage(`http://localhost:3000${fetched.imageUrl}`);
           setSelectedEventIds(new Set(fetched.Events.map((e) => e.id)));
         })
@@ -102,7 +102,6 @@ const AddWorkshopPage = () => {
     const formData = new FormData();
     formData.append("title", workshop.title);
     formData.append("description", workshop.description);
-    formData.append("status", workshop.status);
     formData.append("category", workshop.category);
     if (image) formData.append("imageUrl", image);
     formData.append("eventIds", JSON.stringify(Array.from(selectedEventIds)));
@@ -196,13 +195,6 @@ const AddWorkshopPage = () => {
               ) : (
                 <div className="text-center text-slate-500 p-8"><p>Pilih kategori workshop terlebih dahulu untuk melihat event yang relevan.</p></div>
               )}
-            </div>
-          </div>
-          <div className="bg-slate-800/50 p-8 rounded-lg">
-            <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Status</h2>
-            <div className="flex items-center cursor-pointer" onClick={() => setWorkshop((p) => ({ ...p, status: p.status === "draft" ? "published" : "draft" }))}>
-              {workshop.status === "published" ? <FiToggleRight className="text-green-400 text-4xl" /> : <FiToggleLeft className="text-slate-500 text-4xl" />}
-              <span className="ml-4 text-lg font-semibold">{workshop.status === "published" ? "Published" : "Draft"}</span>
             </div>
           </div>
         </div>

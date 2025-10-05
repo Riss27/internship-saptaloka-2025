@@ -19,7 +19,6 @@ const WorkshopList = ({ workshops, deleteWorkshop }) => {
           <img src={`http://localhost:3000${workshop.imageUrl}`} alt={workshop.title} className="w-full md:w-1/3 h-48 md:h-auto object-cover" />
           <div className="p-6 flex flex-col justify-between flex-1">
             <div>
-              <span className={`px-2 py-1 text-xs font-semibold rounded-full ${workshop.status === "published" ? "bg-green-600/50 text-green-300" : "bg-yellow-600/50 text-yellow-300"}`}>{workshop.status}</span>
               <h2 className="text-2xl font-bold text-white mt-2">{workshop.title}</h2>
               <div className="prose prose-invert text-slate-300 mt-2 max-h-24 overflow-hidden" dangerouslySetInnerHTML={{ __html: workshop.description }} />
 
