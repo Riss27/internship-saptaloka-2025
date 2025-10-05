@@ -65,13 +65,10 @@ exports.getEventById = async (req, res) => {
         ["EventRegistrations", "createdAt", "ASC"],
       ],
     });
-
     if (!event) {
       return res.status(404).json({ status: "fail", message: "Event tidak ditemukan." });
     }
-
     res.status(200).json({ status: "success", data: event });
-
   } catch (error) {
     console.error("ERROR di getEventById:", error);
     res.status(500).json({ status: "error", message: error.message });
@@ -84,7 +81,8 @@ exports.createEvent = async (req, res) => {
     const t = await sequelize.transaction();
     if (err) return res.status(400).json({ status: "fail", message: err.message || err });
     try {
-      const { title, quota, location, fee, description, startDateTime, endDateTime, participantRoles, contents } = req.body;
+      // TAMBAHKAN 'category'
+      const { title, quota, location, fee, description, startDateTime, endDateTime, participantRoles, contents, category } = req.body;
       if (!req.files || !req.files.imageBanner) {
         return res.status(400).json({ status: "fail", message: "Image Banner wajib diunggah." });
       }
@@ -100,6 +98,7 @@ exports.createEvent = async (req, res) => {
           startDateTime,
           endDateTime,
           participantRoles: JSON.parse(participantRoles || "[]"),
+          category, // SERTAKAN category
         },
         { transaction: t }
       );
@@ -147,13 +146,15 @@ exports.updateEvent = async (req, res) => {
         await t.rollback();
         return res.status(404).json({ status: "fail", message: "Event tidak ditemukan." });
       }
-      const { title, quota, location, fee, description, startDateTime, endDateTime, participantRoles } = req.body;
+      // TAMBAHKAN 'category'
+      const { title, quota, location, fee, description, startDateTime, endDateTime, participantRoles, category } = req.body;
       let imageBannerUrl = event.imageBannerUrl;
       if (req.files.imageBanner) {
         deleteFile(event.imageBannerUrl);
         imageBannerUrl = `/uploads/${req.files.imageBanner[0].filename}`;
       }
-      await event.update({ title, quota, location, fee, description, startDateTime, endDateTime, imageBannerUrl, participantRoles: JSON.parse(participantRoles || "[]") }, { transaction: t });
+      // SERTAKAN 'category'
+      await event.update({ title, quota, location, fee, description, startDateTime, endDateTime, imageBannerUrl, participantRoles: JSON.parse(participantRoles || "[]"), category }, { transaction: t });
       const clientContents = JSON.parse(req.body.contents || "[]");
       const existingUrlsFromClient = new Set(clientContents.flatMap((c) => c.existingImageUrls || []).map((url) => url.replace("http://localhost:3000", "")));
       for (const oldContent of event.EventContents) {
@@ -161,7 +162,7 @@ exports.updateEvent = async (req, res) => {
           let oldImageUrls = [];
           try {
             oldImageUrls = JSON.parse(oldContent.imageUrls);
-          } catch (e) {}
+          } catch {}
           if (Array.isArray(oldImageUrls)) {
             oldImageUrls.forEach((url) => {
               if (!existingUrlsFromClient.has(url)) {
@@ -221,11 +222,25 @@ exports.deleteEvent = async (req, res) => {
             if (Array.isArray(imageUrlsArray)) {
               imageUrlsArray.forEach((url) => deleteFile(url));
             }
-          } catch (e) {}
+          } catch {}
         }
       });
     }
     await event.destroy();
+    res.status(204).json();
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+};
+
+exports.deleteRegistration = async (req, res) => {
+  try {
+    const { registrationId } = req.params;
+    const registration = await EventRegistration.findByPk(registrationId);
+    if (!registration) {
+      return res.status(404).json({ status: "fail", message: "Data pendaftar tidak ditemukan." });
+    }
+    await registration.destroy();
     res.status(204).json();
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
@@ -274,20 +289,6 @@ exports.registerForEvent = async (req, res) => {
   } catch (error) {
     await t.rollback();
     console.error("ERROR di registerForEvent:", error);
-    res.status(500).json({ status: "error", message: error.message });
-  }
-};
-
-exports.deleteRegistration = async (req, res) => {
-  try {
-    const { registrationId } = req.params;
-    const registration = await EventRegistration.findByPk(registrationId);
-    if (!registration) {
-      return res.status(404).json({ status: "fail", message: "Data pendaftar tidak ditemukan." });
-    }
-    await registration.destroy();
-    res.status(204).json();
-  } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
   }
 };

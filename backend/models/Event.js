@@ -6,6 +6,10 @@ const Event = sequelize.define("Event", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  category: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   quota: {
     type: DataTypes.INTEGER,
     allowNull: false,
