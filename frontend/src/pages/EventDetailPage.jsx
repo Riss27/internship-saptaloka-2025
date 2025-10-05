@@ -125,7 +125,7 @@ const EventDetailPage = () => {
                   <div>
                     <p className="font-semibold text-white">Kuota</p>
                     <p className="text-sm">
-                      {event.dataValues.registeredCount} / {event.quota} Peserta
+                      {event.EventRegistrations.length} / {event.quota} Peserta
                     </p>
                   </div>
                 </div>
