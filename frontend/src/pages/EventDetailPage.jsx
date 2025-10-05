@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { FiCalendar, FiMapPin, FiUsers, FiDollarSign } from "react-icons/fi";
+import RegistrationForm from "../components/features/events/registration/RegistrationForm";
+import Popup from "../components/ui/Popup";
 
 const EventDetailPage = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -57,87 +60,99 @@ const EventDetailPage = () => {
     return <div className="text-center py-20 text-white">Event tidak ditemukan.</div>;
   }
 
+  const participantRoles = parseJsonSafe(event.participantRoles);
+
   return (
-    <div className="bg-slate-900 text-slate-300 min-h-screen pt-10 pb-20">
-      <div className="container mx-auto px-4 max-w-5xl">
-        <header className="relative mb-8 text-center">
-          <img src={`http://localhost:3000${event.imageBannerUrl}`} alt={event.title} className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent rounded-lg"></div>
-          <div className="absolute bottom-0 left-0 right-0 p-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">{event.title}</h1>
-          </div>
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Detail & Konten */}
-          <div className="lg:col-span-2">
-            <div className="prose prose-invert prose-lg max-w-none mb-12" dangerouslySetInnerHTML={{ __html: event.description }} />
-
-            <article className="space-y-12">
-              {event.EventContents &&
-                event.EventContents.map((content, index) => {
-                  const images = parseJsonSafe(content.imageUrls);
-                  return (
-                    <section key={index}>
-                      <h2 className="text-2xl font-bold text-cyan-400 mb-4 border-l-4 border-cyan-400 pl-4">{content.header}</h2>
-                      <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: content.content }} />
-                      {images.length > 0 && (
-                        <div className="grid grid-cols-2 gap-4 mt-6">
-                          {images.map((url, i) => (
-                            <img key={i} src={`http://localhost:3000${url}`} alt={`${content.header} ${i + 1}`} className="rounded-lg object-cover w-full" />
-                          ))}
-                        </div>
-                      )}
-                    </section>
-                  );
-                })}
-            </article>
-          </div>
-
-          {/* Info & Registrasi */}
-          <aside className="lg:col-span-1">
-            <div className="sticky top-28 bg-slate-800/50 rounded-lg p-6 space-y-4">
-              <h3 className="text-xl font-bold text-white border-b border-slate-700 pb-2">Detail Event</h3>
-              <div className="flex items-start gap-3">
-                <FiCalendar className="text-cyan-400 mt-1 flex-shrink-0" />
-                <div>
-                  <p className="font-semibold text-white">Tanggal & Waktu</p>
-                  <p className="text-sm">
-                    {formatDate(event.startDateTime)} - {formatDate(event.endDateTime)}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <FiMapPin className="text-cyan-400 mt-1 flex-shrink-0" />
-                <div>
-                  <p className="font-semibold text-white">Lokasi</p>
-                  <p className="text-sm">{event.location}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <FiUsers className="text-cyan-400 mt-1 flex-shrink-0" />
-                <div>
-                  <p className="font-semibold text-white">Kuota</p>
-                  <p className="text-sm">{event.quota} Peserta</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <FiDollarSign className="text-cyan-400 mt-1 flex-shrink-0" />
-                <div>
-                  <p className="font-semibold text-white">Biaya</p>
-                  <p className="text-sm">{event.fee > 0 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}` : "Gratis"}</p>
-                </div>
-              </div>
-
-              {/* Placeholder untuk Form Registrasi */}
-              <div className="pt-4 border-t border-slate-700">
-                <button className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors">Daftar Sekarang</button>
-              </div>
+    <>
+      <div className="bg-slate-900 text-slate-300 min-h-screen pt-10 pb-20">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <header className="relative mb-8 text-center">
+            <img src={`http://localhost:3000${event.imageBannerUrl}`} alt={event.title} className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent rounded-lg"></div>
+            <div className="absolute bottom-0 left-0 right-0 p-8">
+              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">{event.title}</h1>
             </div>
-          </aside>
+          </header>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Kolom Detail & Konten */}
+            <div className="lg:col-span-2">
+              <div className="prose prose-invert prose-lg max-w-none mb-12" dangerouslySetInnerHTML={{ __html: event.description }} />
+
+              <article className="space-y-12">
+                {event.EventContents &&
+                  event.EventContents.map((content, index) => {
+                    const images = parseJsonSafe(content.imageUrls);
+                    return (
+                      <section key={index}>
+                        <h2 className="text-2xl font-bold text-cyan-400 mb-4 border-l-4 border-cyan-400 pl-4">{content.header}</h2>
+                        <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: content.content }} />
+                        {images.length > 0 && (
+                          <div className="grid grid-cols-2 gap-4 mt-6">
+                            {images.map((url, i) => (
+                              <img key={i} src={`http://localhost:3000${url}`} alt={`${content.header} ${i + 1}`} className="rounded-lg object-cover w-full" />
+                            ))}
+                          </div>
+                        )}
+                      </section>
+                    );
+                  })}
+              </article>
+            </div>
+
+            {/* Kolom Info & Registrasi */}
+            <aside className="lg:col-span-1">
+              <div className="sticky top-28 bg-slate-800/50 rounded-lg p-6 space-y-4">
+                <h3 className="text-xl font-bold text-white border-b border-slate-700 pb-2">Detail Event</h3>
+                <div className="flex items-start gap-3">
+                  <FiCalendar className="text-cyan-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-white">Tanggal & Waktu</p>
+                    <p className="text-sm">
+                      {formatDate(event.startDateTime)} - {formatDate(event.endDateTime)}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <FiMapPin className="text-cyan-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-white">Lokasi</p>
+                    <p className="text-sm">{event.location}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <FiUsers className="text-cyan-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-white">Kuota</p>
+                    <p className="text-sm">
+                      {event.EventRegistrations.length} / {event.quota} Peserta
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <FiDollarSign className="text-cyan-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-white">Biaya</p>
+                    <p className="text-sm">{event.fee > 0 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}` : "Gratis"}</p>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-slate-700">
+                  <button onClick={() => setIsModalOpen(true)} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors">
+                    Daftar Sekarang
+                  </button>
+                </div>
+              </div>
+            </aside>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Render Popup */}
+      <Popup isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Pendaftaran: ${event.title}`}>
+        <RegistrationForm eventId={event.id} participantRoles={participantRoles} />
+      </Popup>
+    </>
   );
 };
 
