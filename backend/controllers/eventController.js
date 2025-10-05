@@ -65,6 +65,7 @@ exports.getEventById = async (req, res) => {
         ["EventRegistrations", "createdAt", "ASC"],
       ],
     });
+
     if (!event) {
       return res.status(404).json({ status: "fail", message: "Event tidak ditemukan." });
     }
@@ -81,8 +82,7 @@ exports.createEvent = async (req, res) => {
     const t = await sequelize.transaction();
     if (err) return res.status(400).json({ status: "fail", message: err.message || err });
     try {
-      // TAMBAHKAN 'category'
-      const { title, quota, location, fee, description, startDateTime, endDateTime, participantRoles, contents, category } = req.body;
+      const { title, quota, location, fee, description, startDateTime, endDateTime, participantRoles, contents, category, status } = req.body;
       if (!req.files || !req.files.imageBanner) {
         return res.status(400).json({ status: "fail", message: "Image Banner wajib diunggah." });
       }
@@ -98,7 +98,8 @@ exports.createEvent = async (req, res) => {
           startDateTime,
           endDateTime,
           participantRoles: JSON.parse(participantRoles || "[]"),
-          category, // SERTAKAN category
+          category,
+          status,
         },
         { transaction: t }
       );
@@ -146,15 +147,13 @@ exports.updateEvent = async (req, res) => {
         await t.rollback();
         return res.status(404).json({ status: "fail", message: "Event tidak ditemukan." });
       }
-      // TAMBAHKAN 'category'
-      const { title, quota, location, fee, description, startDateTime, endDateTime, participantRoles, category } = req.body;
+      const { title, quota, location, fee, description, startDateTime, endDateTime, participantRoles, category, status } = req.body;
       let imageBannerUrl = event.imageBannerUrl;
       if (req.files.imageBanner) {
         deleteFile(event.imageBannerUrl);
         imageBannerUrl = `/uploads/${req.files.imageBanner[0].filename}`;
       }
-      // SERTAKAN 'category'
-      await event.update({ title, quota, location, fee, description, startDateTime, endDateTime, imageBannerUrl, participantRoles: JSON.parse(participantRoles || "[]"), category }, { transaction: t });
+      await event.update({ title, quota, location, fee, description, startDateTime, endDateTime, imageBannerUrl, participantRoles: JSON.parse(participantRoles || "[]"), category, status }, { transaction: t });
       const clientContents = JSON.parse(req.body.contents || "[]");
       const existingUrlsFromClient = new Set(clientContents.flatMap((c) => c.existingImageUrls || []).map((url) => url.replace("http://localhost:3000", "")));
       for (const oldContent of event.EventContents) {
@@ -162,7 +161,7 @@ exports.updateEvent = async (req, res) => {
           let oldImageUrls = [];
           try {
             oldImageUrls = JSON.parse(oldContent.imageUrls);
-          } catch {}
+          } catch (e) {}
           if (Array.isArray(oldImageUrls)) {
             oldImageUrls.forEach((url) => {
               if (!existingUrlsFromClient.has(url)) {
@@ -222,7 +221,7 @@ exports.deleteEvent = async (req, res) => {
             if (Array.isArray(imageUrlsArray)) {
               imageUrlsArray.forEach((url) => deleteFile(url));
             }
-          } catch {}
+          } catch (e) {}
         }
       });
     }
@@ -250,13 +249,15 @@ exports.deleteRegistration = async (req, res) => {
 exports.registerForEvent = async (req, res) => {
   const t = await sequelize.transaction();
   try {
-    const { id } = req.params;
+    const { id } = req.params; // ID Event
     const { name, email, phone, role } = req.body;
 
+    // 1. Validasi input dasar
     if (!name || !email || !phone || !role) {
       return res.status(400).json({ status: "fail", message: "Semua field wajib diisi." });
     }
 
+    // 2. Cek event dan jumlah pendaftar saat ini
     const event = await Event.findByPk(id, {
       include: { model: EventRegistration, as: "EventRegistrations", attributes: ["id"] },
       transaction: t,
@@ -266,10 +267,12 @@ exports.registerForEvent = async (req, res) => {
       return res.status(404).json({ status: "fail", message: "Event tidak ditemukan." });
     }
 
+    // 3. Cek apakah kuota sudah penuh
     if (event.EventRegistrations.length >= event.quota) {
       return res.status(400).json({ status: "fail", message: "Maaf, kuota untuk event ini sudah penuh." });
     }
 
+    // 4. Cek apakah email sudah terdaftar di event ini
     const existingRegistration = await EventRegistration.findOne({
       where: {
         email: email,
@@ -279,9 +282,11 @@ exports.registerForEvent = async (req, res) => {
     });
 
     if (existingRegistration) {
+      // Kirim status 409 Conflict jika email sudah ada
       return res.status(409).json({ status: "fail", message: "Email ini sudah terdaftar untuk event ini." });
     }
 
+    // 5. Jika semua validasi lolos, buat pendaftaran baru
     const newRegistration = await EventRegistration.create({ name, email, phone, role, EventId: id }, { transaction: t });
 
     await t.commit();

@@ -43,6 +43,11 @@ const Event = sequelize.define("Event", {
     type: DataTypes.JSON,
     allowNull: true,
   },
+  status: {
+    type: DataTypes.ENUM("Coming Soon", "Open", "Closed", "Finished"),
+    defaultValue: "Coming Soon",
+    allowNull: false,
+  },
 });
 
 module.exports = Event;
