@@ -62,6 +62,21 @@ const EventDetailPage = () => {
 
   const participantRoles = parseJsonSafe(event.participantRoles);
 
+  // Helper untuk status badge
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "Open":
+        return "bg-green-600/80 text-green-200";
+      case "Coming Soon":
+        return "bg-blue-600/80 text-blue-200";
+      case "Closed":
+      case "Finished":
+        return "bg-slate-600/80 text-slate-300";
+      default:
+        return "bg-gray-600/80 text-gray-200";
+    }
+  };
+
   return (
     <>
       <div className="bg-slate-900 text-slate-300 min-h-screen pt-10 pb-20">
@@ -75,7 +90,7 @@ const EventDetailPage = () => {
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Kolom Detail & Konten */}
+            {/* Kolom utama */}
             <div className="lg:col-span-2">
               <div className="prose prose-invert prose-lg max-w-none mb-12" dangerouslySetInnerHTML={{ __html: event.description }} />
 
@@ -100,10 +115,14 @@ const EventDetailPage = () => {
               </article>
             </div>
 
-            {/* Kolom Info & Registrasi */}
+            {/* Sidebar Info & Registrasi */}
             <aside className="lg:col-span-1">
               <div className="sticky top-28 bg-slate-800/50 rounded-lg p-6 space-y-4">
-                <h3 className="text-xl font-bold text-white border-b border-slate-700 pb-2">Detail Event</h3>
+                <div className="flex justify-between items-center border-b border-slate-700 pb-2">
+                  <h3 className="text-xl font-bold text-white">Detail Event</h3>
+                  {event.status && <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(event.status)}`}>{event.status}</span>}
+                </div>
+
                 <div className="flex items-start gap-3">
                   <FiCalendar className="text-cyan-400 mt-1 flex-shrink-0" />
                   <div>
@@ -113,6 +132,7 @@ const EventDetailPage = () => {
                     </p>
                   </div>
                 </div>
+
                 <div className="flex items-start gap-3">
                   <FiMapPin className="text-cyan-400 mt-1 flex-shrink-0" />
                   <div>
@@ -120,6 +140,7 @@ const EventDetailPage = () => {
                     <p className="text-sm">{event.location}</p>
                   </div>
                 </div>
+
                 <div className="flex items-start gap-3">
                   <FiUsers className="text-cyan-400 mt-1 flex-shrink-0" />
                   <div>
@@ -129,6 +150,7 @@ const EventDetailPage = () => {
                     </p>
                   </div>
                 </div>
+
                 <div className="flex items-start gap-3">
                   <FiDollarSign className="text-cyan-400 mt-1 flex-shrink-0" />
                   <div>
@@ -138,9 +160,19 @@ const EventDetailPage = () => {
                 </div>
 
                 <div className="pt-4 border-t border-slate-700">
-                  <button onClick={() => setIsModalOpen(true)} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors">
-                    Daftar Sekarang
-                  </button>
+                  {event.status === "Open" ? (
+                    <>
+                      <button onClick={() => setIsModalOpen(true)} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors">
+                        Daftar Sekarang
+                      </button>
+                    </>
+                  ) : (
+                    <button disabled className="w-full bg-slate-600 text-slate-400 font-bold py-3 rounded-lg cursor-not-allowed">
+                      {event.status === "Coming Soon" && "Pendaftaran Segera Dibuka"}
+                      {event.status === "Closed" && "Pendaftaran Ditutup"}
+                      {event.status === "Finished" && "Event Telah Selesai"}
+                    </button>
+                  )}
                 </div>
               </div>
             </aside>
@@ -148,7 +180,7 @@ const EventDetailPage = () => {
         </div>
       </div>
 
-      {/* Render Popup */}
+      {/* Popup Pendaftaran */}
       <Popup isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Pendaftaran: ${event.title}`}>
         <RegistrationForm eventId={event.id} participantRoles={participantRoles} />
       </Popup>

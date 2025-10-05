@@ -5,7 +5,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FiPlus, FiTrash2, FiSave, FiType, FiUsers, FiMapPin, FiDollarSign, FiCalendar, FiImage, FiX, FiUploadCloud, FiTag, FiChevronDown } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiSave, FiType, FiUsers, FiMapPin, FiDollarSign, FiCalendar, FiImage, FiX, FiUploadCloud, FiTag, FiChevronDown, FiToggleLeft } from "react-icons/fi";
 
 // Komponen InputField
 const InputField = ({ label, name, value, onChange, icon, as = "input", options = [], ...props }) => (
@@ -55,7 +55,7 @@ const AddEventPage = () => {
   const isEditMode = Boolean(id);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [event, setEvent] = useState({ title: "", quota: 1, location: "", fee: 0, description: "", startDateTime: new Date(), endDateTime: new Date(), category: "" });
+  const [event, setEvent] = useState({ title: "", quota: 1, location: "", fee: 0, description: "", startDateTime: new Date(), endDateTime: new Date(), category: "", status: "Coming Soon" });
   const [imageBanner, setImageBanner] = useState(null);
   const [previewBanner, setPreviewBanner] = useState("");
   const [roles, setRoles] = useState(["Umum"]);
@@ -78,6 +78,7 @@ const AddEventPage = () => {
           startDateTime: fetched.startDateTime ? new Date(fetched.startDateTime) : new Date(),
           endDateTime: fetched.endDateTime ? new Date(fetched.endDateTime) : new Date(),
           category: fetched.category || "",
+          status: fetched.status || "Coming Soon",
         });
         if (fetched.imageBannerUrl) setPreviewBanner(`http://localhost:3000${fetched.imageBannerUrl}`);
         if (fetched.participantRoles) {
@@ -211,6 +212,20 @@ const AddEventPage = () => {
                 ]}
               />
               <InputField label="Location" name="location" value={event.location} onChange={handleEventChange} icon={<FiMapPin />} required placeholder="Lokasi event..." />
+              <div className="mb-6">
+                <label className="block mb-2 font-medium text-slate-300">Status</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                    <FiToggleLeft />
+                  </span>
+                  <select name="status" value={event.status} onChange={handleEventChange} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                    <option value="Coming Soon">Coming Soon</option>
+                    <option value="Open">Open for Registration</option>
+                    <option value="Closed">Closed</option>
+                    <option value="Finished">Finished</option>
+                  </select>
+                </div>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <InputField label="Quota" name="quota" type="number" min="1" value={event.quota} onChange={handleEventChange} icon={<FiUsers />} required />
                 <InputField label="Fee" name="fee" type="number" min="0" value={event.fee} onChange={handleEventChange} icon={<FiDollarSign />} required />
