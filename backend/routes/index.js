@@ -11,6 +11,7 @@ const landingPageRoutes = require("./landingPageRoutes");
 const articleRoutes = require("./articleRoutes");
 const eventRoutes = require("./eventRoutes");
 const workshopRoutes = require("./workshopRoutes");
+const authRoutes = require("./authRoutes.js");
 
 // Atur agar semua request ke /path sesuai diarahkan ke rute yang benar
 router.use("/products", productRoutes);
@@ -22,5 +23,6 @@ router.use("/ingredients", ingredientRoutes);
 router.use("/lab-tools", labToolRoutes);
 router.use("/events", eventRoutes);
 router.use("/workshops", workshopRoutes);
+router.use("/auth", authRoutes);
 
 module.exports = router;
