@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AdminLayout from "./layouts/AdminLayout";
 import PublicLayout from "./layouts/PublicLayout";
 
+// Halaman Auth
+import LoginPage from './pages/auth/LoginPage';
+
 // Halaman Publik
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
@@ -45,6 +48,8 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Rute Auth */}
+        <Route path="/login" element={<LoginPage />} />
         {/* Rute Publik */}
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<HomePage />} />
