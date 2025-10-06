@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+// frontend/src/pages/auth/LoginPage.jsx (FINAL)
+
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../hooks/useAuth";
 import { FiLogIn, FiMail, FiLock } from "react-icons/fi";
 
 const LoginPage = () => {
@@ -8,6 +11,13 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login, isLoggedIn } = useAuth();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/admin", { replace: true });
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,13 +30,11 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post("http://localhost:3000/api/auth/login", formData);
-
-      // Jika login berhasil, simpan token
       const { token } = response.data;
-      localStorage.setItem("authToken", token);
 
-      // Arahkan ke dashboard admin
-      navigate("/admin");
+      // Gunakan fungsi login dari context
+      login(token);
+      // Navigasi akan otomatis dilakukan oleh useEffect setelah login berhasil
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Login gagal. Silakan coba lagi.";
       setError(errorMessage);
