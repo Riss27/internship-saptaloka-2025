@@ -5,7 +5,8 @@ import AdminLayout from "./layouts/AdminLayout";
 import PublicLayout from "./layouts/PublicLayout";
 
 // Halaman Auth
-import LoginPage from './pages/auth/LoginPage';
+import LoginPage from "./pages/auth/LoginPage";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Halaman Publik
 import HomePage from "./pages/HomePage";
@@ -71,41 +72,43 @@ function App() {
         </Route>
 
         {/* Rute Admin */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Homepage />} />
-          <Route path="homepage" element={<Homepage />} />
-          <Route path="homepage/add" element={<AddLandingHeadingPage />} />
-          <Route path="homepage/edit/:id" element={<AddLandingHeadingPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Homepage />} />
+            <Route path="homepage" element={<Homepage />} />
+            <Route path="homepage/add" element={<AddLandingHeadingPage />} />
+            <Route path="homepage/edit/:id" element={<AddLandingHeadingPage />} />
 
-          <Route path="events" element={<EventPage />} />
-          <Route path="events/add" element={<AddEventPage />} />
-          <Route path="events/edit/:id" element={<AddEventPage />} />
-          <Route path="events/registrations/:eventId" element={<RegisteredPeoplePage />} />
+            <Route path="events" element={<EventPage />} />
+            <Route path="events/add" element={<AddEventPage />} />
+            <Route path="events/edit/:id" element={<AddEventPage />} />
+            <Route path="events/registrations/:eventId" element={<RegisteredPeoplePage />} />
 
-          <Route path="workshop" element={<WorkshopPage />} />
-          <Route path="workshop/add" element={<AddWorkshopPage />} />
-          <Route path="workshop/edit/:id" element={<AddWorkshopPage />} />
+            <Route path="workshop" element={<WorkshopPage />} />
+            <Route path="workshop/add" element={<AddWorkshopPage />} />
+            <Route path="workshop/edit/:id" element={<AddWorkshopPage />} />
 
-          <Route path="catalogue/products" element={<ProductPage />} />
-          <Route path="catalogue/products/add" element={<ProductFormPage />} />
-          <Route path="catalogue/products/edit/:id" element={<ProductFormPage />} />
+            <Route path="catalogue/products" element={<ProductPage />} />
+            <Route path="catalogue/products/add" element={<ProductFormPage />} />
+            <Route path="catalogue/products/edit/:id" element={<ProductFormPage />} />
 
-          <Route path="catalogue/ingredients" element={<IngredientPage />} />
-          <Route path="catalogue/ingredients/add" element={<AddIngredientPage />} />
-          <Route path="catalogue/ingredients/edit/:id" element={<AddIngredientPage />} />
+            <Route path="catalogue/ingredients" element={<IngredientPage />} />
+            <Route path="catalogue/ingredients/add" element={<AddIngredientPage />} />
+            <Route path="catalogue/ingredients/edit/:id" element={<AddIngredientPage />} />
 
-          <Route path="catalogue/lab-tools" element={<LabToolPage />} />
-          <Route path="catalogue/lab-tools/add" element={<AddLabToolPage />} />
-          <Route path="catalogue/lab-tools/edit/:id" element={<AddLabToolPage />} />
+            <Route path="catalogue/lab-tools" element={<LabToolPage />} />
+            <Route path="catalogue/lab-tools/add" element={<AddLabToolPage />} />
+            <Route path="catalogue/lab-tools/edit/:id" element={<AddLabToolPage />} />
 
-          <Route path="about" element={<AboutPageAdmin />} />
-          <Route path="articles" element={<ArticlePage />} />
-          <Route path="articles/add" element={<AddArticlePage />} />
-          <Route path="articles/edit/:id" element={<AddArticlePage />} />
+            <Route path="about" element={<AboutPageAdmin />} />
+            <Route path="articles" element={<ArticlePage />} />
+            <Route path="articles/add" element={<AddArticlePage />} />
+            <Route path="articles/edit/:id" element={<AddArticlePage />} />
 
-          <Route path="gallery" element={<AdminGalleryPage />} />
-          <Route path="gallery/add" element={<GalleryFormPage />} />
-          <Route path="gallery/edit/:id" element={<GalleryFormPage />} />
+            <Route path="gallery" element={<AdminGalleryPage />} />
+            <Route path="gallery/add" element={<GalleryFormPage />} />
+            <Route path="gallery/edit/:id" element={<GalleryFormPage />} />
+          </Route>
         </Route>
       </Routes>
     </Router>
