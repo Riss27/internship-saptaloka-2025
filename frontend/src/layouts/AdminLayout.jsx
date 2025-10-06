@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { FiChevronDown, FiChevronUp, FiHome, FiGrid, FiInfo, FiFileText, FiImage, FiLogOut, FiCalendar, FiBriefcase } from "react-icons/fi";
+import { useAuth } from "../hooks/useAuth";
 
 const AdminLayout = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   const menuItems = [
     { path: "/admin/homepage", name: "Homepage", icon: <FiHome /> },
@@ -31,7 +39,6 @@ const AdminLayout = () => {
     <div className="flex h-screen bg-[#1A3A3A]">
       {/* Sidebar */}
       <aside className="w-64 bg-[#0F2626] text-white flex flex-col">
-        {/* Logo / Title */}
         <div className="h-20 flex items-center justify-center bg-gray-900/50">
           <h1 className="text-2xl font-bold">Askreative</h1>
         </div>
@@ -70,7 +77,7 @@ const AdminLayout = () => {
 
         {/* Logout */}
         <div className="p-4 border-t border-gray-700">
-          <button className="flex items-center w-full px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-700">
+          <button onClick={handleLogout} className="flex items-center w-full px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-700">
             <FiLogOut className="mr-3" />
             Log Out
           </button>
