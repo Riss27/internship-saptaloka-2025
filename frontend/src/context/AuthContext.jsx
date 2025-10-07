@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContextDefinition";
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("authToken"));
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

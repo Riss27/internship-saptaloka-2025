@@ -9,7 +9,7 @@ const WorkshopPage = () => {
 
   const fetchWorkshops = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/workshops");
+      const response = await axios.get("http://localhost:3000/api/workshops?source=admin");
       setWorkshops(response.data.data);
     } catch (error) {
       console.error("Gagal mengambil data workshop:", error);

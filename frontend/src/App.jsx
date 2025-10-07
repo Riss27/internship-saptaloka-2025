@@ -31,7 +31,7 @@ import AddLandingHeadingPage from "./admin/pages/homepage/AddLandingHeadingPage"
 import ArticlePage from "./admin/pages/articles/ArticlePage";
 import AddArticlePage from "./admin/pages/articles/AddArticlePage";
 import ProductPage from "./admin/pages/products/ProductPage";
-import ProductFormPage from "./admin/pages/products/AddProductPage";
+import AddProductPage from "./admin/pages/products/AddProductPage";
 import IngredientPage from "./admin/pages/ingredients/IngredientPage";
 import AddIngredientPage from "./admin/pages/ingredients/AddIngredientPage";
 import LabToolPage from "./admin/pages/lab_tools/LabToolPage";
@@ -89,8 +89,8 @@ function App() {
             <Route path="workshop/edit/:id" element={<AddWorkshopPage />} />
 
             <Route path="catalogue/products" element={<ProductPage />} />
-            <Route path="catalogue/products/add" element={<ProductFormPage />} />
-            <Route path="catalogue/products/edit/:id" element={<ProductFormPage />} />
+            <Route path="catalogue/products/add" element={<AddProductPage />} />
+            <Route path="catalogue/products/edit/:id" element={<AddProductPage />} />
 
             <Route path="catalogue/ingredients" element={<IngredientPage />} />
             <Route path="catalogue/ingredients/add" element={<AddIngredientPage />} />
