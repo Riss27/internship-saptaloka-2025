@@ -11,7 +11,7 @@ const landingPageRoutes = require("./landingPageRoutes");
 const articleRoutes = require("./articleRoutes");
 const eventRoutes = require("./eventRoutes");
 const workshopRoutes = require("./workshopRoutes");
-const authRoutes = require("./authRoutes.js");
+const authRoutes = require("./authRoutes");
 
 // Atur agar semua request ke /path sesuai diarahkan ke rute yang benar
 router.use("/products", productRoutes);

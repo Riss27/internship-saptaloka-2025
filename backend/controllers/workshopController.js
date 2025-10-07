@@ -21,20 +21,24 @@ const deleteFile = (filePath) => {
 // Ambil semua workshop + daftar event terkait (sudah ada filter kategori)
 exports.getAllWorkshops = async (req, res) => {
   try {
-    const { category } = req.query;
+    const { category, source } = req.query;
+
     const filterOptions = {
       include: {
         model: Event,
         as: "Events",
-        attributes: ["id", "title", "startDateTime"],
+        attributes: ["id", "title", "startDateTime", "imageBannerUrl"],
         through: { attributes: [] },
       },
       order: [["createdAt", "DESC"]],
-      limit: 1,
     };
 
     if (category) {
       filterOptions.where = { category: category };
+    }
+
+    if (source !== "admin") {
+      filterOptions.limit = 1;
     }
 
     const workshops = await Workshop.findAll(filterOptions);
