@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 
 const GenericCatalogueList = ({ items, itemType, deleteItem }) => {
-  // Tentukan path edit berdasarkan tipe item
   const editPath = `/admin/catalogue/${itemType}s/edit/`;
 
   return (
@@ -29,23 +28,41 @@ const GenericCatalogueList = ({ items, itemType, deleteItem }) => {
               </tr>
             ) : (
               items.map((item, index) => (
-                <tr key={item.id} className="border-b border-slate-700 hover:bg-white/5">
+                <tr
+                  key={item.id}
+                  className="border-b border-slate-700 hover:bg-white/5 transition-colors duration-200"
+                >
                   <td className="p-3">{index + 1}</td>
                   <td className="p-3">
-                    <img src={`http://localhost:3000${item.imageUrl}`} alt={item.name} className="w-16 h-16 object-cover rounded" />
+                    <img
+                      src={`http://localhost:3000${item.imageUrl}`}
+                      alt={item.name}
+                      className="w-16 h-16 object-cover rounded-md border border-slate-700"
+                    />
                   </td>
                   <td className="p-3 font-medium">{item.name}</td>
                   <td className="p-3">{item.category || "-"}</td>
-                  <td className="p-3">Rp {new Intl.NumberFormat("id-ID").format(item.price)}</td>
                   <td className="p-3">
-                    <div className="flex justify-center items-center gap-2">
-                      <Link to={`${editPath}${item.id}`}>
-                        <button className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md">
-                          <FiEdit size={16} />
-                        </button>
+                    Rp {new Intl.NumberFormat("id-ID").format(item.price)}
+                  </td>
+                  <td className="p-3">
+                    <div className="flex justify-center items-center gap-3">
+                      {/* Tombol Edit */}
+                      <Link
+                        to={`${editPath}${item.id}`}
+                        className="p-2.5 rounded-full bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 hover:text-yellow-300 transition-all duration-200 hover:scale-110"
+                        title="Edit Item"
+                      >
+                        <FiEdit size={18} />
                       </Link>
-                      <button onClick={() => deleteItem(item.id)} className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-md">
-                        <FiTrash2 size={16} />
+
+                      {/* Tombol Delete */}
+                      <button
+                        onClick={() => deleteItem(item.id)}
+                        className="p-2.5 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:text-red-400 transition-all duration-200 hover:scale-110"
+                        title="Delete Item"
+                      >
+                        <FiTrash2 size={18} />
                       </button>
                     </div>
                   </td>
