@@ -104,7 +104,7 @@ const AddEventPage = () => {
           };
 
           const fetchedContents = fetched.EventContents.map((c) => {
-            const imageUrls = parseJsonSafe(c.imageUrls); // Gunakan parser
+            const imageUrls = parseJsonSafe(c.imageUrls);
             return {
               header: c.header || "",
               content: c.content || "",
@@ -239,27 +239,56 @@ const AddEventPage = () => {
                 <InputField label="Fee" name="fee" type="number" min="0" value={event.fee} onChange={handleEventChange} icon={<FiDollarSign />} required />
               </div>
             </div>
+
+            {/* IMPROVED BANNER UPLOAD */}
             <div>
-              <label className="block mb-2 font-medium text-slate-300">Image Banner</label>
-              <div className="mt-2 flex justify-center items-center w-full h-48 border-2 border-dashed border-slate-600 rounded-lg bg-slate-900/50 hover:border-cyan-500 transition-colors">
-                {previewBanner ? (
-                  <img src={previewBanner} alt="Banner Preview" className="h-full w-full object-contain p-1 rounded-lg" />
-                ) : (
-                  <div className="text-center text-slate-400">
-                    <FiImage className="mx-auto h-12 w-12" />
-                    <span className="mt-2 block">Banner Preview</span>
-                  </div>
-                )}
+              <label className="block mb-2 font-medium text-slate-300 flex items-center gap-2">
+                <FiImage className="text-cyan-400" />
+                Event Banner
+              </label>
+              <div className="relative group">
+                <input type="file" id="banner-upload" name="imageBanner" onChange={handleBannerChange} className="hidden" accept="image/*" required={!isEditMode} />
+                <label
+                  htmlFor="banner-upload"
+                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900/50 cursor-pointer hover:border-cyan-500 hover:bg-slate-800/70 transition-all duration-300 overflow-hidden"
+                >
+                  {previewBanner ? (
+                    <div className="relative w-full h-full">
+                      <img src={previewBanner} alt="Banner Preview" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
+                        <FiUploadCloud className="h-12 w-12 text-white mb-2" />
+                        <span className="text-white font-semibold">Click to change banner</span>
+                        <span className="text-slate-300 text-sm mt-1">PNG, JPG up to 10MB</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center p-6">
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
+                        <FiUploadCloud className="h-10 w-10 text-cyan-400" />
+                      </div>
+                      <span className="block text-slate-200 font-semibold mb-1">Click to upload banner</span>
+                      <span className="text-slate-400 text-sm">or drag and drop</span>
+                      <p className="text-slate-500 text-xs mt-2">PNG, JPG up to 10MB</p>
+                    </div>
+                  )}
+                </label>
               </div>
-              <input
-                type="file"
-                name="imageBanner"
-                onChange={handleBannerChange}
-                className="w-full mt-4 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-cyan-600 file:text-white hover:file:bg-cyan-700"
-                required={!isEditMode}
-              />
+              {previewBanner && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreviewBanner("");
+                    setImageBanner(null);
+                  }}
+                  className="mt-3 w-full py-2 px-4 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <FiTrash2 size={16} />
+                  Remove Banner
+                </button>
+              )}
             </div>
           </div>
+
           <div className="mt-6">
             <label className="block mb-2 font-medium text-slate-300">Description</label>
             <TiptapEditor content={event.description} onUpdate={handleDescriptionChange} />
@@ -291,6 +320,7 @@ const AddEventPage = () => {
             </div>
           </div>
         </div>
+
         <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Participant Roles</h2>
           <div className="flex items-center gap-4 mb-4">
@@ -316,6 +346,7 @@ const AddEventPage = () => {
             ))}
           </div>
         </div>
+
         <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Content Sections</h2>
           <div className="space-y-6">
@@ -332,22 +363,35 @@ const AddEventPage = () => {
                   <label className="block mb-2 font-medium text-slate-300">Content</label>
                   <TiptapEditor content={content.content} onUpdate={(value) => handleContentTextChange(index, "content", value)} />
                 </div>
+
+                {/* IMPROVED CONTENT IMAGES */}
                 <div className="mt-6">
-                  <label className="block mb-2 font-medium text-slate-300">Images</label>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 min-h-[7rem] bg-slate-800/70 p-4 rounded-md">
-                    {content.previews.map((p, i) => (
-                      <div key={i} className="relative group aspect-square">
-                        <img src={p} className="h-full w-full object-cover rounded-md border-2 border-slate-600" />
-                        <button type="button" onClick={() => removeContentImage(index, i)} className="absolute -top-2 -right-2 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100">
-                          <FiX size={14} />
-                        </button>
-                      </div>
-                    ))}
-                    <label className="flex flex-col justify-center items-center w-full h-full border-2 border-dashed border-slate-600 rounded-md cursor-pointer hover:border-cyan-500 hover:bg-slate-700/50 transition-colors">
-                      <FiUploadCloud className="h-8 w-8 text-slate-400" />
-                      <span className="text-xs text-slate-400 mt-1">Add more</span>
-                      <input type="file" multiple onChange={(e) => handleContentImageChange(index, e)} className="opacity-0 w-0 h-0" />
-                    </label>
+                  <label className="block mb-3 font-medium text-slate-300 flex items-center gap-2">
+                    <FiImage className="text-cyan-400" />
+                    Section Images
+                  </label>
+                  <div className="bg-slate-800/70 p-4 rounded-lg border border-slate-700">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                      {content.previews.map((p, i) => (
+                        <div key={i} className="relative group aspect-square rounded-lg overflow-hidden border-2 border-slate-600 hover:border-cyan-500 transition-all">
+                          <img src={p} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button type="button" onClick={() => removeContentImage(index, i)} className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors">
+                              <FiTrash2 size={18} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Upload Button */}
+                      <label className="aspect-square flex flex-col justify-center items-center border-2 border-dashed border-slate-600 rounded-lg cursor-pointer hover:border-cyan-500 hover:bg-slate-700/50 transition-all group">
+                        <FiUploadCloud className="h-8 w-8 text-slate-400 group-hover:text-cyan-400 transition-colors mb-2" />
+                        <span className="text-xs text-slate-400 group-hover:text-cyan-400 transition-colors text-center px-2">Add Images</span>
+                        <input type="file" multiple accept="image/*" onChange={(e) => handleContentImageChange(index, e)} className="hidden" />
+                      </label>
+                    </div>
+
+                    {content.previews.length === 0 && <p className="text-center text-slate-500 text-sm mt-2">No images uploaded yet</p>}
                   </div>
                 </div>
               </div>
@@ -361,6 +405,7 @@ const AddEventPage = () => {
             <FiPlus className="mr-2" /> Add Content Section
           </button>
         </div>
+
         <div className="mt-8">
           <button
             type="submit"
