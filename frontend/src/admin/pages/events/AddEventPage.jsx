@@ -90,13 +90,21 @@ const AddEventPage = () => {
           }
         }
         if (Array.isArray(fetched.EventContents)) {
-          const fetchedContents = fetched.EventContents.map((c) => {
-            let imageUrls = [];
-            try {
-              if (c.imageUrls) imageUrls = Array.isArray(c.imageUrls) ? c.imageUrls : JSON.parse(c.imageUrls);
-            } catch {
-              imageUrls = [];
+          const parseJsonSafe = (data) => {
+            if (!data) return [];
+            let parsed = data;
+            while (typeof parsed === "string") {
+              try {
+                parsed = JSON.parse(parsed);
+              } catch {
+                return [];
+              }
             }
+            return Array.isArray(parsed) ? parsed : [];
+          };
+
+          const fetchedContents = fetched.EventContents.map((c) => {
+            const imageUrls = parseJsonSafe(c.imageUrls); // Gunakan parser
             return {
               header: c.header || "",
               content: c.content || "",
