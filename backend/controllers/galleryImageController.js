@@ -1,6 +1,19 @@
 const GalleryImage = require("../models/GalleryImage");
 const fs = require("fs");
 const path = require("path");
+const upload = require("../middlewares/upload");
+
+// Helper untuk menghapus file
+const deleteFile = (filePath) => {
+  if (filePath) {
+    const fullPath = path.join(__dirname, "..", "public", filePath);
+    if (fs.existsSync(fullPath)) {
+      fs.unlink(fullPath, (err) => {
+        if (err) console.error(`Gagal menghapus file: ${fullPath}`, err);
+      });
+    }
+  }
+};
 
 // MENDAPATKAN SEMUA GAMBAR
 exports.getAllImages = async (req, res) => {
@@ -34,7 +47,7 @@ exports.createImage = async (req, res) => {
     }
     const newImage = await GalleryImage.create({
       title,
-      imageUrl: req.file.filename, // Simpan nama file dari Multer
+      imageUrl: req.file.filename,
     });
     res.status(201).json({ status: "success", data: newImage });
   } catch (error) {
@@ -42,7 +55,7 @@ exports.createImage = async (req, res) => {
   }
 };
 
-// MEMPERBARUI GAMBAR (JUDUL)
+// MEMPERBARUI GAMBAR (JUDUL + GAMBAR)
 exports.updateImage = async (req, res) => {
   try {
     const image = await GalleryImage.findByPk(req.params.id);
@@ -50,11 +63,22 @@ exports.updateImage = async (req, res) => {
       return res.status(404).json({ status: "fail", message: "Gambar tidak ditemukan." });
     }
 
-    // Update hanya title-nya
-    await image.update({ title: req.body.title });
+    const oldImagePath = image.imageUrl;
+    const updateData = {
+      title: req.body.title,
+    };
 
+    if (req.file) {
+      deleteFile(oldImagePath);
+      updateData.imageUrl = `/uploads/${req.file.filename}`;
+    }
+
+    await image.update(updateData);
     res.status(200).json({ status: "success", data: image });
   } catch (error) {
+    if (req.file) {
+      deleteFile(`/uploads/${req.file.filename}`);
+    }
     res.status(400).json({ status: "fail", message: error.message });
   }
 };
@@ -74,7 +98,7 @@ exports.deleteImage = async (req, res) => {
     }
 
     await image.destroy();
-    res.status(204).json(); // No Content
+    res.status(204).json();
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
   }
