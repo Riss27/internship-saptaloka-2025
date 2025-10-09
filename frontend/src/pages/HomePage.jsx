@@ -52,7 +52,7 @@ const HomePage = () => {
 
       <div className="container mx-auto px-4 py-16 md:py-24 space-y-24">
         {/* Layanan Kami */}
-        <section>
+        <section className="animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-2">Layanan Kami</h2>
           <p className="text-center text-gray-600 mb-12">Dari workshop hingga pembuatan parfum personal, kami siap melayani.</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -66,7 +66,7 @@ const HomePage = () => {
         </section>
 
         {/* Kegiatan Terbaru */}
-        <section>
+        <section className="animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">Kegiatan Terbaru</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {latestEvents.map((event) => (
@@ -90,7 +90,7 @@ const HomePage = () => {
         </section>
 
         {/* Produk Unggulan */}
-        <section>
+        <section className="animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">Produk Unggulan</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {featuredProducts.map((product) => (
@@ -100,7 +100,7 @@ const HomePage = () => {
         </section>
 
         {/* Artikel Terbaru */}
-        <section>
+        <section className="animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">Artikel Terbaru</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {latestArticles.map((article) => (
@@ -110,7 +110,7 @@ const HomePage = () => {
         </section>
 
         {/* Galeri Kegiatan */}
-        <section>
+        <section className="animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">Galeri Kegiatan</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {galleryImages.slice(0, 6).map((image) => {

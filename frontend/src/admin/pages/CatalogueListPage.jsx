@@ -67,7 +67,7 @@ const CatalogueListPage = ({ pageTitle, itemType, apiEndpoint, categoryOptions }
               </div>
             </div>
           )}
-          <Link to={`/admin/catalogue/${itemType}s/add`} className="bg-cyan-600 hover:bg-cyan-700 px-5 py-2 rounded-md font-semibold text-white no-underline flex items-center">
+          <Link to={`/admin/catalogue/${apiEndpoint}/add`} className="bg-cyan-600 hover:bg-cyan-700 px-5 py-2 rounded-md font-semibold text-white no-underline flex items-center">
             <FiPlus className="mr-2" /> Add New
           </Link>
         </div>
