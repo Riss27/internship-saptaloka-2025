@@ -1,0 +1,10 @@
+{
+  "navbar": {
+    "home": "Home",
+    "activities": "Activities",
+    "services": "Services",
+    "articles": "Articles",
+    "gallery": "Gallery",
+    "about": "About"
+  }
+}
