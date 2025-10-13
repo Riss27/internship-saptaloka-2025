@@ -6,8 +6,10 @@ import ProductCard from "../components/features/products/ProductCard";
 import ArticleCard from "../components/features/articles/ArticleCard";
 import { FiFeather, FiBox, FiDroplet, FiBookOpen, FiLayers } from "react-icons/fi";
 import ServiceCard from "../components/features/homepage/ServiceCard";
+import { useLanguage } from "../context/useLanguage";
 
 const HomePage = () => {
+  const { t } = useLanguage(); // Ambil function translate
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [latestEvents, setLatestEvents] = useState([]);
   const [latestArticles, setLatestArticles] = useState([]);
@@ -53,21 +55,21 @@ const HomePage = () => {
       <div className="container mx-auto px-4 py-16 md:py-24 space-y-24">
         {/* Layanan Kami */}
         <section className="animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-2">Layanan Kami</h2>
-          <p className="text-center text-gray-600 mb-12">Dari workshop hingga pembuatan parfum personal, kami siap melayani.</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-2">{t("homepage.our_services")}</h2>
+          <p className="text-center text-gray-600 mb-12">{t("homepage.our_services_desc")}</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <ServiceCard icon={<FiFeather size={28} className="text-emerald-700" />} title="Workshop Aromaterapi" description="Pelajari seni meracik parfum dengan panduan ahli." linkTo="/workshop/aromaterapi" />
-            <ServiceCard icon={<FiBookOpen size={28} className="text-emerald-700" />} title="Workshop Parfum" description="Belajar meracik parfum personal dengan mudah." linkTo="/workshop/parfum" />
-            <ServiceCard icon={<FiLayers size={28} className="text-emerald-700" />} title="Buat Parfum Sendiri" description="Kreasikan aroma unikmu dengan panduan kami." linkTo="/" />
-            <ServiceCard icon={<FiBox size={28} className="text-emerald-700" />} title="Produk Parfum & Aromaterapi" description="Temukan koleksi parfum unik kami." linkTo="/products" />
-            <ServiceCard icon={<FiDroplet size={28} className="text-emerald-700" />} title="Alat Laboratorium Skala Mikro" description="Peralatan lab skala mikro standar industri." linkTo="/lab-tools" />
-            <ServiceCard icon={<FiDroplet size={28} className="text-emerald-700" />} title="Bahan Parfum & Aromaterapi" description="Jelajahi bahan baku pilihan kami." linkTo="/ingredients" />
+            <ServiceCard icon={<FiFeather size={28} className="text-emerald-700" />} title={t("services.aromatherapy_workshop")} description={t("homepage.service_aromatherapy_desc")} linkTo="/workshop/aromaterapi" />
+            <ServiceCard icon={<FiBookOpen size={28} className="text-emerald-700" />} title={t("services.perfume_workshop")} description={t("homepage.service_perfume_desc")} linkTo="/workshop/parfum" />
+            <ServiceCard icon={<FiLayers size={28} className="text-emerald-700" />} title={t("services.custom")} description={t("homepage.service_custom_desc")} linkTo="/" />
+            <ServiceCard icon={<FiBox size={28} className="text-emerald-700" />} title={t("services.products")} description={t("homepage.service_products_desc")} linkTo="/products" />
+            <ServiceCard icon={<FiDroplet size={28} className="text-emerald-700" />} title={t("services.lab_tools")} description={t("homepage.service_lab_desc")} linkTo="/lab-tools" />
+            <ServiceCard icon={<FiDroplet size={28} className="text-emerald-700" />} title={t("services.ingredients")} description={t("homepage.service_ingredients_desc")} linkTo="/ingredients" />
           </div>
         </section>
 
         {/* Kegiatan Terbaru */}
         <section className="animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">Kegiatan Terbaru</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">{t("homepage.latest_events")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {latestEvents.map((event) => (
               <div key={event.id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow group border border-gray-200">
@@ -91,7 +93,7 @@ const HomePage = () => {
 
         {/* Produk Unggulan */}
         <section className="animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">Produk Unggulan</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">{t("homepage.featured_products")}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -101,7 +103,7 @@ const HomePage = () => {
 
         {/* Artikel Terbaru */}
         <section className="animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">Artikel Terbaru</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">{t("homepage.latest_articles")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {latestArticles.map((article) => (
               <ArticleCard key={article.id} article={article} />
@@ -111,18 +113,13 @@ const HomePage = () => {
 
         {/* Galeri Kegiatan */}
         <section className="animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">Galeri Kegiatan</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12">{t("homepage.event_gallery")}</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {galleryImages.slice(0, 6).map((image) => {
-              // Untuk debugging, kita bisa lihat URL gambarnya di console
-              console.log("URL Gambar Galeri:", `http://localhost:3000${image.imageUrl}`);
-
-              return (
-                <div key={image.id} className="aspect-square overflow-hidden rounded-lg border border-gray-200 bg-emerald-50 hover:bg-emerald-50/80 transition-colors">
-                  <img src={`http://localhost:3000${image.imageUrl}`} alt={image.title || "Foto kegiatan"} className="w-full h-full object-cover hover:scale-110 transition-transform duration-300" loading="lazy" />
-                </div>
-              );
-            })}
+            {galleryImages.slice(0, 6).map((image) => (
+              <div key={image.id} className="aspect-square overflow-hidden rounded-lg border border-gray-200 bg-emerald-50 hover:bg-emerald-50/80 transition-colors">
+                <img src={`http://localhost:3000${image.imageUrl}`} alt={image.title || "Foto kegiatan"} className="w-full h-full object-cover hover:scale-110 transition-transform duration-300" loading="lazy" />
+              </div>
+            ))}
           </div>
         </section>
       </div>

@@ -1,7 +1,10 @@
 import React from "react";
 import { FiX } from "react-icons/fi";
+import { useLanguage } from "../../context/useLanguage";
 
 const Popup = ({ isOpen, onClose, title, children }) => {
+  const { language } = useLanguage();
+
   if (!isOpen) {
     return null;
   }
@@ -19,7 +22,11 @@ const Popup = ({ isOpen, onClose, title, children }) => {
         {/* Header Popup */}
         <div className="flex justify-between items-center border-b border-slate-700 pb-3 mb-4">
           <h3 className="text-xl font-bold text-white">{title}</h3>
-          <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:bg-slate-700">
+          <button 
+            onClick={onClose} 
+            className="p-1 rounded-full text-slate-400 hover:bg-slate-700"
+            aria-label={language === 'id' ? 'Tutup' : 'Close'}
+          >
             <FiX size={20} />
           </button>
         </div>

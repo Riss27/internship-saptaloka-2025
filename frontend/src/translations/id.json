@@ -1,0 +1,19 @@
+{
+  "nav": {
+    "home": "Beranda",
+    "events": "Kegiatan",
+    "services": "Layanan",
+    "articles": "Artikel",
+    "gallery": "Galeri",
+    "about": "Tentang",
+    "pos": "POS"
+  },
+  "services": {
+    "aromatherapy_workshop": "Workshop Aromaterapi",
+    "perfume_workshop": "Workshop Parfum",
+    "custom": "Buat Parfum & Aromaterapi",
+    "lab_tools": "Alat Laboratorium",
+    "ingredients": "Bahan Parfum & Aromaterapi",
+    "products": "Produk Parfum & Aromaterapi"
+  }
+}

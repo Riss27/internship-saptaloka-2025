@@ -1,31 +1,33 @@
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-
-const menuItems = [
-  { name: "Beranda", to: "/" },
-  { name: "Kegiatan", to: "/events" },
-  {
-    name: "Layanan",
-    dropdown: [
-      { name: "Workshop Aromaterapi", to: "/workshop/aromaterapi" },
-      { name: "Workshop Parfum", to: "/workshop/parfum" },
-      { name: "Buat Parfum & Aromaterapi", to: "/services/custom" },
-      { name: "Alat Laboratorium", to: "/lab-tools" },
-      { name: "Bahan Parfum & Aromaterapi", to: "/ingredients" },
-      { name: "Produk Parfum & Aromaterapi", to: "/products" },
-    ],
-  },
-  { name: "Artikel", to: "/articles" },
-  { name: "Galeri", to: "/gallery" },
-  { name: "Tentang", to: "/about" },
-  { name: "POS", to: "/pos" },
-];
+import { useLanguage } from "../../../context/useLanguage";
 
 const Navbar = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const [language, setLanguage] = useState("id");
+  const { language, changeLanguage, t } = useLanguage();
   const dropdownRef = useRef(null);
+
+  // Menu items sekarang pake function t() untuk translate
+  const menuItems = [
+    { name: t("nav.home"), to: "/" },
+    { name: t("nav.events"), to: "/events" },
+    {
+      name: t("nav.services"),
+      dropdown: [
+        { name: t("services.aromatherapy_workshop"), to: "/workshop/aromaterapi" },
+        { name: t("services.perfume_workshop"), to: "/workshop/parfum" },
+        { name: t("services.custom"), to: "/services/custom" },
+        { name: t("services.lab_tools"), to: "/lab-tools" },
+        { name: t("services.ingredients"), to: "/ingredients" },
+        { name: t("services.products"), to: "/products" },
+      ],
+    },
+    { name: t("nav.articles"), to: "/articles" },
+    { name: t("nav.gallery"), to: "/gallery" },
+    { name: t("nav.about"), to: "/about" },
+    { name: t("nav.pos"), to: "/pos" },
+  ];
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -102,7 +104,7 @@ const Navbar = () => {
           {["id", "en"].map((lang) => (
             <button
               key={lang}
-              onClick={() => setLanguage(lang)}
+              onClick={() => changeLanguage(lang)}
               className={`w-8 h-6 rounded-full overflow-hidden border-2 transition shadow-sm hover:ring-2 hover:ring-emerald-700 ${language === lang ? "border-emerald-700" : "border-transparent opacity-60 hover:opacity-100"}`}
             >
               <img src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`} alt={lang.toUpperCase()} className="w-full h-full object-cover" />
@@ -126,9 +128,9 @@ const Navbar = () => {
 
             {/* Mobile Language */}
             <div className="flex items-center gap-3 pt-3 border-t border-gray-200">
-              <span className="text-gray-600 text-sm">Bahasa:</span>
+              <span className="text-gray-600 text-sm">{language === "id" ? "Bahasa:" : "Language:"}</span>
               {["id", "en"].map((lang) => (
-                <button key={lang} onClick={() => setLanguage(lang)} className={`w-8 h-6 rounded-full overflow-hidden border-2 transition ${language === lang ? "border-emerald-700" : "border-transparent opacity-60 hover:opacity-100"}`}>
+                <button key={lang} onClick={() => changeLanguage(lang)} className={`w-8 h-6 rounded-full overflow-hidden border-2 transition ${language === lang ? "border-emerald-700" : "border-transparent opacity-60 hover:opacity-100"}`}>
                   <img src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`} alt={lang.toUpperCase()} className="w-full h-full object-cover" />
                 </button>
               ))}

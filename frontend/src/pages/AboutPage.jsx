@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FiMapPin, FiPhone, FiMail, FiInstagram } from "react-icons/fi";
+import { useLanguage } from "../context/useLanguage";
 
 const AboutPage = () => {
+  const { t } = useLanguage(); // Ambil function translate
   const [aboutInfo, setAboutInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -40,7 +42,7 @@ const AboutPage = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-emerald-700 font-medium">Loading...</p>
+          <p className="text-emerald-700 font-medium">{t("about.loading")}</p>
         </div>
       </div>
     );
@@ -50,7 +52,7 @@ const AboutPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
         <div className="text-center">
-          <p className="text-gray-600">Informasi tidak tersedia.</p>
+          <p className="text-gray-600">{t("about.no_info")}</p>
         </div>
       </div>
     );
@@ -64,14 +66,14 @@ const AboutPage = () => {
         {/* Header Section */}
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-emerald-800 mb-4 relative inline-block">
-            About Us
+            {t("about.title")}
             <span className="absolute -bottom-2 left-0 w-24 h-1 bg-gradient-to-r from-emerald-600 to-transparent rounded-full" />
           </h1>
           <p className="mt-8 text-gray-700 leading-relaxed text-lg">{aboutInfo.about}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/*Map + Kontak */}
+          {/* Map + Kontak */}
           <div className="space-y-8">
             {/* Map Container */}
             <div className="w-full h-80 md:h-96 rounded-2xl overflow-hidden shadow-xl shadow-emerald-500/10 border-2 border-emerald-200">
@@ -92,7 +94,7 @@ const AboutPage = () => {
             {/* Contact Info Cards */}
             <div className="bg-white rounded-2xl p-6 shadow-lg shadow-emerald-500/5 border border-emerald-100">
               <h3 className="font-bold text-emerald-800 text-xl mb-6 relative inline-block">
-                Hubungi Kami
+                {t("about.contact_us")}
                 <span className="absolute -bottom-2 left-0 w-16 h-0.5 bg-gradient-to-r from-emerald-600 to-transparent" />
               </h3>
 
@@ -102,7 +104,7 @@ const AboutPage = () => {
                     <FiMapPin className="w-5 h-5 text-emerald-700" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-gray-500 mb-1 font-medium">Alamat</p>
+                    <p className="text-xs text-gray-500 mb-1 font-medium">{t("about.address")}</p>
                     <p className="text-gray-700">{aboutInfo.address}</p>
                   </div>
                 </div>
@@ -112,7 +114,7 @@ const AboutPage = () => {
                     <FiPhone className="w-5 h-5 text-emerald-700" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-gray-500 mb-1 font-medium">Telepon</p>
+                    <p className="text-xs text-gray-500 mb-1 font-medium">{t("about.phone")}</p>
                     <a href={`tel:${aboutInfo.phone}`} className="text-gray-700 hover:text-emerald-700 transition-colors font-medium">
                       {aboutInfo.phone}
                     </a>
@@ -124,7 +126,7 @@ const AboutPage = () => {
                     <FiMail className="w-5 h-5 text-emerald-700" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-gray-500 mb-1 font-medium">Email</p>
+                    <p className="text-xs text-gray-500 mb-1 font-medium">{t("about.email")}</p>
                     <a href={`mailto:${aboutInfo.email}`} className="text-gray-700 hover:text-emerald-700 transition-colors font-medium break-all">
                       {aboutInfo.email}
                     </a>
@@ -137,9 +139,9 @@ const AboutPage = () => {
                       <FiInstagram className="w-5 h-5 text-purple-600 group-hover:text-white transition-colors" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-gray-500 mb-1 font-medium">Instagram</p>
+                      <p className="text-xs text-gray-500 mb-1 font-medium">{t("about.instagram")}</p>
                       <a href={aboutInfo.instagram} target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
-                        Kunjungi Instagram kami
+                        {t("about.visit_instagram")}
                       </a>
                     </div>
                   </div>
@@ -148,59 +150,59 @@ const AboutPage = () => {
             </div>
           </div>
 
-          {/*Form Kontak */}
+          {/* Form Kontak */}
           <div className="bg-white rounded-2xl p-8 shadow-lg shadow-emerald-500/5 border border-emerald-100">
             <h3 className="font-bold text-emerald-800 text-xl mb-6 relative inline-block">
-              Kirim Pesan
+              {t("about.send_message")}
               <span className="absolute -bottom-2 left-0 w-16 h-0.5 bg-gradient-to-r from-emerald-600 to-transparent" />
             </h3>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("about.form_name")}</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Masukkan nama Anda"
+                  placeholder={t("about.form_name_placeholder")}
                   className="w-full border-2 border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("about.form_email")}</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="email@example.com"
+                  placeholder={t("about.form_email_placeholder")}
                   className="w-full border-2 border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("about.form_phone")}</label>
                 <input
                   type="text"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="+62 xxx xxxx xxxx"
+                  placeholder={t("about.form_phone_placeholder")}
                   className="w-full border-2 border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Pesan</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("about.form_message")}</label>
                 <textarea
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder="Tulis pesan Anda di sini..."
+                  placeholder={t("about.form_message_placeholder")}
                   rows={6}
                   className="w-full border-2 border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all resize-none"
                   required
@@ -211,7 +213,7 @@ const AboutPage = () => {
                 type="submit"
                 className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white py-3.5 rounded-xl font-semibold transition-all transform hover:scale-[1.02] hover:shadow-lg hover:shadow-emerald-500/25"
               >
-                Kirim Pesan
+                {t("about.form_submit")}
               </button>
             </form>
           </div>

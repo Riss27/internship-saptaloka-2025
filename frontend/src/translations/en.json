@@ -1,0 +1,19 @@
+{
+  "nav": {
+    "home": "Home",
+    "events": "Events",
+    "services": "Services",
+    "articles": "Articles",
+    "gallery": "Gallery",
+    "about": "About",
+    "pos": "POS"
+  },
+  "services": {
+    "aromatherapy_workshop": "Aromatherapy Workshop",
+    "perfume_workshop": "Perfume Workshop",
+    "custom": "Custom Perfume & Aromatherapy",
+    "lab_tools": "Laboratory Equipment",
+    "ingredients": "Perfume & Aromatherapy Ingredients",
+    "products": "Perfume & Aromatherapy Products"
+  }
+}

@@ -4,8 +4,10 @@ import axios from "axios";
 import { FiCalendar, FiMapPin, FiUsers, FiDollarSign } from "react-icons/fi";
 import RegistrationForm from "../components/features/events/registration/RegistrationForm";
 import Popup from "../components/ui/Popup";
+import { useLanguage } from "../context/useLanguage";
 
 const EventDetailPage = () => {
+  const { t, language } = useLanguage();
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +29,7 @@ const EventDetailPage = () => {
   }, [id]);
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString("id-ID", {
+    return new Date(dateString).toLocaleString(language === "id" ? "id-ID" : "en-US", {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -57,24 +59,31 @@ const EventDetailPage = () => {
   }
 
   if (!event) {
-    return <div className="text-center py-20 text-white">Event tidak ditemukan.</div>;
+    return <div className="text-center py-20 text-white">{language === "id" ? "Event tidak ditemukan." : "Event not found."}</div>;
   }
 
   const participantRoles = parseJsonSafe(event.participantRoles);
 
-  // Helper untuk status badge
+  // Helper untuk status badge dengan translate
   const getStatusBadge = (status) => {
-    switch (status) {
-      case "Open":
-        return "bg-green-600/80 text-green-200";
-      case "Coming Soon":
-        return "bg-blue-600/80 text-blue-200";
-      case "Closed":
-      case "Finished":
-        return "bg-slate-600/80 text-slate-300";
-      default:
-        return "bg-gray-600/80 text-gray-200";
-    }
+    const statusMap = {
+      Open: { class: "bg-green-600/80 text-green-200", text: language === "id" ? "Buka" : "Open" },
+      "Coming Soon": { class: "bg-blue-600/80 text-blue-200", text: language === "id" ? "Segera" : "Coming Soon" },
+      Closed: { class: "bg-slate-600/80 text-slate-300", text: language === "id" ? "Ditutup" : "Closed" },
+      Finished: { class: "bg-slate-600/80 text-slate-300", text: language === "id" ? "Selesai" : "Finished" },
+    };
+    return statusMap[status] || { class: "bg-gray-600/80 text-gray-200", text: status };
+  };
+
+  const statusInfo = getStatusBadge(event.status);
+
+  // Button text berdasarkan status
+  const getButtonText = (status) => {
+    if (status === "Open") return t("common.register");
+    if (status === "Coming Soon") return language === "id" ? "Pendaftaran Segera Dibuka" : "Registration Opening Soon";
+    if (status === "Closed") return t("events.registration_closed");
+    if (status === "Finished") return language === "id" ? "Event Telah Selesai" : "Event Finished";
+    return status;
   };
 
   return (
@@ -119,14 +128,16 @@ const EventDetailPage = () => {
             <aside className="lg:col-span-1">
               <div className="sticky top-28 bg-slate-800/50 rounded-lg p-6 space-y-4">
                 <div className="flex justify-between items-center border-b border-slate-700 pb-2">
-                  <h3 className="text-xl font-bold text-white">Detail Event</h3>
-                  {event.status && <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(event.status)}`}>{event.status}</span>}
+                  <h3 className="text-xl font-bold text-white">{t("events.event_details")}</h3>
+                  {event.status && <span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusInfo.class}`}>{statusInfo.text}</span>}
                 </div>
 
                 <div className="flex items-start gap-3">
                   <FiCalendar className="text-cyan-400 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-white">Tanggal & Waktu</p>
+                    <p className="font-semibold text-white">
+                      {t("common.date")} & {t("common.time")}
+                    </p>
                     <p className="text-sm">
                       {formatDate(event.startDateTime)} - {formatDate(event.endDateTime)}
                     </p>
@@ -136,7 +147,7 @@ const EventDetailPage = () => {
                 <div className="flex items-start gap-3">
                   <FiMapPin className="text-cyan-400 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-white">Lokasi</p>
+                    <p className="font-semibold text-white">{t("common.location")}</p>
                     <p className="text-sm">{event.location}</p>
                   </div>
                 </div>
@@ -144,9 +155,9 @@ const EventDetailPage = () => {
                 <div className="flex items-start gap-3">
                   <FiUsers className="text-cyan-400 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-white">Kuota</p>
+                    <p className="font-semibold text-white">{t("events.quota")}</p>
                     <p className="text-sm">
-                      {event.EventRegistrations.length} / {event.quota} Peserta
+                      {event.EventRegistrations.length} / {event.quota} {t("events.participants")}
                     </p>
                   </div>
                 </div>
@@ -154,23 +165,19 @@ const EventDetailPage = () => {
                 <div className="flex items-start gap-3">
                   <FiDollarSign className="text-cyan-400 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-white">Biaya</p>
-                    <p className="text-sm">{event.fee > 0 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}` : "Gratis"}</p>
+                    <p className="font-semibold text-white">{language === "id" ? "Biaya" : "Fee"}</p>
+                    <p className="text-sm">{event.fee > 0 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}` : language === "id" ? "Gratis" : "Free"}</p>
                   </div>
                 </div>
 
                 <div className="pt-4 border-t border-slate-700">
                   {event.status === "Open" ? (
-                    <>
-                      <button onClick={() => setIsModalOpen(true)} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors">
-                        Daftar Sekarang
-                      </button>
-                    </>
+                    <button onClick={() => setIsModalOpen(true)} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors">
+                      {language === "id" ? "Daftar Sekarang" : "Register Now"}
+                    </button>
                   ) : (
                     <button disabled className="w-full bg-slate-600 text-slate-400 font-bold py-3 rounded-lg cursor-not-allowed">
-                      {event.status === "Coming Soon" && "Pendaftaran Segera Dibuka"}
-                      {event.status === "Closed" && "Pendaftaran Ditutup"}
-                      {event.status === "Finished" && "Event Telah Selesai"}
+                      {getButtonText(event.status)}
                     </button>
                   )}
                 </div>
@@ -181,7 +188,7 @@ const EventDetailPage = () => {
       </div>
 
       {/* Popup Pendaftaran */}
-      <Popup isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Pendaftaran: ${event.title}`}>
+      <Popup isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`${language === "id" ? "Pendaftaran" : "Registration"}: ${event.title}`}>
         <RegistrationForm eventId={event.id} participantRoles={participantRoles} />
       </Popup>
     </>

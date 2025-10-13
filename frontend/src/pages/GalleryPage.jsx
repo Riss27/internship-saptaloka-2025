@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useLanguage } from "../context/useLanguage";
 
 const GalleryPage = () => {
+  const { t } = useLanguage(); // Ambil function translate
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,19 +21,26 @@ const GalleryPage = () => {
   }, []);
 
   if (isLoading) {
-    return <div className="text-center py-20 text-white">Loading Gallery...</div>;
+    return (
+      <div className="bg-slate-900 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+          <p className="text-white text-lg">{t("gallery.loading")}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="bg-slate-900 min-h-screen">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-2">Galeri Kegiatan</h1>
-          <p className="text-slate-400">Momen-momen berharga dari setiap workshop dan event kami.</p>
+          <h1 className="text-4xl font-bold text-white mb-2">{t("gallery.title")}</h1>
+          <p className="text-slate-400">{t("gallery.subtitle")}</p>
         </div>
 
         {images.length === 0 ? (
-          <p className="text-center text-slate-400">Belum ada gambar di galeri saat ini.</p>
+          <p className="text-center text-slate-400">{t("gallery.no_images")}</p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {images.map((image) => (

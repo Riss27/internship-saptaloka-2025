@@ -1,16 +1,16 @@
-import React, { Suspense } from 'react';
+import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import { AuthProvider } from "./context/AuthContext.jsx";
-import './i18n';
+import { LanguageProvider } from "./context/LanguageContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <Suspense fallback={<div>Loading...</div>}>
+  <LanguageProvider>
+    <React.StrictMode>
       <AuthProvider>
         <App />
       </AuthProvider>
-    </Suspense>
-  </React.StrictMode>
+    </React.StrictMode>
+  </LanguageProvider>
 );
