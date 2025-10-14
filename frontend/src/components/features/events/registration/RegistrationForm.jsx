@@ -7,14 +7,12 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
     name: "",
     email: "",
     phone: "",
-    role: participantRoles[0] || "Umum", // Default ke role pertama atau 'Umum'
+    role: participantRoles[0] || "Umum",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,10 +22,8 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
     try {
       await axios.post(`http://localhost:3000/api/events/${eventId}/register`, formData);
       setMessage({ type: "success", text: "Pendaftaran berhasil! Terima kasih telah mendaftar." });
-      // Kosongkan form setelah berhasil
       setFormData({ name: "", email: "", phone: "", role: participantRoles[0] || "Umum" });
     } catch (error) {
-      // Ambil pesan error dari backend yang sudah disiapkan
       const errorMessage = error.response?.data?.message || "Terjadi kesalahan. Silakan coba lagi.";
       setMessage({ type: "error", text: errorMessage });
     } finally {
@@ -35,10 +31,9 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
     }
   };
 
-  // Jika pendaftaran sudah berhasil, tampilkan pesan saja
   if (message.type === "success") {
     return (
-      <div className="bg-green-800/50 border border-green-600 text-green-300 p-4 rounded-lg text-center">
+      <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-lg text-center">
         <p className="font-semibold">Pendaftaran Berhasil!</p>
         <p className="text-sm">{message.text}</p>
       </div>
@@ -47,10 +42,8 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Tampilkan pesan error jika ada */}
-      {message.type === "error" && <div className="bg-red-800/50 border border-red-600 text-red-300 p-3 rounded-lg text-sm">{message.text}</div>}
+      {message.type === "error" && <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded-lg text-sm">{message.text}</div>}
 
-      {/* Input Name */}
       <div className="relative">
         <FiUser className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
         <input
@@ -60,11 +53,10 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
           value={formData.name}
           onChange={handleChange}
           required
-          className="w-full bg-slate-700/50 border border-slate-600 rounded-lg p-2 pl-10 focus:ring-2 focus:ring-cyan-500 outline-none"
+          className="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800"
         />
       </div>
 
-      {/* Input Email */}
       <div className="relative">
         <FiMail className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
         <input
@@ -74,11 +66,10 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
           value={formData.email}
           onChange={handleChange}
           required
-          className="w-full bg-slate-700/50 border border-slate-600 rounded-lg p-2 pl-10 focus:ring-2 focus:ring-cyan-500 outline-none"
+          className="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800"
         />
       </div>
 
-      {/* Input Phone */}
       <div className="relative">
         <FiPhone className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
         <input
@@ -88,14 +79,13 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
           value={formData.phone}
           onChange={handleChange}
           required
-          className="w-full bg-slate-700/50 border border-slate-600 rounded-lg p-2 pl-10 focus:ring-2 focus:ring-cyan-500 outline-none"
+          className="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800"
         />
       </div>
 
-      {/* Select Role */}
       <div className="relative">
         <FiUsers className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
-        <select name="role" value={formData.role} onChange={handleChange} required className="w-full bg-slate-700/50 border border-slate-600 rounded-lg p-2 pl-10 appearance-none focus:ring-2 focus:ring-cyan-500 outline-none">
+        <select name="role" value={formData.role} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 pl-10 appearance-none focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800">
           {participantRoles.map((role) => (
             <option key={role} value={role}>
               {role}
@@ -105,7 +95,7 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
         <FiChevronDown className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 pointer-events-none" />
       </div>
 
-      <button type="submit" disabled={isLoading} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed">
+      <button type="submit" disabled={isLoading} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition-colors disabled:bg-slate-400 disabled:cursor-not-allowed">
         {isLoading ? "Mengirim..." : "Daftar Sekarang"}
       </button>
     </form>

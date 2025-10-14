@@ -1,12 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { FiChevronDown, FiChevronUp, FiHome, FiGrid, FiInfo, FiFileText, FiImage, FiLogOut, FiCalendar, FiBriefcase } from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
 
 const AdminLayout = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [collapsed, setCollapsed] = useState(false);
+  const [logoFooter, setLogoFooter] = useState(null);
   const { logout } = useAuth();
   const navigate = useNavigate();
+
+  // Fetch logoFooter dari endpoint About
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/about");
+        const data = await response.json();
+        if (data?.data?.logoFooter) {
+          setLogoFooter(`http://localhost:3000${data.data.logoFooter}`);
+        }
+      } catch (error) {
+        console.error("Gagal ambil logo footer:", error);
+      }
+    };
+    fetchLogo();
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -36,11 +54,19 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#1A3A3A]">
+    <div className="flex h-screen bg-[#1A3A3A] transition-all duration-300">
       {/* Sidebar */}
-      <aside className="w-64 bg-[#0F2626] text-white flex flex-col">
-        <div className="h-20 flex items-center justify-center bg-gray-900/50">
-          <h1 className="text-2xl font-bold">Askreative</h1>
+      <aside className={`${collapsed ? "w-20" : "w-64"} bg-[#0F2626] text-white flex flex-col transition-all duration-300 ease-in-out`}>
+        {/* Logo */}
+        <div className="h-20 flex items-center justify-center bg-gray-900/50 cursor-pointer transition-all duration-300" onClick={() => setCollapsed(!collapsed)}>
+          {logoFooter ? (
+            <img src={logoFooter} alt="Logo" className={`transition-all duration-300 object-contain ${collapsed ? "w-12 h-12" : "w-32 h-16"}`} />
+          ) : (
+            <>
+              <h1 className={`font-bold transition-all duration-300 ${collapsed ? "text-3xl scale-110 tracking-wider" : "text-2xl scale-100"}`}>A</h1>
+              {!collapsed && <span className="text-2xl font-bold ml-1 transition-all duration-300">skreative</span>}
+            </>
+          )}
         </div>
 
         {/* Navigation */}
@@ -48,15 +74,15 @@ const AdminLayout = () => {
           {menuItems.map((item) =>
             item.children ? (
               <div key={item.name}>
-                <button onClick={() => handleDropdownToggle(item.name)} className="w-full flex justify-between items-center px-4 py-2.5 rounded-lg hover:bg-gray-700/50">
+                <button onClick={() => handleDropdownToggle(item.name)} className="w-full flex justify-between items-center px-4 py-2.5 rounded-lg hover:bg-gray-700/50 transition-all duration-200">
                   <div className="flex items-center">
-                    <span className="mr-3">{item.icon}</span>
-                    {item.name}
+                    <span className={`mr-3 transition-transform duration-300 ${collapsed ? "scale-125" : "scale-100"}`}>{item.icon}</span>
+                    {!collapsed && item.name}
                   </div>
-                  {openDropdown === item.name ? <FiChevronUp /> : <FiChevronDown />}
+                  {!collapsed && (openDropdown === item.name ? <FiChevronUp /> : <FiChevronDown />)}
                 </button>
 
-                {openDropdown === item.name && (
+                {openDropdown === item.name && !collapsed && (
                   <div className="pl-8 pt-2 space-y-2">
                     {item.children.map((sub) => (
                       <NavLink key={sub.name} to={sub.path} className={({ isActive }) => `flex items-center px-4 py-2 rounded-lg text-sm ${isActive ? "bg-cyan-600/50" : "hover:bg-gray-700/50"}`}>
@@ -67,9 +93,14 @@ const AdminLayout = () => {
                 )}
               </div>
             ) : (
-              <NavLink key={item.name} to={item.path} end={item.path === "/admin/homepage"} className={({ isActive }) => `flex items-center px-4 py-2.5 rounded-lg ${isActive ? "bg-cyan-600/50" : "hover:bg-gray-700/50"}`}>
-                <span className="mr-3">{item.icon}</span>
-                {item.name}
+              <NavLink
+                key={item.name}
+                to={item.path}
+                end={item.path === "/admin/homepage"}
+                className={({ isActive }) => `flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 ${isActive ? "bg-cyan-600/50" : "hover:bg-gray-700/50"}`}
+              >
+                <span className={`mr-3 transition-transform duration-300 ${collapsed ? "scale-125" : "scale-100"}`}>{item.icon}</span>
+                {!collapsed && item.name}
               </NavLink>
             )
           )}
@@ -77,9 +108,9 @@ const AdminLayout = () => {
 
         {/* Logout */}
         <div className="p-4 border-t border-gray-700">
-          <button onClick={handleLogout} className="flex items-center w-full px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-700">
-            <FiLogOut className="mr-3" />
-            Log Out
+          <button onClick={handleLogout} className="flex items-center justify-center w-full px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 transition-all duration-300">
+            <FiLogOut className={`transition-transform duration-300 ${collapsed ? "scale-150" : "scale-100 mr-3"}`} />
+            {!collapsed && "Log Out"}
           </button>
         </div>
       </aside>

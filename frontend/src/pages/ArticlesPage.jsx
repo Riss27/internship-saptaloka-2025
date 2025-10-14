@@ -10,12 +10,12 @@ const ArticlesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Panggil API untuk mendapatkan semua artikel
     axios
       .get("http://localhost:3000/api/articles")
       .then((response) => {
-        setArticles(response.data.data);
-        setFilteredArticles(response.data.data);
+        const sortedArticles = response.data.data.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+        setArticles(sortedArticles);
+        setFilteredArticles(sortedArticles);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -24,95 +24,68 @@ const ArticlesPage = () => {
       });
   }, []);
 
-  // Filter artikel berdasarkan query pencarian
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredArticles(articles);
     } else {
-      const filtered = articles.filter((article) => {
-        const titleMatch = article.title?.toLowerCase().includes(searchQuery.toLowerCase());
-        const contentMatch = article.content?.toLowerCase().includes(searchQuery.toLowerCase());
-        const categoryMatch = article.category?.toLowerCase().includes(searchQuery.toLowerCase());
-
-        return titleMatch || contentMatch || categoryMatch;
-      });
+      const filtered = articles.filter(
+        (article) => article.title?.toLowerCase().includes(searchQuery.toLowerCase()) || article.mainDescription?.toLowerCase().includes(searchQuery.toLowerCase()) || article.author?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
       setFilteredArticles(filtered);
     }
   }, [searchQuery, articles]);
 
-  // Handler untuk clear search
-  const handleClearSearch = () => {
-    setSearchQuery("");
-  };
+  const handleClearSearch = () => setSearchQuery("");
 
-  // Tampilkan loading state
   if (isLoading) {
     return (
-      <div className="bg-slate-900 min-h-screen flex items-center justify-center">
+      <div className="bg-white min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading Articles...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <p className="text-slate-700 text-lg">Loading Articles...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-slate-900 min-h-screen">
+    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
       <div className="container mx-auto px-4 py-16">
-        {/* Header Halaman */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-2">Artikel Terbaru</h1>
-          <p className="text-slate-400 mb-8">Jelajahi wawasan, tips, dan cerita dari dunia parfum dan aromaterapi.</p>
-
-          {/* Search Bar */}
+          <h1 className="text-4xl font-bold text-emerald-800 mb-2">Artikel Terbaru</h1>
+          <p className="text-slate-600 mb-8">Jelajahi wawasan, tips, dan cerita dari dunia parfum dan aromaterapi.</p>
           <div className="max-w-2xl mx-auto">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Cari artikel berdasarkan judul, kategori, atau konten..."
+                placeholder="Cari artikel berdasarkan judul, penulis, atau konten..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-12 py-3 bg-slate-800 text-white rounded-lg border border-slate-700 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all"
+                className="w-full pl-12 pr-12 py-3 bg-white text-slate-800 rounded-lg border border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
               {searchQuery && (
-                <button onClick={handleClearSearch} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors">
+                <button onClick={handleClearSearch} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-slate-800 transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               )}
             </div>
-
-            {/* Search Results Info */}
-            {searchQuery && (
-              <p className="text-slate-400 text-sm mt-3">
-                Menampilkan <span className="text-purple-400 font-semibold">{filteredArticles.length}</span> dari <span className="text-white font-semibold">{articles.length}</span> artikel
-              </p>
-            )}
           </div>
         </div>
 
-        {/* Konten Artikel */}
-        {filteredArticles.length === 0 ? (
-          <div className="text-center py-12">
-            {searchQuery ? (
-              <div>
-                <Search className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                <p className="text-slate-400 text-lg mb-2">Tidak ada artikel yang cocok dengan pencarian "{searchQuery}"</p>
-                <button onClick={handleClearSearch} className="text-purple-400 hover:text-purple-300 underline">
-                  Hapus pencarian
-                </button>
-              </div>
-            ) : (
-              <p className="text-slate-400">Belum ada artikel yang dipublikasikan.</p>
-            )}
-          </div>
-        ) : (
-          // Grid untuk menampilkan artikel
+        {filteredArticles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredArticles.map((article) => (
               <ArticleCard key={article.id} article={article} />
             ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <Search className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+            <p className="text-slate-600 text-lg mb-2">Tidak ada artikel yang cocok dengan pencarian "{searchQuery}"</p>
+            <button onClick={handleClearSearch} className="text-emerald-600 hover:text-emerald-800 underline">
+              Hapus pencarian
+            </button>
           </div>
         )}
       </div>

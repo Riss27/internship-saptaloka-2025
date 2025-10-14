@@ -37,8 +37,19 @@ const TiptapEditor = ({ content, onUpdate }) => {
     extensions: [StarterKit],
     content: content || "",
     onUpdate: ({ editor }) => onUpdate(editor.getHTML()),
-    editorProps: { attributes: { class: "prose prose-invert max-w-none p-4 min-h-[150px] focus:outline-none" } },
+    editorProps: {
+      attributes: {
+        class: "prose prose-invert max-w-none p-4 min-h-[150px] focus:outline-none",
+      },
+    },
   });
+
+  // update isi editor ketika content dari props berubah (misal data dari API baru masuk)
+  React.useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content || "");
+    }
+  }, [content, editor]);
 
   if (!editor) return null;
 

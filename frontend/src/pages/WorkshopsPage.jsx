@@ -18,44 +18,42 @@ const WorkshopsPage = ({ category }) => {
           const latestWorkshop = workshops[0];
           navigate(`/workshops/${latestWorkshop.id}`, { replace: true });
         } else {
-          // Jika tidak ada workshop, set notFound menjadi true
           setIsLoading(false);
           setNotFound(true);
         }
       } catch (error) {
         console.error(`Gagal mengambil data workshop ${category}:`, error);
         setIsLoading(false);
-        setNotFound(true); // Anggap not found jika API error
+        setNotFound(true);
       }
     };
 
     findAndRedirect();
   }, [category, navigate]);
 
-  // Tampilan Loading awal
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-20 text-center text-white">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500 mx-auto mb-4"></div>
+      <div className="container mx-auto px-4 py-20 text-center text-slate-700">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-4"></div>
         <p>Mencari Workshop {category}...</p>
       </div>
     );
   }
 
-  // Tampilan jika workshop tidak ditemukan (Coming Soon)
   if (notFound) {
     return (
-      <div className="container mx-auto px-4 py-20 text-center text-white">
-        <div className="bg-slate-800/50 inline-block p-6 rounded-full mb-6">
-          <FiClock size={40} className="text-cyan-400" />
+      <div className="bg-gradient-to-b from-emerald-50 to-white min-h-[60vh] flex items-center">
+        <div className="container mx-auto px-4 py-20 text-center text-slate-700">
+          <div className="bg-emerald-100 inline-block p-6 rounded-full mb-6">
+            <FiClock size={40} className="text-emerald-600" />
+          </div>
+          <h1 className="text-4xl font-bold mb-4 text-emerald-800">Segera Hadir!</h1>
+          <p className="text-slate-600 max-w-lg mx-auto">Saat ini belum ada workshop untuk kategori {category}. Pantau terus halaman ini untuk informasi terbaru!</p>
         </div>
-        <h1 className="text-4xl font-bold mb-4">Segera Hadir!</h1>
-        <p className="text-slate-400 max-w-lg mx-auto">Saat ini belum ada workshop untuk kategori {category}. Pantau terus halaman ini untuk informasi terbaru!</p>
       </div>
     );
   }
 
-  // Fallback (seharusnya tidak pernah tampil, tapi bagus untuk jaga-jaga)
   return null;
 };
 

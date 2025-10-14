@@ -50,9 +50,10 @@ const Navbar = () => {
           to={item.to}
           onClick={handleNavClick}
           className={({ isActive }) =>
+            // Desain untuk item menu aktif dan tidak aktif
             isActive
               ? `py-2 px-3 rounded-lg text-emerald-700 font-semibold bg-emerald-50 ${isMobile ? "ml-2" : ""}`
-              : `py-2 px-3 rounded-lg text-gray-700 hover:text-white hover:bg-emerald-700 font-medium transition-all ${isMobile ? "ml-2" : ""}`
+              : `py-2 px-3 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50 font-medium transition-all ${isMobile ? "ml-2" : ""}`
           }
         >
           {item.name}

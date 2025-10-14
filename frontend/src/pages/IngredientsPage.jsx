@@ -59,12 +59,11 @@ const IngredientsPage = () => {
   }
 
   return (
-    <div className="bg-slate-900 min-h-screen">
+    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
       <div className="container mx-auto px-4 py-16">
-        {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-2">Bahan Parfum & Aromaterapi</h1>
-          <p className="text-slate-400 mb-8">Jelajahi koleksi bahan baku berkualitas tinggi kami.</p>
+          <h1 className="text-4xl font-bold text-emerald-800 mb-2">Bahan Parfum & Aromaterapi</h1>
+          <p className="text-slate-600 mb-8">Jelajahi koleksi bahan baku berkualitas tinggi kami.</p>
 
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto mb-8">
@@ -75,7 +74,7 @@ const IngredientsPage = () => {
                 placeholder="Cari bahan berdasarkan nama, kategori, atau deskripsi..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-12 py-3 bg-slate-800 text-white rounded-lg border border-slate-700 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all"
+                className="w-full pl-12 pr-12 py-3 bg-white text-slate-800 rounded-lg border border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
               {searchQuery && (
                 <button onClick={handleClearSearch} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors">
@@ -94,7 +93,7 @@ const IngredientsPage = () => {
 
         {/* Filter Kategori */}
         <div className="flex justify-center gap-4 mb-12 flex-wrap">
-          <button onClick={() => setSelectedCategory("All")} className={`px-6 py-2 rounded-full font-semibold transition-colors ${selectedCategory === "All" ? "bg-cyan-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"}`}>
+          <button onClick={() => setSelectedCategory("All")} className={`px-6 py-2 rounded-full font-semibold transition-colors ${selectedCategory === "All" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-emerald-50"}`}>
             Semua
           </button>
           <button

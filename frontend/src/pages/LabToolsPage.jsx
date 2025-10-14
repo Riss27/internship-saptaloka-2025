@@ -48,12 +48,12 @@ const LabToolsPage = () => {
   }
 
   return (
-    <div className="bg-slate-900 min-h-screen">
+    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
       <div className="container mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-2">Alat Laboratorium</h1>
-          <p className="text-slate-400">Sediakan laboratorium Anda dengan peralatan berkualitas tinggi.</p>
+          <h1 className="text-4xl font-bold text-emerald-800 mb-2">Alat Laboratorium</h1>
+          <p className="text-slate-600 mb-8">Sediakan laboratorium Anda dengan peralatan berkualitas tinggi.</p>
         </div>
 
         {/* Search Bar */}
@@ -65,7 +65,7 @@ const LabToolsPage = () => {
               placeholder="Cari alat laboratorium berdasarkan nama..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-12 py-3 bg-slate-800 text-white rounded-lg border border-slate-700 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all"
+              className="w-full pl-12 pr-12 py-3 bg-white text-slate-800 rounded-lg border border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
             />
             {searchQuery && (
               <button onClick={handleClearSearch} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors">
@@ -77,7 +77,7 @@ const LabToolsPage = () => {
           {/* Info hasil pencarian */}
           {searchQuery && (
             <p className="text-slate-400 text-sm mt-3">
-              Menampilkan <span className="text-cyan-400 font-semibold">{filteredTools.length}</span> dari <span className="text-white font-semibold">{labTools.length}</span> alat
+              Menampilkan <span className="text-emerald-700 font-semibold">{filteredTools.length}</span> dari <span className="text-black font-semibold">{labTools.length}</span> alat
             </p>
           )}
         </div>

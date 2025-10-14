@@ -37,16 +37,10 @@ const ProductsPage = () => {
     // Filter berdasarkan search query
     if (searchQuery.trim() !== "") {
       filtered = filtered.filter((product) => {
-        const nameMatch = product.name
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase());
-        const descriptionMatch = product.description
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase());
-        const categoryMatch = product.category
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase());
-        
+        const nameMatch = product.name?.toLowerCase().includes(searchQuery.toLowerCase());
+        const descriptionMatch = product.description?.toLowerCase().includes(searchQuery.toLowerCase());
+        const categoryMatch = product.category?.toLowerCase().includes(searchQuery.toLowerCase());
+
         return nameMatch || descriptionMatch || categoryMatch;
       });
     }
@@ -71,14 +65,12 @@ const ProductsPage = () => {
   }
 
   return (
-    <div className="bg-slate-900 min-h-screen">
+    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
       <div className="container mx-auto px-4 py-16">
-        {/* Header Halaman */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-2">Koleksi Kami</h1>
-          <p className="text-slate-400 mb-8">
-            Jelajahi berbagai pilihan parfum dan aromaterapi yang kami tawarkan.
-          </p>
+          {/* Menyesuaikan warna teks header */}
+          <h1 className="text-4xl font-bold text-emerald-800 mb-2">Koleksi Kami</h1>
+          <p className="text-slate-600 mb-8">Jelajahi berbagai pilihan parfum dan aromaterapi yang kami tawarkan.</p>
 
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto mb-8">
@@ -89,23 +81,19 @@ const ProductsPage = () => {
                 placeholder="Cari produk berdasarkan nama atau deskripsi..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-12 py-3 bg-slate-800 text-white rounded-lg border border-slate-700 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all"
+                className="w-full pl-12 pr-12 py-3 bg-white text-slate-800 rounded-lg border border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
               {searchQuery && (
-                <button
-                  onClick={handleClearSearch}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
-                >
+                <button onClick={handleClearSearch} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               )}
             </div>
-            
+
             {/* Search Results Info */}
             {(searchQuery || selectedCategory !== "All") && (
               <p className="text-slate-400 text-sm mt-3">
-                Menampilkan <span className="text-cyan-400 font-semibold">{filteredProducts.length}</span> dari{" "}
-                <span className="text-white font-semibold">{products.length}</span> produk
+                Menampilkan <span className="text-emerald-700 font-semibold">{filteredProducts.length}</span> dari <span className="text-black font-semibold">{products.length}</span> produk
               </p>
             )}
           </div>
@@ -113,33 +101,18 @@ const ProductsPage = () => {
 
         {/* Tombol Filter Kategori */}
         <div className="flex justify-center gap-4 mb-12 flex-wrap">
-          <button
-            onClick={() => setSelectedCategory("All")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${
-              selectedCategory === "All"
-                ? "bg-cyan-600 text-white"
-                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-            }`}
-          >
+          <button onClick={() => setSelectedCategory("All")} className={`px-6 py-2 rounded-full font-semibold transition-colors ${selectedCategory === "All" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-emerald-50"}`}>
             Semua
           </button>
           <button
             onClick={() => setSelectedCategory("Parfum")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${
-              selectedCategory === "Parfum"
-                ? "bg-cyan-600 text-white"
-                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-            }`}
+            className={`px-6 py-2 rounded-full font-semibold transition-colors ${selectedCategory === "Parfum" ? "bg-cyan-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"}`}
           >
             Parfum
           </button>
           <button
             onClick={() => setSelectedCategory("Aromaterapi")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${
-              selectedCategory === "Aromaterapi"
-                ? "bg-cyan-600 text-white"
-                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-            }`}
+            className={`px-6 py-2 rounded-full font-semibold transition-colors ${selectedCategory === "Aromaterapi" ? "bg-cyan-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"}`}
           >
             Aromaterapi
           </button>
@@ -158,26 +131,16 @@ const ProductsPage = () => {
               <div>
                 <Package className="w-16 h-16 text-slate-600 mx-auto mb-4" />
                 <p className="text-slate-400 text-lg mb-2">
-                  {searchQuery
-                    ? `Tidak ada produk yang cocok dengan pencarian "${searchQuery}"${
-                        selectedCategory !== "All" ? ` dalam kategori ${selectedCategory}` : ""
-                      }`
-                    : `Tidak ada produk dalam kategori ${selectedCategory}.`}
+                  {searchQuery ? `Tidak ada produk yang cocok dengan pencarian "${searchQuery}"${selectedCategory !== "All" ? ` dalam kategori ${selectedCategory}` : ""}` : `Tidak ada produk dalam kategori ${selectedCategory}.`}
                 </p>
                 <div className="flex gap-3 justify-center mt-4">
                   {searchQuery && (
-                    <button
-                      onClick={handleClearSearch}
-                      className="text-cyan-400 hover:text-cyan-300 underline"
-                    >
+                    <button onClick={handleClearSearch} className="text-cyan-400 hover:text-cyan-300 underline">
                       Hapus pencarian
                     </button>
                   )}
                   {selectedCategory !== "All" && (
-                    <button
-                      onClick={() => setSelectedCategory("All")}
-                      className="text-cyan-400 hover:text-cyan-300 underline"
-                    >
+                    <button onClick={() => setSelectedCategory("All")} className="text-cyan-400 hover:text-cyan-300 underline">
                       Lihat semua kategori
                     </button>
                   )}

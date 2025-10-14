@@ -4,12 +4,11 @@ import axios from "axios";
 import { FiCalendar, FiUser } from "react-icons/fi";
 
 const ArticleDetailPage = () => {
-  const { id } = useParams(); // Ambil ID artikel dari URL
+  const { id } = useParams();
   const [article, setArticle] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Fungsi untuk fetch data artikel berdasarkan ID
     const fetchArticle = async () => {
       try {
         setIsLoading(true);
@@ -21,25 +20,21 @@ const ArticleDetailPage = () => {
         setIsLoading(false);
       }
     };
-
     fetchArticle();
-  }, [id]); // Jalankan ulang jika ID berubah
+  }, [id]);
 
-  // Tampilan Loading
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-slate-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+      <div className="flex justify-center items-center h-screen bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
       </div>
     );
   }
 
-  // Tampilan jika artikel tidak ditemukan
   if (!article) {
-    return <div className="text-center py-20 text-white">Artikel tidak ditemukan.</div>;
+    return <div className="text-center py-20 text-slate-700">Artikel tidak ditemukan.</div>;
   }
 
-  // Fungsi untuk format tanggal
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("id-ID", {
       day: "numeric",
@@ -48,7 +43,6 @@ const ArticleDetailPage = () => {
     });
   };
 
-  // Fungsi parser "tahan banting" untuk membersihkan data imageUrls
   const parseImageUrls = (data) => {
     if (!data) return [];
     let parsed = data;
@@ -64,12 +58,11 @@ const ArticleDetailPage = () => {
   };
 
   return (
-    <div className="bg-slate-900 text-slate-300 min-h-screen pt-10 pb-20">
+    <div className="bg-gradient-to-b from-emerald-50 to-white text-slate-700 min-h-screen pt-10 pb-20">
       <div className="container mx-auto px-4 max-w-4xl">
-        {/* === Header Artikel === */}
         <header className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">{article.title}</h1>
-          <div className="flex items-center gap-6 text-slate-400 text-sm">
+          <h1 className="text-4xl md:text-5xl font-bold text-emerald-900 mb-4 leading-tight">{article.title}</h1>
+          <div className="flex items-center gap-6 text-slate-500 text-sm">
             <div className="flex items-center gap-2">
               <FiUser />
               <span>Oleh: {article.author}</span>
@@ -81,34 +74,26 @@ const ArticleDetailPage = () => {
           </div>
         </header>
 
-        {/* === Gambar Utama === */}
-        <div className="mb-8 rounded-lg overflow-hidden shadow-lg">
+        <div className="mb-8 rounded-2xl overflow-hidden shadow-xl">
           <img src={`http://localhost:3000${article.featuredImageUrl}`} alt={article.title} className="w-full h-auto object-cover" />
         </div>
 
-        {/* === Deskripsi Utama === */}
-        <div className="prose prose-invert prose-lg max-w-none mb-12">
+        <div className="prose prose-lg max-w-none mb-12 text-slate-600">
           <p className="lead">{article.mainDescription}</p>
         </div>
 
-        {/* === Konten Artikel per Section === */}
         <article className="space-y-12">
           {article.ArticleContents &&
             article.ArticleContents.map((content, index) => {
-              // Panggil parser untuk membersihkan data gambar
               const images = parseImageUrls(content.imageUrls);
-
               return (
                 <section key={index}>
-                  <h2 className="text-2xl font-bold text-cyan-400 mb-4 border-l-4 border-cyan-400 pl-4">{content.topic}</h2>
-                  {/* Render deskripsi sebagai HTML */}
-                  <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: content.description }} />
-
-                  {/* Tampilkan gambar-gambar jika ada */}
+                  <h2 className="text-2xl font-bold text-emerald-700 mb-4 border-l-4 border-emerald-500 pl-4">{content.topic}</h2>
+                  <div className="prose max-w-none text-slate-600" dangerouslySetInnerHTML={{ __html: content.description }} />
                   {images && images.length > 0 && (
                     <div className="grid grid-cols-2 gap-4 mt-6">
                       {images.map((url, i) => (
-                        <img key={i} src={`http://localhost:3000${url}`} alt={`${content.topic} ${i + 1}`} className="rounded-lg object-cover w-full" />
+                        <img key={i} src={`http://localhost:3000${url}`} alt={`${content.topic} ${i + 1}`} className="rounded-lg object-cover w-full shadow-md" />
                       ))}
                     </div>
                   )}

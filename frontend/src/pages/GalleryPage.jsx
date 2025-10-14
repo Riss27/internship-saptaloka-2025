@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { FiImage } from "react-icons/fi";
 
 const GalleryPage = () => {
   const [images, setImages] = useState([]);
@@ -19,26 +20,36 @@ const GalleryPage = () => {
   }, []);
 
   if (isLoading) {
-    return <div className="text-center py-20 text-white">Loading Gallery...</div>;
+    return (
+      <div className="bg-white min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <p className="text-slate-700 text-lg">Loading Gallery...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-slate-900 min-h-screen">
+    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-2">Galeri Kegiatan</h1>
-          <p className="text-slate-400">Momen-momen berharga dari setiap workshop dan event kami.</p>
+          <h1 className="text-4xl font-bold text-emerald-800 mb-2">Galeri Kegiatan</h1>
+          <p className="text-slate-600">Momen berharga dari setiap workshop dan event kami.</p>
         </div>
 
         {images.length === 0 ? (
-          <p className="text-center text-slate-400">Belum ada gambar di galeri saat ini.</p>
+          <div className="text-center py-12">
+            <FiImage className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+            <p className="text-slate-500">Belum ada gambar di galeri saat ini.</p>
+          </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
             {images.map((image) => (
-              <div key={image.id} className="group relative aspect-square overflow-hidden rounded-lg shadow-lg">
-                <img src={`http://localhost:3000${image.imageUrl}`} alt={image.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300" />
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                  <p className="text-white font-semibold text-sm">{image.title}</p>
+              <div key={image.id} className="bg-white rounded-xl shadow-md hover:shadow-emerald-200 transition-all overflow-hidden">
+                <img src={`http://localhost:3000${image.imageUrl}`} alt={image.title} className="w-full h-56 object-cover hover:scale-105 transition-transform duration-300" />
+                <div className="p-3">
+                  <p className="text-emerald-800 font-semibold text-center truncate">{image.title}</p>
                 </div>
               </div>
             ))}

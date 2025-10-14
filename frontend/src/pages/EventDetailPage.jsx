@@ -79,13 +79,13 @@ const EventDetailPage = () => {
 
   return (
     <>
-      <div className="bg-slate-900 text-slate-300 min-h-screen pt-10 pb-20">
+      <div className="bg-gradient-to-b from-emerald-50 to-white text-slate-700 min-h-screen pt-10 pb-20">
         <div className="container mx-auto px-4 max-w-5xl">
           <header className="relative mb-8 text-center">
             <img src={`http://localhost:3000${event.imageBannerUrl}`} alt={event.title} className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent rounded-lg"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-emerald-50 via-emerald-50/70 to-transparent rounded-lg"></div>
             <div className="absolute bottom-0 left-0 right-0 p-8">
-              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">{event.title}</h1>
+              <h1 className="text-4xl md:text-5xl font-bold text-emerald-900 leading-tight">{event.title}</h1>
             </div>
           </header>
 
@@ -117,9 +117,9 @@ const EventDetailPage = () => {
 
             {/* Sidebar Info & Registrasi */}
             <aside className="lg:col-span-1">
-              <div className="sticky top-28 bg-slate-800/50 rounded-lg p-6 space-y-4">
-                <div className="flex justify-between items-center border-b border-slate-700 pb-2">
-                  <h3 className="text-xl font-bold text-white">Detail Event</h3>
+              <div className="sticky top-28 bg-white rounded-2xl p-6 shadow-lg border border-emerald-100 space-y-4">
+              <div className="flex justify-between items-center border-b border-slate-700 pb-2">
+                  <h3 className="text-xl font-bold text-emerald-900">Detail Event</h3>
                   {event.status && <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(event.status)}`}>{event.status}</span>}
                 </div>
 
