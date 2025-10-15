@@ -85,7 +85,7 @@ const IngredientsPage = () => {
 
             {(searchQuery || selectedCategory !== "All") && (
               <p className="text-slate-400 text-sm mt-3">
-                Menampilkan <span className="text-cyan-400 font-semibold">{filteredIngredients.length}</span> dari <span className="text-white font-semibold">{ingredients.length}</span> bahan
+                Menampilkan <span className="text-emerald-700 font-semibold">{filteredIngredients.length}</span> dari <span className="text-emerald-900 font-semibold">{ingredients.length}</span> bahan
               </p>
             )}
           </div>

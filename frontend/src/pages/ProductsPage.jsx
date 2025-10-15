@@ -93,7 +93,7 @@ const ProductsPage = () => {
             {/* Search Results Info */}
             {(searchQuery || selectedCategory !== "All") && (
               <p className="text-slate-400 text-sm mt-3">
-                Menampilkan <span className="text-emerald-700 font-semibold">{filteredProducts.length}</span> dari <span className="text-black font-semibold">{products.length}</span> produk
+                Menampilkan <span className="text-emerald-700 font-semibold">{filteredProducts.length}</span> dari <span className="text-emerald-900 font-semibold">{products.length}</span> produk
               </p>
             )}
           </div>

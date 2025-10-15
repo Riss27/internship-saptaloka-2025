@@ -118,15 +118,15 @@ const EventDetailPage = () => {
             {/* Sidebar Info & Registrasi */}
             <aside className="lg:col-span-1">
               <div className="sticky top-28 bg-white rounded-2xl p-6 shadow-lg border border-emerald-100 space-y-4">
-              <div className="flex justify-between items-center border-b border-slate-700 pb-2">
-                  <h3 className="text-xl font-bold text-emerald-900">Detail Event</h3>
+                <div className="flex justify-between items-center border-b border-slate-700 pb-2">
+                  <h3 className="text-xl font-bold text-emerald-800">Detail Event</h3>
                   {event.status && <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(event.status)}`}>{event.status}</span>}
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FiCalendar className="text-cyan-400 mt-1 flex-shrink-0" />
+                  <FiCalendar className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-white">Tanggal & Waktu</p>
+                    <p className="font-semibold text-emerald-800">Tanggal & Waktu</p>
                     <p className="text-sm">
                       {formatDate(event.startDateTime)} - {formatDate(event.endDateTime)}
                     </p>
@@ -134,17 +134,17 @@ const EventDetailPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FiMapPin className="text-cyan-400 mt-1 flex-shrink-0" />
+                  <FiMapPin className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-white">Lokasi</p>
+                    <p className="font-semibold text-emerald-800">Lokasi</p>
                     <p className="text-sm">{event.location}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FiUsers className="text-cyan-400 mt-1 flex-shrink-0" />
+                  <FiUsers className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-white">Kuota</p>
+                    <p className="font-semibold text-emerald-800">Kuota</p>
                     <p className="text-sm">
                       {event.EventRegistrations.length} / {event.quota} Peserta
                     </p>
@@ -152,9 +152,9 @@ const EventDetailPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FiDollarSign className="text-cyan-400 mt-1 flex-shrink-0" />
+                  <FiDollarSign className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-white">Biaya</p>
+                    <p className="font-semibold text-emerald-800">Biaya</p>
                     <p className="text-sm">{event.fee > 0 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}` : "Gratis"}</p>
                   </div>
                 </div>
