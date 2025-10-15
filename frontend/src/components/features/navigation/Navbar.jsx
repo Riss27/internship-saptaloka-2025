@@ -50,7 +50,6 @@ const Navbar = () => {
           to={item.to}
           onClick={handleNavClick}
           className={({ isActive }) =>
-            // Desain untuk item menu aktif dan tidak aktif
             isActive
               ? `py-2 px-3 rounded-lg text-emerald-700 font-semibold bg-emerald-50 ${isMobile ? "ml-2" : ""}`
               : `py-2 px-3 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50 font-medium transition-all ${isMobile ? "ml-2" : ""}`
@@ -99,14 +98,16 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center gap-6">{menuItems.map((item, idx) => renderMenuItem(item, idx))}</div>
 
         {/* Language Switch */}
-        <div className="hidden lg:flex items-center gap-2">
+        <div className="hidden lg:flex items-center gap-3">
           {["id", "en"].map((lang) => (
             <button
               key={lang}
               onClick={() => setLanguage(lang)}
-              className={`w-8 h-6 rounded-full overflow-hidden border-2 transition shadow-sm hover:ring-2 hover:ring-emerald-700 ${language === lang ? "border-emerald-700" : "border-transparent opacity-60 hover:opacity-100"}`}
+              className={`w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-200 hover:scale-105 ${
+                language === lang ? "border-emerald-700 bg-emerald-50" : "border-gray-300 hover:border-emerald-400 opacity-80 hover:opacity-100"
+              }`}
             >
-              <img src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`} alt={lang.toUpperCase()} className="w-full h-full object-cover" />
+              <img src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`} alt={lang.toUpperCase()} className="w-6 h-6 object-cover rounded-full" />
             </button>
           ))}
         </div>
@@ -129,8 +130,14 @@ const Navbar = () => {
             <div className="flex items-center gap-3 pt-3 border-t border-gray-200">
               <span className="text-gray-600 text-sm">Bahasa:</span>
               {["id", "en"].map((lang) => (
-                <button key={lang} onClick={() => setLanguage(lang)} className={`w-8 h-6 rounded-full overflow-hidden border-2 transition ${language === lang ? "border-emerald-700" : "border-transparent opacity-60 hover:opacity-100"}`}>
-                  <img src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`} alt={lang.toUpperCase()} className="w-full h-full object-cover" />
+                <button
+                  key={lang}
+                  onClick={() => setLanguage(lang)}
+                  className={`w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-200 hover:scale-105 ${
+                    language === lang ? "border-emerald-700 bg-emerald-50" : "border-gray-300 hover:border-emerald-400 opacity-80 hover:opacity-100"
+                  }`}
+                >
+                  <img src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`} alt={lang.toUpperCase()} className="w-6 h-6 object-cover rounded-full" />
                 </button>
               ))}
             </div>
