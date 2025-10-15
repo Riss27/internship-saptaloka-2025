@@ -45,9 +45,10 @@ exports.createImage = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ status: "fail", message: "Gambar wajib di-upload." });
     }
+    // [FIX] Tambahkan /uploads/ di depan nama file
     const newImage = await GalleryImage.create({
       title,
-      imageUrl: req.file.filename,
+      imageUrl: `/uploads/${req.file.filename}`,
     });
     res.status(201).json({ status: "success", data: newImage });
   } catch (error) {
@@ -91,11 +92,8 @@ exports.deleteImage = async (req, res) => {
       return res.status(404).json({ status: "fail", message: "Gambar tidak ditemukan." });
     }
 
-    // Hapus file gambar dari server
-    const imagePath = path.join(__dirname, "..", "public", "uploads", image.imageUrl);
-    if (fs.existsSync(imagePath)) {
-      fs.unlinkSync(imagePath);
-    }
+    // [FIX] Hapus file gambar dari server menggunakan path yang benar
+    deleteFile(image.imageUrl);
 
     await image.destroy();
     res.status(204).json();
