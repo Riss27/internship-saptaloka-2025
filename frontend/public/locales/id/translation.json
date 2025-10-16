@@ -1,0 +1,113 @@
+{
+  "navbar": {
+    "home": "Beranda",
+    "events": "Kegiatan",
+    "services": "Layanan",
+    "articles": "Artikel",
+    "gallery": "Galeri",
+    "about": "Tentang"
+  },
+  "services_dropdown": {
+    "aromatherapy_workshop": "Workshop Aromaterapi",
+    "perfume_workshop": "Workshop Parfum",
+    "custom_perfume": "Buat Parfum & Aromaterapi",
+    "lab_tools": "Alat Laboratorium",
+    "ingredients": "Bahan Parfum & Aromaterapi",
+    "products": "Produk Parfum & Aromaterapi"
+  },
+  "homepage": {
+    "our_services": "Layanan Kami",
+    "services_subtitle": "Dari workshop hingga pembuatan parfum personal, kami siap melayani.",
+    "recent_activities": "Kegiatan Terbaru",
+    "featured_products": "Produk Unggulan",
+    "latest_articles": "Artikel Terbaru",
+    "gallery": "Galeri Kegiatan"
+  },
+  "footer": {
+    "follow_us": "Ikuti Kami:",
+    "contact_us": "Hubungi Kami",
+    "email": "Email",
+    "phone": "Telepon",
+    "location": "Lokasi"
+  },
+  "about_page": {
+    "about_us": "Tentang Kami",
+    "contact_us": "Hubungi Kami",
+    "address": "Alamat",
+    "phone": "Telepon",
+    "email": "Email",
+    "instagram": "Instagram",
+    "visit_instagram": "Kunjungi Instagram kami",
+    "send_message": "Kirim Pesan",
+    "full_name": "Nama Lengkap",
+    "your_name": "Masukkan nama Anda",
+    "phone_number": "Nomor Telepon",
+    "message": "Pesan",
+    "write_message": "Tulis pesan Anda di sini...",
+    "send": "Kirim Pesan"
+  },
+  "products_page": {
+    "our_collection": "Koleksi Kami",
+    "collection_subtitle": "Jelajahi berbagai pilihan parfum dan aromaterapi yang kami tawarkan.",
+    "search_placeholder": "Cari produk berdasarkan nama atau deskripsi...",
+    "all": "Semua",
+    "perfume": "Parfum",
+    "aromatherapy": "Aromaterapi",
+    "no_products_found": "Tidak ada produk yang cocok dengan pencarian"
+  },
+  "ingredients_page": {
+    "title": "Bahan Parfum & Aromaterapi",
+    "subtitle": "Jelajahi koleksi bahan baku berkualitas tinggi kami.",
+    "search_placeholder": "Cari bahan berdasarkan nama, kategori, atau deskripsi...",
+    "all": "Semua",
+    "essential_oil": "Essential Oil",
+    "non_essential_oil": "Non-Essential Oil",
+    "no_ingredients_found": "Tidak ada bahan yang cocok dengan pencarian"
+  },
+  "lab_tools_page": {
+    "title": "Alat Laboratorium",
+    "subtitle": "Sediakan laboratorium Anda dengan peralatan berkualitas tinggi.",
+    "search_placeholder": "Cari alat laboratorium berdasarkan nama...",
+    "no_tools_found": "Tidak ada alat yang cocok dengan pencarian"
+  },
+  "events_page": {
+    "title": "Kegiatan & Event",
+    "subtitle": "Ikuti berbagai kegiatan menarik yang kami selenggarakan.",
+    "search_placeholder": "Cari event berdasarkan nama, lokasi, atau kategori...",
+    "no_events_found": "Tidak ada event yang cocok dengan pencarian"
+  },
+  "gallery_page": {
+    "title": "Galeri Kegiatan",
+    "subtitle": "Momen berharga dari setiap workshop dan event kami."
+  },
+  "articles_page": {
+    "title": "Artikel Terbaru",
+    "subtitle": "Jelajahi wawasan, tips, dan cerita dari dunia parfum dan aromaterapi.",
+    "search_placeholder": "Cari artikel berdasarkan judul, penulis, atau konten..."
+  },
+  "static": {
+    "category": "Kategori",
+    "description": "Description",
+    "no_description": "Tidak ada deskripsi tersedia."
+  },
+  "detail_pages": {
+    "by": "Oleh",
+    "published_on": "Dipublikasikan pada",
+    "related_events": "Kegiatan Terkait",
+    "event_details": "Detail Event",
+    "date_time": "Tanggal & Waktu",
+    "location": "Lokasi",
+    "quota": "Kuota",
+    "participants": "Peserta",
+    "fee": "Biaya",
+    "register_now": "Daftar Sekarang",
+    "registration_soon": "Pendaftaran Segera Dibuka",
+    "registration_closed": "Pendaftaran Ditutup",
+    "event_finished": "Event Telah Selesai",
+    "registration_form_title": "Pendaftaran",
+    "full_name_placeholder": "Nama Lengkap",
+    "email_placeholder": "Alamat Email",
+    "phone_placeholder": "Nomor Telepon",
+    "sending": "Mengirim..."
+  }
+}

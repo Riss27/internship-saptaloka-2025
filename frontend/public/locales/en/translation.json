@@ -1,0 +1,113 @@
+{
+  "navbar": {
+    "home": "Home",
+    "events": "Events",
+    "services": "Services",
+    "articles": "Articles",
+    "gallery": "Gallery",
+    "about": "About"
+  },
+  "services_dropdown": {
+    "aromatherapy_workshop": "Aromatherapy Workshop",
+    "perfume_workshop": "Perfume Workshop",
+    "custom_perfume": "Create Perfume & Aromatherapy",
+    "lab_tools": "Laboratory Tools",
+    "ingredients": "Perfume & Aromatherapy Ingredients",
+    "products": "Perfume & Aromatherapy Products"
+  },
+  "homepage": {
+    "our_services": "Our Services",
+    "services_subtitle": "From workshops to custom perfume making, we are ready to serve.",
+    "recent_activities": "Recent Activities",
+    "featured_products": "Featured Products",
+    "latest_articles": "Latest Articles",
+    "gallery": "Activity Gallery"
+  },
+  "footer": {
+    "follow_us": "Follow Us:",
+    "contact_us": "Contact Us",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location"
+  },
+  "about_page": {
+    "about_us": "About Us",
+    "contact_us": "Contact Us",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "instagram": "Instagram",
+    "visit_instagram": "Visit our Instagram",
+    "send_message": "Send a Message",
+    "full_name": "Full Name",
+    "your_name": "Enter your name",
+    "phone_number": "Phone Number",
+    "message": "Message",
+    "write_message": "Write your message here...",
+    "send": "Send Message"
+  },
+  "products_page": {
+    "our_collection": "Our Collection",
+    "collection_subtitle": "Explore the various choices of perfumes and aromatherapy that we offer.",
+    "search_placeholder": "Search products by name or description...",
+    "all": "All",
+    "perfume": "Perfume",
+    "aromatherapy": "Aromatherapy",
+    "no_products_found": "No products found matching the search"
+  },
+  "ingredients_page": {
+    "title": "Perfume & Aromatherapy Ingredients",
+    "subtitle": "Explore our collection of high-quality raw materials.",
+    "search_placeholder": "Search ingredients by name, category, or description...",
+    "all": "All",
+    "essential_oil": "Essential Oil",
+    "non_essential_oil": "Non-Essential Oil",
+    "no_ingredients_found": "No ingredients found matching the search"
+  },
+  "lab_tools_page": {
+    "title": "Laboratory Tools",
+    "subtitle": "Equip your laboratory with high-quality tools.",
+    "search_placeholder": "Search laboratory tools by name...",
+    "no_tools_found": "No tools found matching the search"
+  },
+  "events_page": {
+    "title": "Activities & Events",
+    "subtitle": "Join the various exciting activities we organize.",
+    "search_placeholder": "Search events by name, location, or category...",
+    "no_events_found": "No events found matching the search"
+  },
+  "gallery_page": {
+    "title": "Activity Gallery",
+    "subtitle": "Precious moments from our workshops and events."
+  },
+  "articles_page": {
+    "title": "Latest Articles",
+    "subtitle": "Explore insights, tips, and stories from the world of perfume and aromatherapy.",
+    "search_placeholder": "Search articles by title, author, or content..."
+  },
+  "static": {
+    "category": "Category",
+    "description": "Description",
+    "no_description": "No description available."
+  },
+  "detail_pages": {
+    "by": "By",
+    "published_on": "Published on",
+    "related_events": "Related Events",
+    "event_details": "Event Details",
+    "date_time": "Date & Time",
+    "location": "Location",
+    "quota": "Quota",
+    "participants": "Participants",
+    "fee": "Fee",
+    "register_now": "Register Now",
+    "registration_soon": "Registration Opens Soon",
+    "registration_closed": "Registration Closed",
+    "event_finished": "Event Finished",
+    "registration_form_title": "Registration",
+    "full_name_placeholder": "Full Name",
+    "email_placeholder": "Email Address",
+    "phone_placeholder": "Phone Number",
+    "sending": "Sending..."
+  }
+}
