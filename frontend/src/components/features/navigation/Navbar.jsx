@@ -1,31 +1,41 @@
+// frontend/src/components/features/navigation/Navbar.jsx
+
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-
-const menuItems = [
-  { name: "Beranda", to: "/" },
-  { name: "Kegiatan", to: "/events" },
-  {
-    name: "Layanan",
-    dropdown: [
-      { name: "Workshop Aromaterapi", to: "/workshop/aromaterapi" },
-      { name: "Workshop Parfum", to: "/workshop/parfum" },
-      { name: "Buat Parfum & Aromaterapi", to: "/services/custom" },
-      { name: "Alat Laboratorium", to: "/lab-tools" },
-      { name: "Bahan Parfum & Aromaterapi", to: "/ingredients" },
-      { name: "Produk Parfum & Aromaterapi", to: "/products" },
-    ],
-  },
-  { name: "Artikel", to: "/articles" },
-  { name: "Galeri", to: "/gallery" },
-  { name: "Tentang", to: "/about" },
-  { name: "POS", to: "/pos" },
-];
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
+  const { t, i18n } = useTranslation();
+
+  const menuItems = [
+    { name: t("navbar.home"), to: "/" },
+    { name: t("navbar.events"), to: "/events" },
+    {
+      name: t("navbar.services"),
+      dropdown: [
+        // --- PERUBAHAN DI SINI ---
+        { name: t("services_dropdown.aromatherapy_workshop"), to: "/workshop/aromaterapi" },
+        { name: t("services_dropdown.perfume_workshop"), to: "/workshop/parfum" },
+        { name: t("services_dropdown.custom_perfume"), to: "/services/custom" },
+        { name: t("services_dropdown.lab_tools"), to: "/lab-tools" },
+        { name: t("services_dropdown.ingredients"), to: "/ingredients" },
+        { name: t("services_dropdown.products"), to: "/products" },
+      ],
+    },
+    { name: t("navbar.articles"), to: "/articles" },
+    { name: t("navbar.gallery"), to: "/gallery" },
+    { name: t("navbar.about"), to: "/about" },
+    // Halaman POS sepertinya tidak ada di rute publik, tapi kita biarkan dulu
+    { name: "POS", to: "/pos" },
+  ];
+
   const [mobileMenu, setMobileMenu] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const [language, setLanguage] = useState("id");
   const dropdownRef = useRef(null);
+
+  const changeLanguage = (lang) => {
+    i18n.changeLanguage(lang);
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -102,9 +112,9 @@ const Navbar = () => {
           {["id", "en"].map((lang) => (
             <button
               key={lang}
-              onClick={() => setLanguage(lang)}
+              onClick={() => changeLanguage(lang)}
               className={`w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-200 hover:scale-105 ${
-                language === lang ? "border-emerald-700 bg-emerald-50" : "border-gray-300 hover:border-emerald-400 opacity-80 hover:opacity-100"
+                i18n.resolvedLanguage === lang ? "border-emerald-700 bg-emerald-50" : "border-gray-300 hover:border-emerald-400 opacity-80 hover:opacity-100"
               }`}
             >
               <img src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`} alt={lang.toUpperCase()} className="w-6 h-6 object-cover rounded-full" />
@@ -132,9 +142,9 @@ const Navbar = () => {
               {["id", "en"].map((lang) => (
                 <button
                   key={lang}
-                  onClick={() => setLanguage(lang)}
+                  onClick={() => changeLanguage(lang)}
                   className={`w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-200 hover:scale-105 ${
-                    language === lang ? "border-emerald-700 bg-emerald-50" : "border-gray-300 hover:border-emerald-400 opacity-80 hover:opacity-100"
+                    i18n.resolvedLanguage === lang ? "border-emerald-700 bg-emerald-50" : "border-gray-300 hover:border-emerald-400 opacity-80 hover:opacity-100"
                   }`}
                 >
                   <img src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`} alt={lang.toUpperCase()} className="w-6 h-6 object-cover rounded-full" />
