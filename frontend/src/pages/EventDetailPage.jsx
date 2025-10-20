@@ -4,9 +4,11 @@ import axios from "axios";
 import { FiCalendar, FiMapPin, FiUsers, FiDollarSign } from "react-icons/fi";
 import RegistrationForm from "../components/features/events/registration/RegistrationForm";
 import Popup from "../components/ui/Popup";
+import { useTranslation } from "react-i18next";
 
 const EventDetailPage = () => {
   const { id } = useParams();
+  const { t } = useTranslation();
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,14 +52,17 @@ const EventDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-slate-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-emerald-700 font-medium">Loading...</p>
+        </div>
       </div>
     );
   }
 
   if (!event) {
-    return <div className="text-center py-20 text-white">Event tidak ditemukan.</div>;
+    return <div className="text-center py-20 text-white">{t("detail_pages.event_not_found")}</div>;
   }
 
   const participantRoles = parseJsonSafe(event.participantRoles);
@@ -119,14 +124,14 @@ const EventDetailPage = () => {
             <aside className="lg:col-span-1">
               <div className="sticky top-28 bg-white rounded-2xl p-6 shadow-lg border border-emerald-100 space-y-4">
                 <div className="flex justify-between items-center border-b border-slate-700 pb-2">
-                  <h3 className="text-xl font-bold text-emerald-800">Detail Event</h3>
+                  <h3 className="text-xl font-bold text-emerald-800">{t("detail_pages.event_details")}</h3>
                   {event.status && <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(event.status)}`}>{event.status}</span>}
                 </div>
 
                 <div className="flex items-start gap-3">
                   <FiCalendar className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-emerald-800">Tanggal & Waktu</p>
+                    <p className="font-semibold text-emerald-800">{t("detail_pages.date_time")}</p>
                     <p className="text-sm">
                       {formatDate(event.startDateTime)} - {formatDate(event.endDateTime)}
                     </p>
@@ -136,7 +141,7 @@ const EventDetailPage = () => {
                 <div className="flex items-start gap-3">
                   <FiMapPin className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-emerald-800">Lokasi</p>
+                    <p className="font-semibold text-emerald-800">{t("detail_pages.location")}</p>
                     <p className="text-sm">{event.location}</p>
                   </div>
                 </div>
@@ -144,9 +149,9 @@ const EventDetailPage = () => {
                 <div className="flex items-start gap-3">
                   <FiUsers className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-emerald-800">Kuota</p>
+                    <p className="font-semibold text-emerald-800">{t("detail_pages.quota")}</p>
                     <p className="text-sm">
-                      {event.EventRegistrations.length} / {event.quota} Peserta
+                      {event.EventRegistrations.length} / {event.quota} {t("detail_pages.participants")}
                     </p>
                   </div>
                 </div>
@@ -154,8 +159,8 @@ const EventDetailPage = () => {
                 <div className="flex items-start gap-3">
                   <FiDollarSign className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-emerald-800">Biaya</p>
-                    <p className="text-sm">{event.fee > 0 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}` : "Gratis"}</p>
+                    <p className="font-semibold text-emerald-800">{t("detail_pages.fee")}</p>
+                    <p className="text-sm">{event.fee > 0 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}` : t("static.free")}</p>
                   </div>
                 </div>
 
@@ -163,14 +168,14 @@ const EventDetailPage = () => {
                   {event.status === "Open" ? (
                     <>
                       <button onClick={() => setIsModalOpen(true)} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors">
-                        Daftar Sekarang
+                        {t("detail_pages.register_now")}
                       </button>
                     </>
                   ) : (
                     <button disabled className="w-full bg-slate-600 text-slate-400 font-bold py-3 rounded-lg cursor-not-allowed">
-                      {event.status === "Coming Soon" && "Pendaftaran Segera Dibuka"}
-                      {event.status === "Closed" && "Pendaftaran Ditutup"}
-                      {event.status === "Finished" && "Event Telah Selesai"}
+                      {event.status === "Coming Soon" && t("detail_pages.registration_soon")}
+                      {event.status === "Closed" && t("detail_pages.registration_closed")}
+                      {event.status === "Finished" && t("detail_pages.event_finished")}
                     </button>
                   )}
                 </div>
@@ -181,7 +186,7 @@ const EventDetailPage = () => {
       </div>
 
       {/* Popup Pendaftaran */}
-      <Popup isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Pendaftaran: ${event.title}`}>
+      <Popup isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`${t("detail_pages.registration_form_title")}: ${event.title}`}>
         <RegistrationForm eventId={event.id} participantRoles={participantRoles} />
       </Popup>
     </>

@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import EventCard from "../components/features/events/EventCard";
 import { Search, X, Calendar } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const EventsPage = () => {
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     axios
@@ -23,34 +25,32 @@ const EventsPage = () => {
       });
   }, []);
 
-  // Filter events berdasarkan query pencarian
   useEffect(() => {
-    if (searchQuery.trim() === "") {
+    if (!searchQuery.trim()) {
       setFilteredEvents(events);
-    } else {
-      const filtered = events.filter((event) => {
-        const titleMatch = event.title?.toLowerCase().includes(searchQuery.toLowerCase());
-        const descriptionMatch = event.description?.toLowerCase().includes(searchQuery.toLowerCase());
-        const locationMatch = event.location?.toLowerCase().includes(searchQuery.toLowerCase());
-        const categoryMatch = event.category?.toLowerCase().includes(searchQuery.toLowerCase());
-
-        return titleMatch || descriptionMatch || locationMatch || categoryMatch;
-      });
-      setFilteredEvents(filtered);
+      return;
     }
+
+    const filtered = events.filter((event) => {
+      return (
+        event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.category?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
+
+    setFilteredEvents(filtered);
   }, [searchQuery, events]);
 
-  // Handler untuk clear search
-  const handleClearSearch = () => {
-    setSearchQuery("");
-  };
+  const handleClearSearch = () => setSearchQuery("");
 
   if (isLoading) {
     return (
-      <div className="bg-white min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-slate-700 text-lg">Loading Events...</p>
+          <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-emerald-700 font-medium">Loading...</p>
         </div>
       </div>
     );
@@ -59,10 +59,10 @@ const EventsPage = () => {
   return (
     <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
       <div className="container mx-auto px-4 py-16">
-        {/* Header Halaman */}
+        {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-emerald-800 mb-2">Kegiatan & Event</h1>
-          <p className="text-slate-600 mb-8">Ikuti berbagai kegiatan menarik yang kami selenggarakan.</p>
+          <h1 className="text-4xl font-bold text-emerald-800 mb-2">{t("events_page.title")}</h1>
+          <p className="text-slate-600 mb-8">{t("events_page.subtitle")}</p>
 
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto">
@@ -70,7 +70,7 @@ const EventsPage = () => {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Cari event berdasarkan nama, lokasi, atau kategori..."
+                placeholder={t("events_page.search_placeholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-12 py-3 bg-white text-slate-800 rounded-lg border border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
@@ -82,16 +82,16 @@ const EventsPage = () => {
               )}
             </div>
 
-            {/* Search Results Info */}
             {searchQuery && (
               <p className="text-slate-500 text-sm mt-3">
-                Menampilkan <span className="text-emerald-600 font-semibold">{filteredEvents.length}</span> dari <span className="text-slate-800 font-semibold">{events.length}</span> event
+                {t("static.showing", "Showing")} <span className="text-emerald-600 font-semibold">{filteredEvents.length}</span> {t("static.of", "of")} <span className="text-slate-800 font-semibold">{events.length}</span>{" "}
+                {t("static.items", "events")}
               </p>
             )}
           </div>
         </div>
 
-        {/* Konten Events */}
+        {/* Grid Events */}
         {filteredEvents.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredEvents.map((event) => (
@@ -103,13 +103,15 @@ const EventsPage = () => {
             {searchQuery ? (
               <div>
                 <Calendar className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                <p className="text-slate-600 text-lg mb-2">Tidak ada event yang cocok dengan pencarian "{searchQuery}"</p>
+                <p className="text-slate-600 text-lg mb-2">
+                  {t("events_page.no_events_found", "No events found matching")} "{searchQuery}"
+                </p>
                 <button onClick={handleClearSearch} className="text-emerald-600 hover:text-emerald-800 underline">
-                  Hapus pencarian
+                  {t("static.clear_search", "Clear search")}
                 </button>
               </div>
             ) : (
-              <p className="text-slate-500">Belum ada kegiatan yang tersedia saat ini.</p>
+              <p className="text-slate-500">{t("events_page.no_events", "No events available at the moment.")}</p>
             )}
           </div>
         )}

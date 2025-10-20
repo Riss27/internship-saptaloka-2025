@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FiClock } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 const WorkshopsPage = ({ category }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const findAndRedirect = async () => {
@@ -35,7 +37,9 @@ const WorkshopsPage = ({ category }) => {
     return (
       <div className="container mx-auto px-4 py-20 text-center text-slate-700">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-        <p>Mencari Workshop {category}...</p>
+        <p>
+          {t("workshops_page.searching", "Mencari Workshop")} {category}...
+        </p>
       </div>
     );
   }
@@ -47,8 +51,10 @@ const WorkshopsPage = ({ category }) => {
           <div className="bg-emerald-100 inline-block p-6 rounded-full mb-6">
             <FiClock size={40} className="text-emerald-600" />
           </div>
-          <h1 className="text-4xl font-bold mb-4 text-emerald-800">Segera Hadir!</h1>
-          <p className="text-slate-600 max-w-lg mx-auto">Saat ini belum ada workshop untuk kategori {category}. Pantau terus halaman ini untuk informasi terbaru!</p>
+          <h1 className="text-4xl font-bold mb-4 text-emerald-800">{t("workshops_page.coming_soon", "Segera Hadir!")}</h1>
+          <p className="text-slate-600 max-w-lg mx-auto">
+            {t("workshops_page.no_workshop", "Saat ini belum ada workshop untuk kategori")} {category}. {t("workshops_page.keep_updated", "Pantau terus halaman ini untuk informasi terbaru!")}
+          </p>
         </div>
       </div>
     );

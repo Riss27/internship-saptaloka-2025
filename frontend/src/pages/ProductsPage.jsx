@@ -1,9 +1,13 @@
+// frontend/src/pages/ProductsPage.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ProductCard from "../components/features/products/ProductCard";
 import { Search, X, Package } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const ProductsPage = () => {
+  const { t } = useTranslation();
+
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -11,7 +15,6 @@ const ProductsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Ambil semua data produk dari backend
     axios
       .get("http://localhost:3000/api/products")
       .then((response) => {
@@ -25,22 +28,18 @@ const ProductsPage = () => {
       });
   }, []);
 
-  // Fungsi untuk filter produk berdasarkan kategori DAN search query
   useEffect(() => {
     let filtered = products;
 
-    // Filter berdasarkan kategori
     if (selectedCategory !== "All") {
       filtered = filtered.filter((product) => product.category === selectedCategory);
     }
 
-    // Filter berdasarkan search query
     if (searchQuery.trim() !== "") {
       filtered = filtered.filter((product) => {
         const nameMatch = product.name?.toLowerCase().includes(searchQuery.toLowerCase());
         const descriptionMatch = product.description?.toLowerCase().includes(searchQuery.toLowerCase());
         const categoryMatch = product.category?.toLowerCase().includes(searchQuery.toLowerCase());
-
         return nameMatch || descriptionMatch || categoryMatch;
       });
     }
@@ -48,7 +47,6 @@ const ProductsPage = () => {
     setFilteredProducts(filtered);
   }, [selectedCategory, searchQuery, products]);
 
-  // Handler untuk clear search
   const handleClearSearch = () => {
     setSearchQuery("");
   };
@@ -58,7 +56,7 @@ const ProductsPage = () => {
       <div className="bg-slate-900 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading Products...</p>
+          <p className="text-white text-lg">{t("products_page.loading")}</p>
         </div>
       </div>
     );
@@ -68,17 +66,16 @@ const ProductsPage = () => {
     <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          {/* Menyesuaikan warna teks header */}
-          <h1 className="text-4xl font-bold text-emerald-800 mb-2">Koleksi Kami</h1>
-          <p className="text-slate-600 mb-8">Jelajahi berbagai pilihan parfum dan aromaterapi yang kami tawarkan.</p>
+          <h1 className="text-4xl font-bold text-emerald-800 mb-2">{t("products_page.our_collection")}</h1>
+          <p className="text-slate-600 mb-8">{t("products_page.collection_subtitle")}</p>
 
-          {/* Search Bar */}
+          {/* Search bar */}
           <div className="max-w-2xl mx-auto mb-8">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Cari produk berdasarkan nama atau deskripsi..."
+                placeholder={t("products_page.search_placeholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-12 py-3 bg-white text-slate-800 rounded-lg border border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
@@ -90,31 +87,31 @@ const ProductsPage = () => {
               )}
             </div>
 
-            {/* Search Results Info */}
             {(searchQuery || selectedCategory !== "All") && (
               <p className="text-slate-400 text-sm mt-3">
-                Menampilkan <span className="text-emerald-700 font-semibold">{filteredProducts.length}</span> dari <span className="text-emerald-900 font-semibold">{products.length}</span> produk
+                {t("Menampilkan")} <span className="text-emerald-700 font-semibold">{filteredProducts.length}</span> {t("dari")} <span className="text-emerald-900 font-semibold">{products.length}</span>{" "}
+                {t("produk")}
               </p>
             )}
           </div>
         </div>
 
-        {/* Tombol Filter Kategori */}
+        {/* Filter Kategori */}
         <div className="flex justify-center gap-4 mb-12 flex-wrap">
           <button onClick={() => setSelectedCategory("All")} className={`px-6 py-2 rounded-full font-semibold transition-colors ${selectedCategory === "All" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-emerald-50"}`}>
-            Semua
+            {t("products_page.all")}
           </button>
           <button
             onClick={() => setSelectedCategory("Parfum")}
             className={`px-6 py-2 rounded-full font-semibold transition-colors ${selectedCategory === "Parfum" ? "bg-cyan-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"}`}
           >
-            Parfum
+            {t("products_page.perfume")}
           </button>
           <button
             onClick={() => setSelectedCategory("Aromaterapi")}
             className={`px-6 py-2 rounded-full font-semibold transition-colors ${selectedCategory === "Aromaterapi" ? "bg-cyan-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"}`}
           >
-            Aromaterapi
+            {t("products_page.aromatherapy")}
           </button>
         </div>
 
@@ -127,28 +124,20 @@ const ProductsPage = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            {searchQuery || selectedCategory !== "All" ? (
-              <div>
-                <Package className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                <p className="text-slate-400 text-lg mb-2">
-                  {searchQuery ? `Tidak ada produk yang cocok dengan pencarian "${searchQuery}"${selectedCategory !== "All" ? ` dalam kategori ${selectedCategory}` : ""}` : `Tidak ada produk dalam kategori ${selectedCategory}.`}
-                </p>
-                <div className="flex gap-3 justify-center mt-4">
-                  {searchQuery && (
-                    <button onClick={handleClearSearch} className="text-cyan-400 hover:text-cyan-300 underline">
-                      Hapus pencarian
-                    </button>
-                  )}
-                  {selectedCategory !== "All" && (
-                    <button onClick={() => setSelectedCategory("All")} className="text-cyan-400 hover:text-cyan-300 underline">
-                      Lihat semua kategori
-                    </button>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <p className="text-slate-400">Tidak ada produk tersedia saat ini.</p>
-            )}
+            <Package className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+            <p className="text-slate-400 text-lg mb-2">{t("products_page.no_products_found")}</p>
+            <div className="flex gap-3 justify-center mt-4">
+              {searchQuery && (
+                <button onClick={handleClearSearch} className="text-cyan-400 hover:text-cyan-300 underline">
+                  {t("products_page.clear_search")}
+                </button>
+              )}
+              {selectedCategory !== "All" && (
+                <button onClick={() => setSelectedCategory("All")} className="text-cyan-400 hover:text-cyan-300 underline">
+                  {t("products_page.view_all_categories")}
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>

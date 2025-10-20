@@ -43,8 +43,11 @@ const HomePage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen text-emerald-700">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-700"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-emerald-700 font-medium">Loading...</p>
+        </div>
       </div>
     );
   }
@@ -56,8 +59,16 @@ const HomePage = () => {
     viewport: { once: true },
   });
 
+  // Service descriptions (static)
+  const aromatherapyDesc = "Pelajari seni meracik parfum dengan panduan ahli.";
+  const perfumeWorkshopDesc = "Belajar meracik parfum personal dengan mudah.";
+  const customPerfumeDesc = "Kreasikan aroma unikmu dengan panduan kami.";
+  const productsDesc = "Temukan koleksi parfum unik kami.";
+  const labToolsDesc = "Peralatan lab skala mikro standar industri.";
+  const ingredientsDesc = "Jelajahi bahan baku pilihan kami.";
+
   return (
-    <div className="bg-white">
+    <div>
       <Carousel />
       <div className="container mx-auto px-4 py-16 md:py-24 space-y-24">
         {/* Layanan Kami */}
@@ -70,12 +81,12 @@ const HomePage = () => {
           </motion.p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: t("services_dropdown.aromatherapy_workshop"), desc: "Pelajari seni meracik parfum dengan panduan ahli.", link: "/workshop/aromaterapi" },
-              { title: t("services_dropdown.perfume_workshop"), desc: "Belajar meracik parfum personal dengan mudah.", link: "/workshop/parfum" },
-              { title: t("services_dropdown.custom_perfume"), desc: "Kreasikan aroma unikmu dengan panduan kami.", link: "/" },
-              { title: t("services_dropdown.products"), desc: "Temukan koleksi parfum unik kami.", link: "/products" },
-              { title: t("services_dropdown.lab_tools"), desc: "Peralatan lab skala mikro standar industri.", link: "/lab-tools" },
-              { title: t("services_dropdown.ingredients"), desc: "Jelajahi bahan baku pilihan kami.", link: "/ingredients" },
+              { title: t("services_dropdown.aromatherapy_workshop"), desc: aromatherapyDesc, link: "/workshop/aromaterapi" },
+              { title: t("services_dropdown.perfume_workshop"), desc: perfumeWorkshopDesc, link: "/workshop/parfum" },
+              { title: t("services_dropdown.custom_perfume"), desc: customPerfumeDesc, link: "/" },
+              { title: t("services_dropdown.products"), desc: productsDesc, link: "/products" },
+              { title: t("services_dropdown.lab_tools"), desc: labToolsDesc, link: "/lab-tools" },
+              { title: t("services_dropdown.ingredients"), desc: ingredientsDesc, link: "/ingredients" },
             ].map((service, i) => (
               <motion.div key={i} {...gridItemMotion(i)}>
                 <ServiceCard title={service.title} description={service.desc} linkTo={service.link} />
@@ -87,9 +98,8 @@ const HomePage = () => {
         {/* Kegiatan Terbaru */}
         <section className="bg-slate-100 p-8 rounded-2xl overflow-hidden">
           <motion.h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            Kegiatan Terbaru
+            {t("homepage.recent_activities")}
           </motion.h2>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {latestEvents.map((event, i) => (
               <motion.div key={event.id} {...gridItemMotion(i)} whileHover={{ scale: 1.03, y: -5 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
@@ -116,7 +126,7 @@ const HomePage = () => {
         {/* Produk Unggulan */}
         <section>
           <motion.h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            Produk Unggulan
+            {t("homepage.featured_products")}
           </motion.h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -131,7 +141,7 @@ const HomePage = () => {
         {/* Artikel Terbaru */}
         <section className="bg-slate-100 p-8 rounded-2xl">
           <motion.h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            Artikel Terbaru
+            {t("homepage.latest_articles")}
           </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -146,7 +156,7 @@ const HomePage = () => {
         {/* Galeri Kegiatan */}
         <section>
           <motion.h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            Galeri Kegiatan
+            {t("homepage.gallery")}
           </motion.h2>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">

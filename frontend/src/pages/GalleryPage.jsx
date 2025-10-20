@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FiImage } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 const GalleryPage = () => {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     axios
@@ -24,24 +26,24 @@ const GalleryPage = () => {
       <div className="bg-white min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-slate-700 text-lg">Loading Gallery...</p>
+          <p className="text-slate-700 text-lg">{t("gallery_page.loading", "Loading Gallery...")}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
+    <div className="min-h-screen">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-emerald-800 mb-2">Galeri Kegiatan</h1>
-          <p className="text-slate-600">Momen berharga dari setiap workshop dan event kami.</p>
+          <h1 className="text-4xl font-bold text-emerald-800 mb-2">{t("gallery_page.title")}</h1>
+          <p className="text-slate-600">{t("gallery_page.subtitle")}</p>
         </div>
 
         {images.length === 0 ? (
           <div className="text-center py-12">
             <FiImage className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <p className="text-slate-500">Belum ada gambar di galeri saat ini.</p>
+            <p className="text-slate-500">{t("gallery_page.no_images", "No images available in the gallery.")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">

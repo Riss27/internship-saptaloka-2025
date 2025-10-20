@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { useTranslateDB } from "../hooks/useTranslateDB";
+import { useTranslation } from "react-i18next";
 
 const WorkshopDetailPage = () => {
   const { id } = useParams();
   const [workshop, setWorkshop] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useTranslation();
+
+  // Gunakan hook translasi
+  const translatedTitle = useTranslateDB(workshop?.title);
+  const translatedDescription = useTranslateDB(workshop?.description);
 
   useEffect(() => {
     const fetchWorkshop = async () => {
@@ -31,24 +38,28 @@ const WorkshopDetailPage = () => {
   }
 
   if (!workshop) {
-    return <div className="text-center py-20 text-slate-700">Workshop tidak ditemukan.</div>;
+    return <div className="text-center py-20 text-slate-700">{t("detail_pages.not_found_workshop", "Workshop tidak ditemukan.")}</div>;
   }
 
   return (
     <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
       <div className="container mx-auto px-4 py-16 max-w-5xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 items-center">
+          {/* Gambar Workshop */}
           <div className="md:col-span-1">
             <img src={`http://localhost:3000${workshop.imageUrl}`} alt={workshop.title} className="rounded-2xl shadow-2xl w-full object-cover" />
           </div>
+
+          {/* Info Workshop */}
           <div className="md:col-span-2">
-            <h1 className="text-4xl font-bold text-emerald-800 mb-4">{workshop.title}</h1>
-            <div className="prose prose-lg max-w-none text-slate-600" dangerouslySetInnerHTML={{ __html: workshop.description }} />
+            <h1 className="text-4xl font-bold text-emerald-800 mb-4">{translatedTitle}</h1>
+            <div className="prose prose-lg max-w-none text-slate-600" dangerouslySetInnerHTML={{ __html: translatedDescription }} />
           </div>
         </div>
 
+        {/* Kegiatan Terkait */}
         <div>
-          <h2 className="text-3xl font-bold text-emerald-800 mb-8 border-b-2 border-emerald-300 pb-3 inline-block">Kegiatan Terkait</h2>
+          <h2 className="text-3xl font-bold text-emerald-800 mb-8 border-b-2 border-emerald-300 pb-3 inline-block">{t("detail_pages.related_events", "Kegiatan Terkait")}</h2>
           {workshop.Events && workshop.Events.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {workshop.Events.map((event) => (
@@ -58,13 +69,19 @@ const WorkshopDetailPage = () => {
                   </div>
                   <div className="p-4">
                     <h3 className="font-bold text-lg text-slate-800 group-hover:text-emerald-600 transition-colors">{event.title}</h3>
-                    <p className="text-sm text-slate-500 mt-1">{new Date(event.startDateTime).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</p>
+                    <p className="text-sm text-slate-500 mt-1">
+                      {new Date(event.startDateTime).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </p>
                   </div>
                 </Link>
               ))}
             </div>
           ) : (
-            <p className="text-slate-500">Belum ada kegiatan yang terdaftar untuk workshop ini.</p>
+            <p className="text-slate-500">{t("detail_pages.no_related_events", "Belum ada kegiatan yang terdaftar untuk workshop ini.")}</p>
           )}
         </div>
       </div>

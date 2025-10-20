@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import LabToolCard from "../components/features/lab_tools/LabToolCard";
 import { Search, X, Wrench } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const LabToolsPage = () => {
   const [labTools, setLabTools] = useState([]);
   const [filteredTools, setFilteredTools] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     axios
@@ -41,7 +43,7 @@ const LabToolsPage = () => {
       <div className="bg-slate-900 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading Lab Tools...</p>
+          <p className="text-white text-lg">{t("lab_tools_page.loading", "Loading Lab Tools...")}</p>
         </div>
       </div>
     );
@@ -52,8 +54,8 @@ const LabToolsPage = () => {
       <div className="container mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-emerald-800 mb-2">Alat Laboratorium</h1>
-          <p className="text-slate-600 mb-8">Sediakan laboratorium Anda dengan peralatan berkualitas tinggi.</p>
+          <h1 className="text-4xl font-bold text-emerald-800 mb-2">{t("lab_tools_page.title")}</h1>
+          <p className="text-slate-600 mb-8">{t("lab_tools_page.subtitle")}</p>
         </div>
 
         {/* Search Bar */}
@@ -62,7 +64,7 @@ const LabToolsPage = () => {
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Cari alat laboratorium berdasarkan nama..."
+              placeholder={t("lab_tools_page.search_placeholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-12 py-3 bg-white text-slate-800 rounded-lg border border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
@@ -74,10 +76,10 @@ const LabToolsPage = () => {
             )}
           </div>
 
-          {/* Info hasil pencarian */}
           {searchQuery && (
             <p className="text-slate-400 text-sm mt-3">
-              Menampilkan <span className="text-emerald-700 font-semibold">{filteredTools.length}</span> dari <span className="text-black font-semibold">{labTools.length}</span> alat
+              {t("static.showing", "Menampilkan")} <span className="text-emerald-700 font-semibold">{filteredTools.length}</span> {t("static.of", "dari")} <span className="text-black font-semibold">{labTools.length}</span>{" "}
+              {t("static.items", "alat")}
             </p>
           )}
         </div>
@@ -92,9 +94,9 @@ const LabToolsPage = () => {
         ) : (
           <div className="text-center py-12">
             <Wrench className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <p className="text-slate-400 text-lg mb-2">Tidak ada alat yang cocok dengan pencarian "{searchQuery}".</p>
+            <p className="text-slate-400 text-lg mb-2">{t("lab_tools_page.no_tools_found")}</p>
             <button onClick={handleClearSearch} className="text-cyan-400 hover:text-cyan-300 underline">
-              Hapus pencarian
+              {t("static.clear_search", "Hapus pencarian")}
             </button>
           </div>
         )}
