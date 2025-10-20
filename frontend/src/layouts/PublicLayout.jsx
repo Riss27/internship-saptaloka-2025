@@ -6,7 +6,7 @@ import Footer from "../components/features/navigation/Footer";
 const PublicLayout = () => {
   return (
     <div className="flex flex-col min-h-screen bg-emerald-50/70 text-slate-800">
-      <Navbar />l
+      <Navbar />
       <main className="flex-grow">
         <Outlet />
       </main>
