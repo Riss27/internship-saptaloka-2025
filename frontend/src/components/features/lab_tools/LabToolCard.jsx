@@ -2,8 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { useTranslateDB } from "../../../hooks/useTranslateDB";
 
 const LabToolCard = ({ tool }) => {
+  const translatedName = useTranslateDB(tool.name);
+
   return (
     <div className="bg-emerald-900/70 backdrop-blur-xl border border-emerald-400/20 rounded-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-emerald-400/30">
       <Link to={`/lab-tools/${tool.id}`} className="block">
@@ -23,8 +26,8 @@ const LabToolCard = ({ tool }) => {
           />
         </div>
         <div className="p-4">
-          <h3 className="font-semibold text-lg text-white mt-2 truncate group-hover:text-emerald-300 transition-colors" title={tool.name}>
-            {tool.name}
+          <h3 className="font-semibold text-lg text-white mt-2 truncate group-hover:text-emerald-300 transition-colors" title={translatedName}>
+            {translatedName}
           </h3>
           <p className="text-emerald-300 font-semibold mt-1">Rp {new Intl.NumberFormat("id-ID").format(tool.price)}</p>
         </div>

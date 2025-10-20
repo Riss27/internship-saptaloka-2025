@@ -31,109 +31,87 @@ const Footer = () => {
   return (
     <>
       {/* Main Footer */}
-      <footer className="relative bg-gradient-to-b from-emerald-50 to-white text-gray-700 pt-16 pb-8 mt-20 border-t-2 border-emerald-200">
-        {/* Decorative gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-100/30 via-transparent to-emerald-50/20 pointer-events-none" />
-
+      <footer className="relative bg-[#184737] text-white pt-16 pb-8 mt-20 border-t border-white/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-          {/* Main Content Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            {/* Brand Section */}
             <div className="lg:col-span-2">
               <div className="flex items-center gap-3 mb-4">
                 {aboutInfo.logoFooter ? (
                   <img src={`http://localhost:3000${aboutInfo.logoFooter}`} alt="Askreative Logo" className="h-16 w-auto object-contain" />
                 ) : (
-                  <div className="w-16 h-16 bg-emerald-800 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-xl">askr</span>
+                  <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center">
+                    <span className="text-[#184737] font-bold text-xl">askr</span>
                   </div>
                 )}
-                <h3 className="font-bold text-emerald-800 text-2xl">Askreative Parfum</h3>
+                <h3 className="font-bold text-white text-2xl">Askreative Parfum</h3>
               </div>
-              <p className="text-gray-600 leading-relaxed mb-6 max-w-md">
+              <p className="text-gray-300 leading-relaxed mb-6 max-w-md">
                 {aboutInfo.about?.substring(0, 180) || "Menghadirkan aroma berkualitas premium untuk melengkapi gaya hidup Anda. Setiap produk dirancang dengan sentuhan kreatif dan inovatif."}...
               </p>
 
-              {/* Social Media */}
               <div className="flex items-center gap-4">
-                <span className="text-sm font-semibold text-gray-600">Follow Us:</span>
+                <span className="text-sm font-semibold text-gray-300">Follow Us:</span>
                 <a
                   href={aboutInfo.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-center w-10 h-10 bg-emerald-100 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600 rounded-lg transition-all duration-300 transform hover:scale-110"
+                  className="flex items-center justify-center w-10 h-10 bg-white text-[#184737] rounded-lg hover:bg-[#0d2a1f] hover:text-white transition-all duration-300 transform hover:scale-105"
                   aria-label="Instagram"
                 >
-                  <FiInstagram className="w-5 h-5 text-emerald-700 group-hover:text-white transition-colors" />
+                  <FiInstagram className="w-5 h-5" />
                 </a>
               </div>
             </div>
 
-            {/* Contact Info */}
             <div>
-              <h4 className="font-bold text-emerald-800 text-lg mb-6 relative inline-block">
+              <h4 className="font-bold text-white text-lg mb-6 relative inline-block">
                 Hubungi Kami
-                <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-gradient-to-r from-emerald-600 to-transparent" />
+                <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-white/70" />
               </h4>
               <ul className="space-y-4">
-                <li className="flex items-start gap-3 group">
-                  <div className="flex-shrink-0 w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                    <FiMail className="w-5 h-5 text-emerald-700" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs text-gray-500 mb-1">Email</p>
-                    <a href={`mailto:${aboutInfo.email}`} className="text-sm text-gray-700 hover:text-emerald-700 transition-colors break-all font-medium">
-                      {aboutInfo.email || "info@askreative.com"}
-                    </a>
-                  </div>
-                </li>
-
-                <li className="flex items-start gap-3 group">
-                  <div className="flex-shrink-0 w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                    <FiPhone className="w-5 h-5 text-emerald-700" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs text-gray-500 mb-1">Telepon</p>
-                    <a href={`tel:${aboutInfo.phone}`} className="text-sm text-gray-700 hover:text-emerald-700 transition-colors font-medium">
-                      {aboutInfo.phone || "+62 xxx xxxx xxxx"}
-                    </a>
-                  </div>
-                </li>
-
-                <li className="flex items-start gap-3 group">
-                  <div className="flex-shrink-0 w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                    <FiMapPin className="w-5 h-5 text-emerald-700" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs text-gray-500 mb-1">Lokasi</p>
-                    <p className="text-sm text-gray-700 font-medium">{aboutInfo.address || "Indonesia"}</p>
-                  </div>
-                </li>
+                {[
+                  { icon: FiMail, label: "Email", value: aboutInfo.email || "info@askreative.com", href: `mailto:${aboutInfo.email}` },
+                  { icon: FiPhone, label: "Telepon", value: aboutInfo.phone || "+62 xxx xxxx xxxx", href: `tel:${aboutInfo.phone}` },
+                  { icon: FiMapPin, label: "Lokasi", value: aboutInfo.address || "Indonesia" },
+                ].map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3 group">
+                    <div className="flex-shrink-0 w-10 h-10 bg-white rounded-lg flex items-center justify-center group-hover:bg-[#0d2a1f] transition-colors">
+                      <item.icon className="w-5 h-5 text-[#184737]" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs text-gray-300 mb-1">{item.label}</p>
+                      {item.href ? (
+                        <a href={item.href} className="text-sm text-white hover:text-gray-300 transition-colors font-medium break-all">
+                          {item.value}
+                        </a>
+                      ) : (
+                        <p className="text-sm text-white font-medium">{item.value}</p>
+                      )}
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="border-t border-emerald-200 pt-8">
+          <div className="border-t border-white/30 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              {/* Copyright */}
-              <p className="text-sm text-gray-600 text-center md:text-left">
-                © {new Date().getFullYear()} <span className="text-emerald-800 font-semibold">Askreative Parfum</span>. All Rights Reserved.
+              <p className="text-sm text-gray-300 text-center md:text-left">
+                © {new Date().getFullYear()} <span className="text-white font-semibold">Askreative Parfum</span>. All Rights Reserved.
               </p>
-              <p className="text-gray-400 text-center md:text-right">Rebuild by Muhammad Faris Fathur Rohman.</p>
+              <p className="text-gray-300 text-center md:text-right">Rebuild by Muhammad Faris Fathur Rohman.</p>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* Scroll to Top Button */}
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-gradient-to-br from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-full shadow-2xl shadow-emerald-500/25 flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 group"
+          className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-white text-[#184737] rounded-full shadow-lg shadow-[#00000050] flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:-translate-y-1"
           aria-label="Scroll to top"
         >
-          <FiArrowUp className="w-5 h-5 group-hover:animate-bounce" />
+          <FiArrowUp className="w-5 h-5" />
         </button>
       )}
     </>

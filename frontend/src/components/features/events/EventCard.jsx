@@ -1,10 +1,12 @@
+// frontend/src/components/features/events/EventCard.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import { FiCalendar, FiMapPin, FiClock, FiDollarSign, FiUsers } from "react-icons/fi";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { useTranslateDB } from "../../../hooks/useTranslateDB";
 
-// Fungsi helper untuk menentukan warna badge
+// Fungsi ini dibuat lebih aman untuk menangani nilai yang mungkin null/undefined
 const getStatusBadge = (status) => {
   switch (status) {
     case "Open":
@@ -15,11 +17,14 @@ const getStatusBadge = (status) => {
     case "Finished":
       return "bg-slate-200 text-slate-700";
     default:
-      return "bg-gray-200 text-gray-700";
+      return "bg-gray-200 text-gray-700"; // Fallback class
   }
 };
 
 const EventCard = ({ event }) => {
+  const translatedTitle = useTranslateDB(event.title);
+  const translatedStatus = useTranslateDB(event.status);
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("id-ID", {
       day: "numeric",
@@ -35,7 +40,6 @@ const EventCard = ({ event }) => {
     });
   };
 
-  // Hitung sisa kuota
   const availableQuota = event.quota - (event.registeredCount || 0);
 
   return (
@@ -50,13 +54,14 @@ const EventCard = ({ event }) => {
             wrapperClassName="w-full h-full"
             threshold={100}
           />
-          {event.status && <span className={`absolute top-3 right-3 px-3 py-1 text-xs font-semibold rounded-full ${getStatusBadge(event.status)}`}>{event.status}</span>}
+          {/* PERBAIKAN: className menggunakan status asli, sementara teksnya menggunakan hasil terjemahan */}
+          {event.status && <span className={`absolute top-3 right-3 px-3 py-1 text-xs font-semibold rounded-full ${getStatusBadge(event.status)}`}>{translatedStatus}</span>}
         </div>
       </Link>
       <div className="p-5 flex flex-col flex-grow">
         <Link to={`/events/${event.id}`}>
-          <h3 className="font-bold text-xl text-slate-800 mt-1 truncate group-hover:text-emerald-600 transition-colors" title={event.title}>
-            {event.title}
+          <h3 className="font-bold text-xl text-slate-800 mt-1 truncate group-hover:text-emerald-600 transition-colors" title={translatedTitle}>
+            {translatedTitle}
           </h3>
         </Link>
         <div className="space-y-2 text-slate-500 text-sm mt-3 flex-grow">

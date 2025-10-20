@@ -2,8 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { useTranslateDB } from "../../../hooks/useTranslateDB"; // Import hook translate
 
 const IngredientCard = ({ ingredient }) => {
+  const translatedName = useTranslateDB(ingredient?.name);
+  const translatedCategory = useTranslateDB(ingredient?.category);
+
   return (
     <div className="bg-emerald-900/60 backdrop-blur-xl border border-emerald-400/10 rounded-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-emerald-400/30">
       <Link to={`/ingredients/${ingredient.id}`} className="block">
@@ -22,11 +26,14 @@ const IngredientCard = ({ ingredient }) => {
             threshold={100}
           />
         </div>
+
         <div className="p-4">
-          <span className="text-xs bg-emerald-400/10 text-emerald-300 px-2 py-1 rounded-full backdrop-blur-sm">{ingredient.category}</span>
-          <h3 className="font-semibold text-lg text-white mt-2 truncate" title={ingredient.name}>
-            {ingredient.name}
+          <span className="text-xs bg-emerald-400/10 text-emerald-300 px-2 py-1 rounded-full backdrop-blur-sm">{translatedCategory}</span>
+
+          <h3 className="font-semibold text-lg text-white mt-2 truncate" title={translatedName}>
+            {translatedName}
           </h3>
+
           <p className="text-emerald-300 font-semibold mt-1">Rp {new Intl.NumberFormat("id-ID").format(ingredient.price)}</p>
         </div>
       </Link>
