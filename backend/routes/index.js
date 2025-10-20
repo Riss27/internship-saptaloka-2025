@@ -12,6 +12,10 @@ const articleRoutes = require("./articleRoutes");
 const eventRoutes = require("./eventRoutes");
 const workshopRoutes = require("./workshopRoutes");
 const authRoutes = require("./authRoutes");
+const translateRoutes = require("./translateRoutes");
+
+// Rute untuk fitur terjemahan
+router.use("/translate", translateRoutes);
 
 // Atur agar semua request ke /path sesuai diarahkan ke rute yang benar
 router.use("/products", productRoutes);
