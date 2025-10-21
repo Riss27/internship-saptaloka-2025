@@ -46,7 +46,7 @@ const WorkshopsPage = ({ category }) => {
 
   if (notFound) {
     return (
-      <div className="bg-gradient-to-b from-emerald-50 to-white min-h-[60vh] flex items-center">
+      <div className="bbg-emerald-50/70 min-h-[60vh] flex items-center">
         <div className="container mx-auto px-4 py-20 text-center text-slate-700">
           <div className="bg-emerald-100 inline-block p-6 rounded-full mb-6">
             <FiClock size={40} className="text-emerald-600" />

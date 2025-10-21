@@ -37,7 +37,7 @@ const Carousel = () => {
   }, [current, slides]);
 
   if (slides.length === 0) {
-    return <div className="flex justify-center items-center h-96 bg-slate-800 text-white">Loading Carousel...</div>;
+    return <div className="flex justify-center items-center h-96 bg-emerald-50/70 text-white">Loading Carousel...</div>;
   }
 
   return (

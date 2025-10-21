@@ -23,7 +23,7 @@ const GalleryPage = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-white min-h-screen flex items-center justify-center">
+      <div className="bg-emerald-50/70 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-slate-700 text-lg">{t("gallery_page.loading", "Loading Gallery...")}</p>

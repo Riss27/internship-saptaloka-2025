@@ -16,7 +16,7 @@ const Navbar = () => {
         // --- PERUBAHAN DI SINI ---
         { name: t("services_dropdown.aromatherapy_workshop"), to: "/workshop/aromaterapi" },
         { name: t("services_dropdown.perfume_workshop"), to: "/workshop/parfum" },
-        { name: t("services_dropdown.custom_perfume"), to: "/services/custom" },
+        { name: t("services_dropdown.custom_perfume"), to: "/pos" },
         { name: t("services_dropdown.lab_tools"), to: "/lab-tools" },
         { name: t("services_dropdown.ingredients"), to: "/ingredients" },
         { name: t("services_dropdown.products"), to: "/products" },
@@ -25,7 +25,6 @@ const Navbar = () => {
     { name: t("navbar.articles"), to: "/articles" },
     { name: t("navbar.gallery"), to: "/gallery" },
     { name: t("navbar.about"), to: "/about" },
-    // Halaman POS sepertinya tidak ada di rute publik, tapi kita biarkan dulu
     { name: "POS", to: "/pos" },
   ];
 

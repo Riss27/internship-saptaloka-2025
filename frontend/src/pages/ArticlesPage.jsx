@@ -51,7 +51,7 @@ const ArticlesPage = () => {
   }
 
   return (
-    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
+    <div className="bg-emerald-50/70 min-h-screen">
       <div className="container mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-12">

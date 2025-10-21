@@ -47,7 +47,7 @@ const EventsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-emerald-50/70">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-emerald-700 font-medium">Loading...</p>
@@ -57,7 +57,7 @@ const EventsPage = () => {
   }
 
   return (
-    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
+    <div className="bg-emerald-50/70 min-h-screen">
       <div className="container mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-12">

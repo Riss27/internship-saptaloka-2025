@@ -53,7 +53,7 @@ const ProductsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-slate-900 min-h-screen flex items-center justify-center">
+      <div className="bg-emerald-50/70 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
           <p className="text-white text-lg">{t("products_page.loading", "Loading Product...")}</p>
@@ -63,7 +63,7 @@ const ProductsPage = () => {
   }
 
   return (
-    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
+    <div className="bg-emerald-50/70 min-h-screen">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-emerald-800 mb-2">{t("products_page.our_collection")}</h1>
