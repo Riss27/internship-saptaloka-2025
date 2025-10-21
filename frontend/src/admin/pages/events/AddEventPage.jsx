@@ -253,7 +253,7 @@ const AddEventPage = () => {
 
             {/* IMPROVED BANNER UPLOAD */}
             <div>
-              <label className="block mb-2 font-medium text-slate-300 flex items-center gap-2">
+              <label className="mb-2 font-medium text-slate-300 flex items-center gap-2">
                 <FiImage className="text-cyan-400" />
                 Event Banner
               </label>
@@ -377,7 +377,7 @@ const AddEventPage = () => {
 
                 {/* IMPROVED CONTENT IMAGES */}
                 <div className="mt-6">
-                  <label className="block mb-3 font-medium text-slate-300 flex items-center gap-2">
+                  <label className="mb-3 font-medium text-slate-300 flex items-center gap-2">
                     <FiImage className="text-cyan-400" />
                     Section Images
                   </label>
