@@ -1,4 +1,3 @@
-// frontend/src/hooks/useTranslateDB.js
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
@@ -9,18 +8,13 @@ export const useTranslateDB = (text, isHTML = false) => {
   const { i18n } = useTranslation();
   const targetLanguage = i18n.language;
 
-  // Selalu inisialisasi state dengan teks asli yang diterima.
-  // Ini adalah fallback utama untuk mencegah teks hilang.
   const [translatedText, setTranslatedText] = useState(text);
 
   useEffect(() => {
-    // Jika teks properti berubah (misalnya dari undefined ke string saat data dimuat),
-    // perbarui state internal kita.
     if (text !== translatedText && !translationCache.has(`${text}|${targetLanguage}`)) {
       setTranslatedText(text);
     }
 
-    // Jika bahasa target adalah Indonesia atau tidak ada teks, langsung kembalikan teks asli.
     if (targetLanguage === "id" || !text) {
       if (translatedText !== text) {
         setTranslatedText(text);

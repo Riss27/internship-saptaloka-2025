@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { FiUser, FiMail, FiPhone, FiChevronDown, FiUsers } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 const RegistrationForm = ({ eventId, participantRoles }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,10 +23,10 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
 
     try {
       await axios.post(`http://localhost:3000/api/events/${eventId}/register`, formData);
-      setMessage({ type: "success", text: "Pendaftaran berhasil! Terima kasih telah mendaftar." });
+      setMessage({ type: "success", text: t("detail_pages.registration_success_message") });
       setFormData({ name: "", email: "", phone: "", role: participantRoles[0] || "Umum" });
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Terjadi kesalahan. Silakan coba lagi.";
+      const errorMessage = error.response?.data?.message || t("detail_pages.registration_error");
       setMessage({ type: "error", text: errorMessage });
     } finally {
       setIsLoading(false);
@@ -34,7 +36,7 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
   if (message.type === "success") {
     return (
       <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-lg text-center">
-        <p className="font-semibold">Pendaftaran Berhasil!</p>
+        <p className="font-semibold">{t("detail_pages.registration_success")}</p>
         <p className="text-sm">{message.text}</p>
       </div>
     );
@@ -49,7 +51,7 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
         <input
           type="text"
           name="name"
-          placeholder="Nama Lengkap"
+          placeholder={t("detail_pages.full_name_placeholder")}
           value={formData.name}
           onChange={handleChange}
           required
@@ -62,7 +64,7 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
         <input
           type="email"
           name="email"
-          placeholder="Alamat Email"
+          placeholder={t("detail_pages.email_placeholder")}
           value={formData.email}
           onChange={handleChange}
           required
@@ -75,7 +77,7 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
         <input
           type="tel"
           name="phone"
-          placeholder="Nomor Telepon"
+          placeholder={t("detail_pages.phone_placeholder")}
           value={formData.phone}
           onChange={handleChange}
           required
@@ -96,7 +98,7 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
       </div>
 
       <button type="submit" disabled={isLoading} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition-colors disabled:bg-slate-400 disabled:cursor-not-allowed">
-        {isLoading ? "Mengirim..." : "Daftar Sekarang"}
+        {isLoading ? t("detail_pages.sending") : t("detail_pages.register_button")}
       </button>
     </form>
   );

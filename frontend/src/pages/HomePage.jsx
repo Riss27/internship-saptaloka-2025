@@ -59,13 +59,13 @@ const HomePage = () => {
     viewport: { once: true },
   });
 
-  // Service descriptions (static)
-  const aromatherapyDesc = "Pelajari seni meracik parfum dengan panduan ahli.";
-  const perfumeWorkshopDesc = "Belajar meracik parfum personal dengan mudah.";
-  const customPerfumeDesc = "Kreasikan aroma unikmu dengan panduan kami.";
-  const productsDesc = "Temukan koleksi parfum unik kami.";
-  const labToolsDesc = "Peralatan lab skala mikro standar industri.";
-  const ingredientsDesc = "Jelajahi bahan baku pilihan kami.";
+  // Service descriptions from translations
+  const aromatherapyDesc = t("homepage.service_descriptions.aromatherapy");
+  const perfumeWorkshopDesc = t("homepage.service_descriptions.perfume_workshop");
+  const customPerfumeDesc = t("homepage.service_descriptions.custom_perfume");
+  const productsDesc = t("homepage.service_descriptions.products");
+  const labToolsDesc = t("homepage.service_descriptions.lab_tools");
+  const ingredientsDesc = t("homepage.service_descriptions.ingredients");
 
   return (
     <div>
