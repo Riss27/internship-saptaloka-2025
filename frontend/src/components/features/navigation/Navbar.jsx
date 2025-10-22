@@ -13,7 +13,6 @@ const Navbar = () => {
     {
       name: t("navbar.services"),
       dropdown: [
-        // --- PERUBAHAN DI SINI ---
         { name: t("services_dropdown.aromatherapy_workshop"), to: "/workshop/aromaterapi" },
         { name: t("services_dropdown.perfume_workshop"), to: "/workshop/parfum" },
         { name: t("services_dropdown.custom_perfume"), to: "/pos" },

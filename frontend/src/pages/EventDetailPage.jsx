@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { FiCalendar, FiMapPin, FiUsers, FiDollarSign } from "react-icons/fi";
 import RegistrationForm from "../components/features/events/registration/RegistrationForm";
 import Popup from "../components/ui/Popup";
 import { useTranslation } from "react-i18next";
+
+// Diubah: Import untuk Font Awesome
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar, faMapPin, faUsers, faRupiahSign } from "@fortawesome/free-solid-svg-icons";
 
 const EventDetailPage = () => {
   const { id } = useParams();
@@ -67,7 +70,6 @@ const EventDetailPage = () => {
 
   const participantRoles = parseJsonSafe(event.participantRoles);
 
-  // Helper untuk status badge
   const getStatusBadge = (status) => {
     switch (status) {
       case "Open":
@@ -98,7 +100,6 @@ const EventDetailPage = () => {
             {/* Kolom utama */}
             <div className="lg:col-span-2">
               <div className="prose prose-invert prose-lg max-w-none mb-12" dangerouslySetInnerHTML={{ __html: event.description }} />
-
               <article className="space-y-12">
                 {event.EventContents &&
                   event.EventContents.map((content, index) => {
@@ -129,7 +130,7 @@ const EventDetailPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FiCalendar className="text-emerald-800 mt-1 flex-shrink-0" />
+                  <FontAwesomeIcon icon={faCalendar} className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-emerald-800">{t("detail_pages.date_time")}</p>
                     <p className="text-sm">
@@ -139,7 +140,7 @@ const EventDetailPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FiMapPin className="text-emerald-800 mt-1 flex-shrink-0" />
+                  <FontAwesomeIcon icon={faMapPin} className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-emerald-800">{t("detail_pages.location")}</p>
                     <p className="text-sm">{event.location}</p>
@@ -147,7 +148,7 @@ const EventDetailPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FiUsers className="text-emerald-800 mt-1 flex-shrink-0" />
+                  <FontAwesomeIcon icon={faUsers} className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-emerald-800">{t("detail_pages.quota")}</p>
                     <p className="text-sm">
@@ -157,7 +158,7 @@ const EventDetailPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FiDollarSign className="text-emerald-800 mt-1 flex-shrink-0" />
+                  <FontAwesomeIcon icon={faRupiahSign} className="text-emerald-800 mt-1 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-emerald-800">{t("detail_pages.fee")}</p>
                     <p className="text-sm">{event.fee > 0 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}` : t("static.free")}</p>
@@ -185,7 +186,6 @@ const EventDetailPage = () => {
         </div>
       </div>
 
-      {/* Popup Pendaftaran */}
       <Popup isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`${t("detail_pages.registration_form_title")}: ${event.title}`}>
         <RegistrationForm eventId={event.id} participantRoles={participantRoles} />
       </Popup>
