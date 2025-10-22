@@ -9,9 +9,9 @@ const IngredientCard = ({ ingredient }) => {
   const translatedCategory = useTranslateDB(ingredient?.category);
 
   return (
-    <div className="bg-emerald-900/60 backdrop-blur-xl border border-emerald-400/10 rounded-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-emerald-400/30">
+    <div className="bg-emerald-900/70 backdrop-blur-md border border-emerald-400/20 rounded-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-emerald-500/50">
       <Link to={`/ingredients/${ingredient.id}`} className="block">
-        <div className="w-full h-56 overflow-hidden bg-emerald-800/50">
+        <div className="w-full h-56 overflow-hidden bg-emerald-800/60">
           <LazyLoadImage
             alt={ingredient.name}
             src={`http://localhost:3000${ingredient.imageUrl}`}
@@ -28,13 +28,13 @@ const IngredientCard = ({ ingredient }) => {
         </div>
 
         <div className="p-4">
-          <span className="text-xs bg-emerald-400/10 text-emerald-300 px-2 py-1 rounded-full backdrop-blur-sm">{translatedCategory}</span>
+          <span className="text-xs bg-white text-emerald-900 px-2 py-1 rounded-full backdrop-blur-sm">{translatedCategory}</span>
 
-          <h3 className="font-semibold text-lg text-white mt-2 truncate" title={translatedName}>
+          <h3 className="font-semibold text-lg text-white mt-2 truncate drop-shadow-sm" title={translatedName}>
             {translatedName}
           </h3>
 
-          <p className="text-emerald-300 font-semibold mt-1">Rp {new Intl.NumberFormat("id-ID").format(ingredient.price)}</p>
+          <p className="text-emerald-200 font-semibold mt-1">Rp {new Intl.NumberFormat("id-ID").format(ingredient.price)}</p>
         </div>
       </Link>
     </div>

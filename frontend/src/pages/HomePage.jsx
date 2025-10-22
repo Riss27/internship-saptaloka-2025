@@ -43,7 +43,7 @@ const HomePage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-emerald-50/70">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-emerald-50/30">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-emerald-700 font-medium">Loading...</p>
@@ -52,14 +52,13 @@ const HomePage = () => {
     );
   }
 
-  const gridItemMotion = (index) => ({
+  const cardMotion = (index) => ({
     initial: { opacity: 0, y: 50 },
     whileInView: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, delay: index * 0.15, ease: "easeOut" },
-    viewport: { once: true },
+    transition: { duration: 0.6, delay: index * 0.1, ease: "easeOut" },
+    viewport: { once: true, margin: "-50px" },
   });
 
-  // Service descriptions from translations
   const aromatherapyDesc = t("homepage.service_descriptions.aromatherapy");
   const perfumeWorkshopDesc = t("homepage.service_descriptions.perfume_workshop");
   const customPerfumeDesc = t("homepage.service_descriptions.custom_perfume");
@@ -68,18 +67,28 @@ const HomePage = () => {
   const ingredientsDesc = t("homepage.service_descriptions.ingredients");
 
   return (
-    <div>
+    <div className="bg-emerald-50/20">
       <Carousel />
-      <div className="container mx-auto px-4 py-16 md:py-24 space-y-24">
+      <div className="container mx-auto px-4 py-16 md:py-24 space-y-32">
         {/* Layanan Kami */}
         <section>
-          <motion.h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-2" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            {t("homepage.our_services")}
-          </motion.h2>
-          <motion.p className="text-center text-gray-600 mb-12" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            {t("homepage.services_subtitle")}
-          </motion.p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.7 }} 
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-emerald-800 mb-4">
+              {t("homepage.our_services")}
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 mx-auto mb-4 rounded-full"></div>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              {t("homepage.services_subtitle")}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               { title: t("services_dropdown.aromatherapy_workshop"), desc: aromatherapyDesc, link: "/workshop/aromaterapi" },
               { title: t("services_dropdown.perfume_workshop"), desc: perfumeWorkshopDesc, link: "/workshop/parfum" },
@@ -88,7 +97,7 @@ const HomePage = () => {
               { title: t("services_dropdown.lab_tools"), desc: labToolsDesc, link: "/lab-tools" },
               { title: t("services_dropdown.ingredients"), desc: ingredientsDesc, link: "/ingredients" },
             ].map((service, i) => (
-              <motion.div key={i} {...gridItemMotion(i)}>
+              <motion.div key={i} {...cardMotion(i)}>
                 <ServiceCard title={service.title} description={service.desc} linkTo={service.link} />
               </motion.div>
             ))}
@@ -96,42 +105,102 @@ const HomePage = () => {
         </section>
 
         {/* Kegiatan Terbaru */}
-        <section className="bg-slate-100 p-8 rounded-2xl overflow-hidden">
-          <motion.h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            {t("homepage.recent_activities")}
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <section>
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.7 }} 
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-emerald-800 mb-4">
+              {t("homepage.recent_activities")}
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 mx-auto rounded-full"></div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {latestEvents.map((event, i) => (
-              <motion.div key={event.id} {...gridItemMotion(i)} whileHover={{ scale: 1.03, y: -5 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-                <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow group border border-gray-200 cursor-pointer">
-                  <Link to={`/events/${event.id}`}>
-                    <img src={`http://localhost:3000${event.imageBannerUrl}`} alt={`Banner kegiatan ${event.title}`} className="w-full h-48 object-cover group-hover:opacity-90 transition-opacity" loading="lazy" />
-                    <div className="p-4">
-                      <p className="text-sm text-emerald-700 font-medium">
-                        {new Date(event.startDateTime).toLocaleDateString("id-ID", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </p>
-                      <h3 className="font-bold text-lg text-gray-700 mt-1 truncate">{event.title}</h3>
+              <motion.div key={event.id} {...cardMotion(i)}>
+                <Link to={`/events/${event.id}`} className="group block">
+                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-emerald-100">
+                    <div className="relative overflow-hidden">
+                      <img 
+                        src={`http://localhost:3000${event.imageBannerUrl}`} 
+                        alt={`Banner kegiatan ${event.title}`} 
+                        className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500" 
+                        loading="lazy" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
-                  </Link>
-                </div>
+                    <div className="p-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                        <p className="text-sm text-emerald-700 font-semibold">
+                          {new Date(event.startDateTime).toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
+                      <h3 className="font-bold text-xl text-gray-800 group-hover:text-emerald-700 transition-colors line-clamp-2 min-h-[3.5rem]">
+                        {event.title}
+                      </h3>
+                    </div>
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </div>
+
+          <motion.div 
+            className="text-center mt-12"
+            initial={{ opacity: 0, y: 20 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.6, delay: 0.3 }} 
+            viewport={{ once: true }}
+          >
+            <Link to="/events">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 mx-auto group"
+              >
+                <span>{t("homepage.view_more_events") || "Lihat Semua Kegiatan"}</span>
+                <svg 
+                  className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </motion.button>
+            </Link>
+          </motion.div>
         </section>
 
-        {/* Produk Unggulan */}
-        <section>
-          <motion.h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            {t("homepage.featured_products")}
-          </motion.h2>
+        {/* Produk */}
+        <section className="relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-50/50 via-transparent to-emerald-50/50 rounded-3xl -z-10"></div>
+          
+          <motion.div 
+            className="text-center mb-16 pt-12"
+            initial={{ opacity: 0, y: 30 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.7 }} 
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-emerald-800 mb-4">
+              {t("homepage.featured_products")}
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 mx-auto rounded-full"></div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-12">
             {featuredProducts.map((product, i) => (
-              <motion.div key={product.id} {...gridItemMotion(i)}>
+              <motion.div key={product.id} {...cardMotion(i)}>
                 <ProductCard product={product} />
               </motion.div>
             ))}
@@ -139,31 +208,85 @@ const HomePage = () => {
         </section>
 
         {/* Artikel Terbaru */}
-        <section className="bg-slate-100 p-8 rounded-2xl">
-          <motion.h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            {t("homepage.latest_articles")}
-          </motion.h2>
+        <section>
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.7 }} 
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-emerald-800 mb-4">
+              {t("homepage.latest_articles")}
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 mx-auto rounded-full"></div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {latestArticles.map((article, i) => (
-              <motion.div key={article.id} {...gridItemMotion(i)}>
+              <motion.div key={article.id} {...cardMotion(i)}>
                 <ArticleCard article={article} />
               </motion.div>
             ))}
           </div>
+
+          <motion.div 
+            className="text-center mt-12"
+            initial={{ opacity: 0, y: 20 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.6, delay: 0.3 }} 
+            viewport={{ once: true }}
+          >
+            <Link to="/articles">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 mx-auto group"
+              >
+                <span>{t("homepage.view_more_articles") || "Lihat Lebih Banyak Artikel"}</span>
+                <svg 
+                  className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </motion.button>
+            </Link>
+          </motion.div>
         </section>
 
         {/* Galeri Kegiatan */}
         <section>
-          <motion.h2 className="text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-12" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            {t("homepage.gallery")}
-          </motion.h2>
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.7 }} 
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-emerald-800 mb-4">
+              {t("homepage.gallery")}
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 mx-auto rounded-full"></div>
+          </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {galleryImages.slice(0, 6).map((image, i) => (
-              <motion.div key={image.id} {...gridItemMotion(i)}>
-                <div className="aspect-square overflow-hidden rounded-lg border border-gray-200 bg-emerald-50 hover:bg-emerald-50/80 transition-colors">
-                  <img src={`http://localhost:3000${image.imageUrl}`} alt={image.title || "Foto kegiatan"} className="w-full h-full object-cover hover:scale-110 transition-transform duration-300" loading="lazy" />
+              <motion.div 
+                key={image.id} 
+                {...cardMotion(i)}
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <div className="aspect-square overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-2 border-emerald-100 hover:border-emerald-300 group cursor-pointer">
+                  <img 
+                    src={`http://localhost:3000${image.imageUrl}`} 
+                    alt={image.title || "Foto kegiatan"} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                    loading="lazy" 
+                  />
                 </div>
               </motion.div>
             ))}

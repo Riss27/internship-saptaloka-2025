@@ -60,16 +60,18 @@ const AboutPage = () => {
 
   return (
     <div className="relative min-h-screen">
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-100/30 via-transparent to-emerald-50/20 pointer-events-none" />
+      <div className="absolute inset-0 bg-emerald-50/20 pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
         {/* Header Section */}
         <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-emerald-800 mb-4 relative inline-block">
-            {t("about_page.about_us")}
-            <span className="absolute -bottom-2 left-0 w-24 h-1 bg-gradient-to-r from-emerald-600 to-transparent rounded-full" />
-          </h1>
-          <p className="mt-8 text-gray-700 leading-relaxed text-lg">{aboutInfo.about}</p>
+          <div className="bg-white rounded-2xl p-8 shadow-lg shadow-emerald-500/5 border border-emerald-100">
+            <h1 className="text-4xl md:text-5xl font-bold text-emerald-800 mb-4 relative inline-block">
+              {t("about_page.about_us")}
+              <span className="absolute -bottom-2 left-0 w-24 h-1 bg-gradient-to-r from-emerald-600 to-transparent rounded-full" />
+            </h1>
+            <p className="mt-8 text-gray-700 leading-relaxed text-lg">{aboutInfo.about}</p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
