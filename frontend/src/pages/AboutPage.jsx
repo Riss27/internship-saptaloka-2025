@@ -39,7 +39,7 @@ const AboutPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-emerald-50/70">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-emerald-700 font-medium">Loading...</p>
@@ -50,7 +50,7 @@ const AboutPage = () => {
 
   if (!aboutInfo) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-emerald-50/70">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
         <div className="text-center">
           <p className="text-gray-600">Informasi tidak tersedia.</p>
         </div>
@@ -60,7 +60,7 @@ const AboutPage = () => {
 
   return (
     <div className="relative min-h-screen">
-      <div className="absolute inset-0 bg-emerald-50/20 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50 to-white pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
         {/* Header Section */}

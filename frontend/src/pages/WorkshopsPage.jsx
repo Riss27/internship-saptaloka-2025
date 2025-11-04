@@ -35,7 +35,7 @@ const WorkshopsPage = ({ category }) => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-20 text-center text-slate-700">
+      <div className="container mx-auto px-4 py-20 text-center text-slate-700 bg-gradient-to-b from-emerald-50 to-white">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-4"></div>
         <p>
           {t("workshops_page.searching", "Mencari Workshop")} {category}...
@@ -46,7 +46,7 @@ const WorkshopsPage = ({ category }) => {
 
   if (notFound) {
     return (
-      <div className="bbg-emerald-50/70 min-h-[60vh] flex items-center">
+      <div className="bg-gradient-to-b from-emerald-50 to-white min-h-[60vh] flex items-center">
         <div className="container mx-auto px-4 py-20 text-center text-slate-700">
           <div className="bg-emerald-100 inline-block p-6 rounded-full mb-6">
             <FiClock size={40} className="text-emerald-600" />

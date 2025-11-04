@@ -10,7 +10,7 @@ const WorkshopDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useTranslation();
 
-  // Gunakan hook translasi
+  // menggunakan hook translasi
   const translatedTitle = useTranslateDB(workshop?.title);
   const translatedDescription = useTranslateDB(workshop?.description);
 
@@ -31,7 +31,7 @@ const WorkshopDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-emerald-50/70">
+      <div className="flex justify-center items-center h-screen bg-gradient-to-b from-emerald-50 to-white">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
       </div>
     );
@@ -42,7 +42,7 @@ const WorkshopDetailPage = () => {
   }
 
   return (
-    <div className="bg-emerald-50/70 min-h-screen">
+    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
       <div className="container mx-auto px-4 py-16 max-w-5xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 items-center">
           {/* Gambar Workshop */}

@@ -4,8 +4,6 @@ import axios from "axios";
 import RegistrationForm from "../components/features/events/registration/RegistrationForm";
 import Popup from "../components/ui/Popup";
 import { useTranslation } from "react-i18next";
-
-// Diubah: Import untuk Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faMapPin, faUsers, faRupiahSign } from "@fortawesome/free-solid-svg-icons";
 
@@ -55,7 +53,7 @@ const EventDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-emerald-50/70">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-emerald-700 font-medium">Loading...</p>
@@ -77,6 +75,7 @@ const EventDetailPage = () => {
       case "Coming Soon":
         return "bg-blue-600/80 text-blue-200";
       case "Closed":
+        return "bg-red-600/80 text-red-200";
       case "Finished":
         return "bg-slate-600/80 text-slate-300";
       default:
@@ -86,7 +85,7 @@ const EventDetailPage = () => {
 
   return (
     <>
-      <div className="bg-emerald-50/70 text-slate-700 min-h-screen pt-10 pb-20">
+      <div className="bg-gradient-to-b from-emerald-50 to-white text-slate-700 min-h-screen pt-10 pb-20">
         <div className="container mx-auto px-4 max-w-5xl">
           <header className="relative mb-8 text-center">
             <img src={`http://localhost:3000${event.imageBannerUrl}`} alt={event.title} className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg" />

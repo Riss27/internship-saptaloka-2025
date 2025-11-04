@@ -23,7 +23,7 @@ const GalleryPage = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-emerald-50/70 min-h-screen flex items-center justify-center">
+      <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-slate-700 text-lg">{t("gallery_page.loading", "Loading Gallery...")}</p>
@@ -33,7 +33,7 @@ const GalleryPage = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-emerald-800 mb-2">{t("gallery_page.title")}</h1>
@@ -51,7 +51,7 @@ const GalleryPage = () => {
               <div key={image.id} className="bg-white rounded-xl shadow-md hover:shadow-emerald-200 transition-all overflow-hidden">
                 <img src={`http://localhost:3000${image.imageUrl}`} alt={image.title} className="w-full h-56 object-cover hover:scale-105 transition-transform duration-300" />
                 <div className="p-3">
-                  <p className="text-emerald-800 font-semibold text-center truncate">{image.title}</p>
+                  <p className="text-emerald-800 font-semibold text-center break-words leading-snug">{image.title}</p>
                 </div>
               </div>
             ))}

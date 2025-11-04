@@ -1,4 +1,3 @@
-// frontend/src/components/features/events/EventCard.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import { FiCalendar, FiMapPin, FiClock, FiDollarSign, FiUsers } from "react-icons/fi";
@@ -6,7 +5,6 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
 
-// Fungsi ini dibuat lebih aman untuk menangani nilai yang mungkin null/undefined
 const getStatusBadge = (status) => {
   switch (status) {
     case "Open":
@@ -14,10 +12,11 @@ const getStatusBadge = (status) => {
     case "Coming Soon":
       return "bg-blue-100 text-blue-800";
     case "Closed":
+      return "bg-red-100 text-red-800";
     case "Finished":
       return "bg-slate-200 text-slate-700";
     default:
-      return "bg-gray-200 text-gray-700"; // Fallback class
+      return "bg-gray-200 text-gray-700";
   }
 };
 
@@ -43,9 +42,9 @@ const EventCard = ({ event }) => {
   const availableQuota = event.quota - (event.registeredCount || 0);
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-emerald-500/20 border border-slate-100 flex flex-col">
+    <div className="bg-white rounded-2xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-emerald-500/20 border border-slate-100 flex flex-col min-h-[32rem]">
       <Link to={`/events/${event.id}`} className="block">
-        <div className="w-full h-56 overflow-hidden relative bg-slate-100">
+        <div className="w-full h-64 overflow-hidden relative bg-slate-100">
           <LazyLoadImage
             alt={event.title}
             src={`http://localhost:3000${event.imageBannerUrl}`}
@@ -54,17 +53,16 @@ const EventCard = ({ event }) => {
             wrapperClassName="w-full h-full"
             threshold={100}
           />
-          {/* PERBAIKAN: className menggunakan status asli, sementara teksnya menggunakan hasil terjemahan */}
           {event.status && <span className={`absolute top-3 right-3 px-3 py-1 text-xs font-semibold rounded-full ${getStatusBadge(event.status)}`}>{translatedStatus}</span>}
         </div>
       </Link>
-      <div className="p-5 flex flex-col flex-grow">
+      <div className="p-5 flex flex-col flex-grow space-y-3">
         <Link to={`/events/${event.id}`}>
           <h3 className="font-bold text-xl text-slate-800 mt-1 truncate group-hover:text-emerald-600 transition-colors" title={translatedTitle}>
             {translatedTitle}
           </h3>
         </Link>
-        <div className="space-y-2 text-slate-500 text-sm mt-3 flex-grow">
+        <div className="space-y-2 text-slate-500 text-sm flex-grow">
           <div className="flex items-center gap-2">
             <FiCalendar />
             <span>{formatDate(event.startDateTime)}</span>

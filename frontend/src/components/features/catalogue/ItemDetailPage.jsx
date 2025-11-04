@@ -35,7 +35,7 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
       }
     };
     fetchItem();
-  }, [id, apiEndpoint]);
+  }, [id, apiEndpoint, API_URL]);
 
   const formatPrice = (price) =>
     new Intl.NumberFormat("id-ID", {
@@ -98,7 +98,7 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
 
   // MAIN CONTENT
   return (
-    <div className="min-h-screen py-20 bg-emerald-50/70">
+    <div className="min-h-screen py-20 bg-gradient-to-b from-emerald-50 to-white">
       <div className="container mx-auto px-6">
         {/* Tombol Back */}
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-slate-700 hover:text-slate-900 mb-6 transition">

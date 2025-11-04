@@ -41,7 +41,7 @@ const ArticlesPage = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-white min-h-screen flex items-center justify-center">
+      <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-slate-700 text-lg">{t("articles_page.loading", "Loading Articles...")}</p>
@@ -51,7 +51,7 @@ const ArticlesPage = () => {
   }
 
   return (
-    <div className="bg-emerald-50/70 min-h-screen">
+    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
       <div className="container mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-12">

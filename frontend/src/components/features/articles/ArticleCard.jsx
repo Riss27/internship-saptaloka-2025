@@ -1,17 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Calendar } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
 
 const ArticleCard = ({ article }) => {
   const translatedTitle = useTranslateDB(article.title);
-  const snippet = article.mainDescription.substring(0, 100) + "...";
-  const translatedSnippet = useTranslateDB(snippet);
+
+  const formattedDate = new Date(article.publishedAt).toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <div className="bg-white rounded-2xl overflow-hidden group shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-slate-100">
       <Link to={`/articles/${article.id}`} title="Klik untuk baca lengkap">
+        {/* Gambar */}
         <div className="w-full h-56 overflow-hidden">
           <LazyLoadImage
             alt={`Gambar artikel ${article.title}`}
@@ -21,12 +27,17 @@ const ArticleCard = ({ article }) => {
             wrapperClassName="w-full h-full"
           />
         </div>
+
+        {/* Konten */}
         <div className="p-5">
-          <h3 className="font-bold text-lg text-slate-800 truncate group-hover:text-emerald-600 transition-colors" title={translatedTitle}>
+          <h3 className="font-bold text-lg text-slate-800 leading-snug group-hover:text-emerald-600 transition-colors mb-2" title={translatedTitle}>
             {translatedTitle}
           </h3>
-          <p className="text-sm text-slate-500 mt-1">by {article.author}</p>
-          <p className="text-sm text-slate-600 mt-2 line-clamp-3">{translatedSnippet}</p>
+
+          <div className="flex items-center text-slate-500 text-sm">
+            <Calendar className="w-4 h-4 mr-2" />
+            <span>{formattedDate}</span>
+          </div>
         </div>
       </Link>
     </div>
