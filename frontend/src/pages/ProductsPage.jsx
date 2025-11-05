@@ -1,7 +1,6 @@
-// frontend/src/pages/ProductsPage.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ProductCard from "../components/features/products/ProductCard";
+import ProductCard from "../components/molecules/cards/ProductCard";
 import { Search, X, Package } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

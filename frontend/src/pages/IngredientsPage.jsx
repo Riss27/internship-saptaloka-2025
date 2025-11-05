@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import IngredientCard from "../components/features/ingredients/IngredientCard";
+import IngredientCard from "../components/molecules/cards/IngredientCard";
 import { Search, X, FlaskConical } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

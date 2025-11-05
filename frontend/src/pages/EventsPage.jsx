@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import EventCard from "../components/features/events/EventCard";
+import EventCard from "../components/molecules/cards/EventCard";
 import { Search, X, Calendar } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

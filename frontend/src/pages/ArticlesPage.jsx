@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ArticleCard from "../components/features/articles/ArticleCard";
+import ArticleCard from "../components/molecules/cards/ArticleCard";
 import { Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

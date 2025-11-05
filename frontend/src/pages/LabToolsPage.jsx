@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import LabToolCard from "../components/features/lab_tools/LabToolCard";
+import LabToolCard from "../components/molecules/cards/LabToolCard";
 import { Search, X, Wrench } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

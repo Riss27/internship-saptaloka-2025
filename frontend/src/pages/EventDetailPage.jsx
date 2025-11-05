@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import RegistrationForm from "../components/features/events/registration/RegistrationForm";
-import Popup from "../components/ui/Popup";
+import RegistrationForm from "../components/molecules/forms/RegistrationForm";
+import Popup from "../components/atoms/feedback/Popup";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faMapPin, faUsers, faRupiahSign } from "@fortawesome/free-solid-svg-icons";

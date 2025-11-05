@@ -105,3 +105,5 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
 };
 
 export default RegistrationForm;
+
+
