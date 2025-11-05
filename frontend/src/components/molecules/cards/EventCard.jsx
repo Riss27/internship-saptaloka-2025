@@ -6,18 +6,13 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
 
 const getStatusBadge = (status) => {
-  switch (status) {
-    case "Open":
-      return "bg-green-100 text-green-800";
-    case "Coming Soon":
-      return "bg-blue-100 text-blue-800";
-    case "Closed":
-      return "bg-red-100 text-red-800";
-    case "Finished":
-      return "bg-slate-200 text-slate-700";
-    default:
-      return "bg-gray-200 text-gray-700";
-  }
+  const badges = {
+    Open: "bg-green-100 text-green-800",
+    "Coming Soon": "bg-blue-100 text-blue-800",
+    Closed: "bg-red-100 text-red-800",
+    Finished: "bg-slate-200 text-slate-700",
+  };
+  return badges[status] || "bg-gray-200 text-gray-700";
 };
 
 const EventCard = ({ event }) => {
@@ -42,9 +37,10 @@ const EventCard = ({ event }) => {
   const availableQuota = event.quota - (event.registeredCount || 0);
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-emerald-500/20 border border-slate-100 flex flex-col min-h-[32rem]">
+    <div className="bg-white rounded-2xl overflow-hidden group shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-slate-100 flex flex-col h-full">
       <Link to={`/events/${event.id}`} className="block">
-        <div className="w-full h-64 overflow-hidden relative bg-slate-100">
+        {/* Image Container */}
+        <div className="w-full h-56 overflow-hidden bg-slate-100 relative">
           <LazyLoadImage
             alt={event.title}
             src={`http://localhost:3000${event.imageBannerUrl}`}
@@ -53,35 +49,44 @@ const EventCard = ({ event }) => {
             wrapperClassName="w-full h-full"
             threshold={100}
           />
-          {event.status && <span className={`absolute top-3 right-3 px-3 py-1 text-xs font-semibold rounded-full ${getStatusBadge(event.status)}`}>{translatedStatus}</span>}
+          {event.status && <span className={`absolute top-3 right-3 px-3 py-1.5 text-xs font-semibold rounded-full shadow-sm ${getStatusBadge(event.status)}`}>{translatedStatus}</span>}
         </div>
       </Link>
-      <div className="p-5 flex flex-col flex-grow space-y-3">
+
+      {/* Content */}
+      <div className="p-5 flex flex-col flex-grow">
         <Link to={`/events/${event.id}`}>
-          <h3 className="font-bold text-xl text-slate-800 mt-1 truncate group-hover:text-emerald-600 transition-colors" title={translatedTitle}>
+          <h3 className="font-bold text-xl text-slate-800 mb-4 line-clamp-2 leading-snug group-hover:text-emerald-600 transition-colors" title={translatedTitle}>
             {translatedTitle}
           </h3>
         </Link>
-        <div className="space-y-2 text-slate-500 text-sm flex-grow">
-          <div className="flex items-center gap-2">
-            <FiCalendar />
+
+        <div className="space-y-2.5 text-slate-600 text-sm flex-grow">
+          <div className="flex items-center gap-2.5">
+            <FiCalendar className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <span>{formatDate(event.startDateTime)}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <FiClock />
+
+          <div className="flex items-center gap-2.5">
+            <FiClock className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <span>{formatTime(event.startDateTime)} WIB</span>
           </div>
-          <div className="flex items-center gap-2">
-            <FiMapPin />
-            <span>{event.location}</span>
+
+          <div className="flex items-center gap-2.5">
+            <FiMapPin className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span className="line-clamp-1">{event.location}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <FiDollarSign />
-            <span>{event.fee > 0 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}` : "Gratis"}</span>
+
+          <div className="flex items-center gap-2.5">
+            <FiDollarSign className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span className="font-semibold text-emerald-700">{event.fee > 0 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}` : "Gratis"}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <FiUsers />
-            <span>Sisa kuota: {availableQuota > 0 ? availableQuota : "Penuh"}</span>
+
+          <div className="flex items-center gap-2.5">
+            <FiUsers className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span>
+              Sisa kuota: <strong>{availableQuota > 0 ? availableQuota : "Penuh"}</strong>
+            </span>
           </div>
         </div>
       </div>
@@ -90,5 +95,3 @@ const EventCard = ({ event }) => {
 };
 
 export default EventCard;
-
-

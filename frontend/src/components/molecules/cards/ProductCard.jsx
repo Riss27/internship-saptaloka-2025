@@ -9,40 +9,34 @@ const ProductCard = ({ product }) => {
   const translatedCategory = useTranslateDB(product?.category);
 
   return (
-    // Gaya container utama diambil dari Code 1
-    <div className="bg-emerald-900/70 backdrop-blur-md border border-emerald-400/20 rounded-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-emerald-500/50">
+    <div className="bg-white rounded-2xl overflow-hidden group shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-slate-100">
       <Link to={`/products/${product.id}`} className="block">
-        {/* Gaya container gambar & background diambil dari Code 1. Gradient overlay dihapus. */}
-        <div className="w-full h-56 overflow-hidden bg-emerald-800/60">
+        {/* Image Container */}
+        <div className="w-full h-56 overflow-hidden bg-slate-100">
           <LazyLoadImage
             alt={product.name}
             src={`http://localhost:3000${product.imageUrl}`}
             effect="blur"
-            // Efek hover zoom disamakan dengan Code 1 (scale-110)
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-            // Placeholder & Error SVG disamakan dengan Code 1
-            placeholderSrc="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%2306472c' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='18' fill='%236efacc'%3ELoading...%3C/text%3E%3C/svg%3E"
+            placeholderSrc="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23f1f5f9' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='18' fill='%2394a3b8'%3ELoading...%3C/text%3E%3C/svg%3E"
             onError={(e) => {
               e.target.src =
-                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%2306472c' width='400' height='300'/%3E%3Cpath d='M150 100h100v80h-100z' fill='%2314583b'/%3E%3Ccircle cx='170' cy='130' r='10' fill='%236efacc'/%3E%3Cpath d='M150 160l30-20 25 15 45-35v60h-100z' fill='%2310b981'/%3E%3Ctext x='50%25' y='85%25' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%236efacc'%3EImage not found%3C/text%3E%3C/svg%3E";
+                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23f1f5f9' width='400' height='300'/%3E%3Cpath d='M150 100h100v80h-100z' fill='%23cbd5e1'/%3E%3Ccircle cx='170' cy='130' r='10' fill='%2310b981'/%3E%3Cpath d='M150 160l30-20 25 15 45-35v60h-100z' fill='%2334d399'/%3E%3Ctext x='50%25' y='85%25' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%2394a3b8'%3EImage not found%3C/text%3E%3C/svg%3E";
             }}
             wrapperClassName="w-full h-full"
             threshold={100}
           />
         </div>
 
-        {/* Padding & styling konten disamakan dengan Code 1 */}
-        <div className="p-4">
-          {/* Gaya tag kategori diubah dari amber ke putih */}
-          <span className="text-xs bg-white text-emerald-900 px-2 py-1 rounded-full backdrop-blur-sm">{translatedCategory}</span>
+        {/* Content */}
+        <div className="p-5">
+          <span className="inline-block text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-semibold mb-2">{translatedCategory}</span>
 
-          {/* Efek hover warna & drop-shadow di judul dihapus/disamakan */}
-          <h3 className="font-semibold text-lg text-white mt-2 truncate drop-shadow-sm" title={translatedName}>
+          <h3 className="font-bold text-lg text-slate-800 mb-2 truncate group-hover:text-emerald-600 transition-colors" title={translatedName}>
             {translatedName}
           </h3>
 
-          {/* Warna teks & margin harga disamakan */}
-          <p className="text-emerald-200 font-semibold mt-1">Rp {new Intl.NumberFormat("id-ID").format(product.price)}</p>
+          <p className="text-emerald-600 font-bold text-lg">Rp {new Intl.NumberFormat("id-ID").format(product.price)}</p>
         </div>
       </Link>
     </div>
@@ -50,5 +44,3 @@ const ProductCard = ({ product }) => {
 };
 
 export default ProductCard;
-
-

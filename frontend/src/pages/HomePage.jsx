@@ -92,10 +92,10 @@ const HomePage = () => {
       <Carousel />
 
       <div className="container mx-auto px-6 lg:px-10 py-20 space-y-20">
-        {/* Services */}
+        {/* Services Section */}
         <motion.section {...fadeUp(0.1)} className="bg-gradient-to-br from-emerald-50 to-white p-10 rounded-3xl shadow-lg">
           <SectionTitle title={t("homepage.our_services")} subtitle={t("homepage.services_subtitle")} />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((s, i) => (
               <motion.div key={i} {...fadeUp(i * 0.1)} whileHover={{ scale: 1.03, y: -6 }}>
                 <ServiceCard title={s.title} linkTo={s.link} />
@@ -104,23 +104,25 @@ const HomePage = () => {
           </div>
         </motion.section>
 
-        {/* Events */}
+        {/* Events Section */}
         <motion.section {...fadeUp(0.1)} className="bg-gradient-to-br from-white to-emerald-100/60 p-10 rounded-3xl shadow-lg">
           <SectionTitle title={t("homepage.recent_activities")} />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {data.events.map((e, i) => (
-              <motion.div key={e.id} {...fadeUp(i * 0.1)} whileHover={{ y: -6 }}>
-                <Link to={`/events/${e.id}`} className="block rounded-2xl shadow-md overflow-hidden">
-                  <img src={`http://localhost:3000${e.imageBannerUrl}`} alt={e.title} className="w-full h-56 object-cover" />
-                  <div className="p-5">
-                    <p className="text-emerald-600 font-semibold mb-2">
+              <motion.div key={e.id} {...fadeUp(i * 0.1)} whileHover={{ y: -6, scale: 1.02 }}>
+                <Link to={`/events/${e.id}`} className="block rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 bg-white">
+                  <div className="aspect-video overflow-hidden">
+                    <img src={`http://localhost:3000${e.imageBannerUrl}`} alt={e.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                  </div>
+                  <div className="p-6">
+                    <p className="text-emerald-600 font-semibold mb-2 text-sm">
                       {new Date(e.startDateTime).toLocaleDateString("id-ID", {
                         day: "numeric",
                         month: "long",
                         year: "numeric",
                       })}
                     </p>
-                    <h3 className="font-bold text-xl text-gray-800 line-clamp-2">{e.title}</h3>
+                    <h3 className="font-bold text-xl text-gray-800 line-clamp-2 hover:text-emerald-600 transition-colors">{e.title}</h3>
                   </div>
                 </Link>
               </motion.div>
@@ -129,10 +131,10 @@ const HomePage = () => {
           <ViewMoreButton to="/events">{t("homepage.view_more_events")}</ViewMoreButton>
         </motion.section>
 
-        {/* Products */}
+        {/* Products Section */}
         <motion.section {...fadeUp(0.1)} className="bg-gradient-to-br from-emerald-50 via-white to-emerald-100 p-10 rounded-3xl shadow-lg">
           <SectionTitle title={t("homepage.featured_products")} />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {data.products.map((p, i) => (
               <motion.div key={p.id} {...fadeUp(i * 0.1)} whileHover={{ y: -6, scale: 1.03 }}>
                 <ProductCard product={p} />
@@ -141,12 +143,12 @@ const HomePage = () => {
           </div>
         </motion.section>
 
-        {/* Articles */}
+        {/* Articles Section */}
         <motion.section {...fadeUp(0.1)} className="bg-gradient-to-br from-white to-emerald-50 p-10 rounded-3xl shadow-lg">
           <SectionTitle title={t("homepage.latest_articles")} />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {data.articles.map((a, i) => (
-              <motion.div key={a.id} {...fadeUp(i * 0.1)} whileHover={{ y: -6 }}>
+              <motion.div key={a.id} {...fadeUp(i * 0.1)} whileHover={{ y: -6, scale: 1.02 }}>
                 <ArticleCard article={a} />
               </motion.div>
             ))}
@@ -154,14 +156,17 @@ const HomePage = () => {
           <ViewMoreButton to="/articles">{t("homepage.view_more_articles")}</ViewMoreButton>
         </motion.section>
 
-        {/* Gallery — Cinematic Horizontal Scroll */}
+        {/* Gallery Section */}
         <motion.section {...fadeUp(0.1)} className="bg-gradient-to-r from-emerald-50 via-white to-emerald-100 p-10 rounded-3xl shadow-xl">
           <SectionTitle title={t("homepage.gallery")} />
-          <motion.div className="flex overflow-x-auto gap-6 pb-6 scrollbar-hide" whileTap={{ cursor: "grabbing" }}>
+          <motion.div className="flex overflow-x-auto gap-6 pb-6 scrollbar-hide snap-x snap-mandatory" whileTap={{ cursor: "grabbing" }}>
             {data.gallery.map((g, i) => (
-              <motion.div key={g.id} {...fadeUp(i * 0.05)} whileHover={{ scale: 1.05 }} className="relative group flex-shrink-0 w-[350px] h-[220px] rounded-3xl overflow-hidden shadow-lg">
+              <motion.div key={g.id} {...fadeUp(i * 0.05)} whileHover={{ scale: 1.05 }} className="relative group flex-shrink-0 w-[350px] h-[220px] rounded-3xl overflow-hidden shadow-lg snap-center">
                 <img src={`http://localhost:3000${g.imageUrl}`} alt={g.title} className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <h4 className="font-bold text-lg">{g.title}</h4>
+                </div>
               </motion.div>
             ))}
           </motion.div>

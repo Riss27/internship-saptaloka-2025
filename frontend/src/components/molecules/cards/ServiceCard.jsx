@@ -3,16 +3,11 @@ import { Link } from "react-router-dom";
 
 const ServiceCard = ({ title, description, linkTo }) => {
   return (
-    <Link
-      to={linkTo}
-      className="block bg-[#1A4D3E] p-8 rounded-lg text-center transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-xl hover:bg-[#206656]"
-    >
+    <Link to={linkTo} className="block bg-emerald-700 hover:bg-emerald-600 p-8 rounded-2xl text-center shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-emerald-600/30">
       <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-      <p className="text-slate-200/80 mb-1 text-sm">{description}</p>
+      {description && <p className="text-emerald-100 text-sm">{description}</p>}
     </Link>
   );
 };
 
 export default ServiceCard;
-
-

@@ -16,11 +16,11 @@ const ArticleCard = ({ article }) => {
 
   return (
     <div className="bg-white rounded-2xl overflow-hidden group shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-slate-100">
-      <Link to={`/articles/${article.id}`} title="Klik untuk baca lengkap">
-        {/* Gambar */}
-        <div className="w-full h-56 overflow-hidden">
+      <Link to={`/articles/${article.id}`}>
+        {/* Image Container */}
+        <div className="w-full h-56 overflow-hidden bg-slate-100">
           <LazyLoadImage
-            alt={`Gambar artikel ${article.title}`}
+            alt={article.title}
             src={`http://localhost:3000${article.featuredImageUrl}`}
             effect="blur"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
@@ -28,14 +28,14 @@ const ArticleCard = ({ article }) => {
           />
         </div>
 
-        {/* Konten */}
+        {/* Content */}
         <div className="p-5">
-          <h3 className="font-bold text-lg text-slate-800 leading-snug group-hover:text-emerald-600 transition-colors mb-2" title={translatedTitle}>
+          <h3 className="font-bold text-lg text-slate-800 mb-3 line-clamp-2 leading-snug group-hover:text-emerald-600 transition-colors" title={translatedTitle}>
             {translatedTitle}
           </h3>
 
           <div className="flex items-center text-slate-500 text-sm">
-            <Calendar className="w-4 h-4 mr-2" />
+            <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
             <span>{formattedDate}</span>
           </div>
         </div>
@@ -45,5 +45,3 @@ const ArticleCard = ({ article }) => {
 };
 
 export default ArticleCard;
-
-
