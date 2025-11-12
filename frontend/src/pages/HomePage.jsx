@@ -62,18 +62,37 @@ const HomePage = () => {
     );
 
   const services = [
-    { title: t("services_dropdown.aromatherapy_workshop"), link: "/workshop/aromaterapi" },
-    { title: t("services_dropdown.perfume_workshop"), link: "/workshop/parfum" },
-    { title: t("services_dropdown.custom_perfume"), link: "/" },
-    { title: t("services_dropdown.products"), link: "/products" },
-    { title: t("services_dropdown.lab_tools"), link: "/lab-tools" },
-    { title: t("services_dropdown.ingredients"), link: "/ingredients" },
+    {
+      title: t("services_dropdown.workshop_kami", "Workshop Kami"),
+      description: t("homepage.workshop_description", "Ikuti berbagai workshop parfum & aromaterapi bersama kami."),
+      link: "/workshops",
+    },
+    {
+      title: t("services_dropdown.products", "Produk Kami"),
+      description: t("homepage.products_description", "Jelajahi berbagai produk parfum dan aromaterapi berkualitas."),
+      link: "/products",
+    },
+    {
+      title: t("services_dropdown.ingredients", "Bahan Baku"),
+      description: t("homepage.ingredients_description", "Temukan bahan-bahan alami dan premium untuk kreasi parfum Anda."),
+      link: "/ingredients",
+    },
+    {
+      title: t("services_dropdown.lab_tools", "Peralatan Lab"),
+      description: t("homepage.lab_tools_description", "Dapatkan berbagai peralatan laboratorium untuk mendukung workshop Anda."),
+      link: "/lab-tools",
+    },
+    {
+      title: t("services_dropdown.custom_perfume", "Custom Perfume"),
+      description: t("homepage.custom_perfume_description", "Buat parfum khusus sesuai selera Anda dengan bantuan ahli kami."),
+      link: "/pos",
+    },
   ];
 
   const SectionTitle = ({ title, subtitle }) => (
-    <motion.div {...fadeUp(0.1)} className="text-center mb-12">
-      <h2 className="text-3xl md:text-4xl font-bold text-emerald-800 mb-3">{title}</h2>
-      {subtitle && <p className="text-gray-600 text-lg">{subtitle}</p>}
+    <motion.div {...fadeUp(0.1)} className="text-center mb-8 sm:mb-10 md:mb-12">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-emerald-800 mb-2 sm:mb-3">{title}</h2>
+      {subtitle && <p className="text-gray-600 text-sm sm:text-base md:text-lg px-4">{subtitle}</p>}
     </motion.div>
   );
 
@@ -91,16 +110,28 @@ const HomePage = () => {
     <motion.div className="bg-gradient-to-b from-white via-emerald-50/20 to-white" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
       <Carousel />
 
-      <div className="container mx-auto px-6 lg:px-10 py-20 space-y-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-12 sm:py-16 md:py-20 space-y-12 sm:space-y-16 md:space-y-20">
         {/* Services Section */}
-        <motion.section {...fadeUp(0.1)} className="bg-gradient-to-br from-emerald-50 to-white p-10 rounded-3xl shadow-lg">
+        <motion.section {...fadeUp(0.1)} className="bg-gradient-to-br from-emerald-50 to-white p-4 sm:p-6 md:p-8 lg:p-10 rounded-2xl sm:rounded-3xl shadow-lg">
           <SectionTitle title={t("homepage.our_services")} subtitle={t("homepage.services_subtitle")} />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((s, i) => (
-              <motion.div key={i} {...fadeUp(i * 0.1)} whileHover={{ scale: 1.03, y: -6 }}>
-                <ServiceCard title={s.title} linkTo={s.link} />
-              </motion.div>
-            ))}
+          <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6">
+            {/* First Row - 3 Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+              {services.slice(0, 3).map((s, i) => (
+                <motion.div key={i} {...fadeUp(i * 0.1)} whileHover={{ scale: 1.03, y: -6 }} className="h-full">
+                  <ServiceCard title={s.title} description={s.description} linkTo={s.link} />
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Second Row - 2 Cards Centered */}
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-5 md:gap-6">
+              {services.slice(3, 5).map((s, i) => (
+                <motion.div key={i + 3} {...fadeUp((i + 3) * 0.1)} whileHover={{ scale: 1.03, y: -6 }} className="h-full w-full sm:w-[calc(50%-10px)] md:w-[calc(50%-20px)] lg:w-[calc(33.333%-20px)] max-w-sm lg:max-w-none">
+                  <ServiceCard title={s.title} description={s.description} linkTo={s.link} />
+                </motion.div>
+              ))}
+            </div>
           </div>
         </motion.section>
 

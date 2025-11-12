@@ -10,6 +10,7 @@
   "services_dropdown": {
     "aromatherapy_workshop": "Workshop Aromaterapi",
     "perfume_workshop": "Workshop Parfum",
+    "workshop_kami": "Workshop Kami",
     "custom_perfume": "Buat Parfum & Aromaterapi",
     "lab_tools": "Alat Laboratorium",
     "ingredients": "Bahan Parfum & Aromaterapi",
@@ -25,6 +26,11 @@
     "view_more_articles": "Lihat Lebih Banyak Artikel",
     "view_more_events": "Lihat Lebih Banyak Event",
     "view_more_gallery": "Lihat Lebih Banyak Galeri",
+    "workshop_description": "Ikuti berbagai workshop parfum & aromaterapi bersama kami.",
+    "products_description": "Jelajahi berbagai produk parfum dan aromaterapi berkualitas.",
+    "ingredients_description": "Temukan bahan-bahan alami dan premium untuk kreasi parfum Anda.",
+    "lab_tools_description": "Dapatkan berbagai peralatan laboratorium untuk mendukung workshop Anda.",
+    "custom_perfume_description": "Buat parfum khusus sesuai selera Anda dengan bantuan ahli kami.",
     "service_descriptions": {
       "aromatherapy": "Pelajari seni meracik parfum dengan panduan ahli.",
       "perfume_workshop": "Belajar meracik parfum personal dengan mudah.",

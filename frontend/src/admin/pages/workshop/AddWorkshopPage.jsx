@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { FiSave, FiType, FiFileText, FiImage, FiCheckSquare, FiSquare, FiToggleLeft, FiToggleRight, FiTag } from "react-icons/fi";
+import { FiSave, FiType, FiFileText, FiImage, FiCheckSquare, FiSquare, FiToggleLeft, FiToggleRight, FiTag, FiPlus, FiX } from "react-icons/fi";
 
 const InputField = ({ label, name, value, onChange, icon, ...props }) => (
     <div className="mb-6">
@@ -46,8 +46,23 @@ const AddWorkshopPage = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [groupedEvents, setGroupedEvents] = useState({});
   const [selectedEventIds, setSelectedEventIds] = useState(new Set());
+  const [categories, setCategories] = useState([]);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/categories");
+      setCategories(response.data.data);
+    } catch (error) {
+      console.error("Gagal mengambil data kategori:", error);
+    }
+  };
 
   useEffect(() => {
+    fetchCategories();
+
     axios
       .get("http://localhost:3000/api/events?search=")
       .then((response) => {
@@ -96,6 +111,38 @@ const AddWorkshopPage = () => {
     setSelectedEventIds(newSelectedIds);
   };
 
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    if (!newCategoryName.trim()) {
+      alert("Nama kategori tidak boleh kosong.");
+      return;
+    }
+
+    setIsAddingCategory(true);
+    try {
+      const response = await axios.post("http://localhost:3000/api/categories", {
+        name: newCategoryName.trim(),
+      });
+      
+      // Refresh categories
+      await fetchCategories();
+      
+      // Set the newly created category as selected
+      setWorkshop((prev) => ({ ...prev, category: response.data.data.name }));
+      
+      // Close modal and reset form
+      setShowCategoryModal(false);
+      setNewCategoryName("");
+      
+      alert("Kategori berhasil ditambahkan!");
+    } catch (error) {
+      console.error("Gagal menambahkan kategori:", error);
+      alert(error.response?.data?.message || "Gagal menambahkan kategori.");
+    } finally {
+      setIsAddingCategory(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -137,19 +184,31 @@ const AddWorkshopPage = () => {
             
             <div className="mb-6">
               <label className="block mb-2 font-medium text-slate-300">Category</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><FiTag /></span>
-                <select 
-                  name="category" 
-                  value={workshop.category} 
-                  onChange={handleWorkshopChange} 
-                  required 
-                  className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><FiTag /></span>
+                  <select 
+                    name="category" 
+                    value={workshop.category} 
+                    onChange={handleWorkshopChange} 
+                    required 
+                    className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  >
+                    <option value="" disabled>-- Pilih Kategori Workshop --</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.name}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowCategoryModal(true)}
+                  className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-md font-semibold text-white flex items-center gap-2 transition-colors whitespace-nowrap"
                 >
-                  <option value="" disabled>-- Pilih Kategori Workshop --</option>
-                  <option value="Aromaterapi">Aromaterapi</option>
-                  <option value="Parfum">Parfum</option>
-                </select>
+                  <FiPlus /> Tambah Kategori
+                </button>
               </div>
             </div>
 
@@ -206,6 +265,58 @@ const AddWorkshopPage = () => {
           </button>
         </div>
       </form>
+
+      {/* Modal Tambah Kategori */}
+      {showCategoryModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-slate-800 rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-white">Tambah Kategori Baru</h2>
+              <button
+                onClick={() => {
+                  setShowCategoryModal(false);
+                  setNewCategoryName("");
+                }}
+                className="text-slate-400 hover:text-white"
+              >
+                <FiX size={24} />
+              </button>
+            </div>
+            <form onSubmit={handleAddCategory}>
+              <div className="mb-4">
+                <label className="block mb-2 font-medium text-slate-300">Nama Kategori</label>
+                <input
+                  type="text"
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  placeholder="Masukkan nama kategori..."
+                  className="w-full p-2 bg-slate-900 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-white"
+                  autoFocus
+                />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCategoryModal(false);
+                    setNewCategoryName("");
+                  }}
+                  className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-md font-semibold transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={isAddingCategory || !newCategoryName.trim()}
+                  className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-800 disabled:cursor-not-allowed rounded-md font-semibold transition-colors"
+                >
+                  {isAddingCategory ? "Menambahkan..." : "Tambah"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

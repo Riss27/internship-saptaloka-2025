@@ -72,6 +72,20 @@ const AddEventPage = () => {
   const [roles, setRoles] = useState(["Umum"]);
   const [newRole, setNewRole] = useState("");
   const [contents, setContents] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/categories");
+      setCategories(response.data.data);
+    } catch (error) {
+      console.error("Gagal mengambil data kategori:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (!isEditMode) return;
@@ -226,8 +240,10 @@ const AddEventPage = () => {
                 icon={<FiTag />}
                 options={[
                   { value: "", label: "-- Tanpa Kategori --" },
-                  { value: "Aromaterapi", label: "Aromaterapi" },
-                  { value: "Parfum", label: "Parfum" },
+                  ...categories.map((cat) => ({
+                    value: cat.name,
+                    label: cat.name,
+                  })),
                 ]}
               />
               <InputField label="Location" name="location" value={event.location} onChange={handleEventChange} icon={<FiMapPin />} required placeholder="Lokasi event..." />

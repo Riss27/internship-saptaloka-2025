@@ -15,8 +15,7 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
     {
       name: t("navbar.services"),
       dropdown: [
-        { name: t("services_dropdown.aromatherapy_workshop"), to: "/workshop/aromaterapi" },
-        { name: t("services_dropdown.perfume_workshop"), to: "/workshop/parfum" },
+        { name: t("services_dropdown.workshop_kami", "Workshop Kami"), to: "/workshops" },
         { name: t("services_dropdown.custom_perfume"), to: "/pos" },
         { name: t("services_dropdown.lab_tools"), to: "/lab-tools" },
         { name: t("services_dropdown.ingredients"), to: "/ingredients" },

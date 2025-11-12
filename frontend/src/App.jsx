@@ -62,8 +62,7 @@ function App() {
           <Route path="ingredients/:id" element={<IngredientDetailPage />} />
           <Route path="lab-tools" element={<LabToolsPage />} />
           <Route path="lab-tools/:id" element={<LabToolDetailPage />} />
-          <Route path="workshop/aromaterapi" element={<WorkshopsPage category="Aromaterapi" />} />
-          <Route path="workshop/parfum" element={<WorkshopsPage category="Parfum" />} />
+          <Route path="workshops" element={<WorkshopsPage />} />
           <Route path="workshops/:id" element={<WorkshopDetailPage />} />
           <Route path="events" element={<EventsPage />} />
           <Route path="events/:id" element={<EventDetailPage />} />

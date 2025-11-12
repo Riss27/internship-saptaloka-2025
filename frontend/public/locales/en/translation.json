@@ -10,6 +10,7 @@
   "services_dropdown": {
     "aromatherapy_workshop": "Aromatherapy Workshop",
     "perfume_workshop": "Perfume Workshop",
+    "workshop_kami": "Our Workshops",
     "custom_perfume": "Create Perfume & Aromatherapy",
     "lab_tools": "Laboratory Tools",
     "ingredients": "Perfume & Aromatherapy Ingredients",
@@ -25,6 +26,11 @@
     "view_more_articles": "View More Articles",
     "view_more_events": "View More Events",
     "view_more_gallery": "View More Gallery",
+    "workshop_description": "Join various perfume & aromatherapy workshops with us.",
+    "products_description": "Explore various quality perfume and aromatherapy products.",
+    "ingredients_description": "Discover natural and premium materials for your perfume creations.",
+    "lab_tools_description": "Get various laboratory equipment to support your workshops.",
+    "custom_perfume_description": "Create custom perfumes according to your taste with the help of our experts.",
     "service_descriptions": {
       "aromatherapy": "Learn the art of perfume mixing with expert guidance.",
       "perfume_workshop": "Learn to mix personal perfumes easily.",
