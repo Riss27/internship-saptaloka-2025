@@ -4,6 +4,7 @@ import axios from "axios";
 import { FiShoppingCart, FiTag, FiFileText, FiArrowLeft, FiAlertCircle } from "react-icons/fi";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
 import { useTranslation } from "react-i18next";
+import RichTextDisplay from "../../common/RichTextDisplay";
 
 const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
   const { id } = useParams();
@@ -172,7 +173,9 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
                 <FiFileText className="text-slate-600" />
                 <span>{t("static.description")}</span>
               </h2>
-              <div className="text-slate-700 leading-relaxed whitespace-pre-line bg-slate-50 rounded-xl p-4 border border-slate-100">{translatedDescription || t("static.no_description")}</div>
+              <div className="text-slate-700 leading-relaxed bg-slate-50 rounded-xl p-4 border border-slate-100">
+                <RichTextDisplay content={translatedDescription || t("static.no_description")} />
+              </div>
             </div>
           </div>
         </div>

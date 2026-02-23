@@ -9,8 +9,14 @@ const Product = sequelize.define("Product", {
     allowNull: false, // Kolom ini tidak boleh kosong
   },
   description: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING(1000),
     allowNull: false,
+    validate: {
+      len: {
+        args: [1, 1000],
+        msg: "Deskripsi harus antara 1-1000 karakter"
+      }
+    }
   },
   price: {
     type: DataTypes.INTEGER,

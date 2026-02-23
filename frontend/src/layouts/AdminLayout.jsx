@@ -26,6 +26,20 @@ const AdminLayout = () => {
     fetchLogo();
   }, []);
 
+  // Close dropdown when clicking outside (for collapsed sidebar)
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (collapsed && openDropdown && !event.target.closest('.dropdown-container')) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [collapsed, openDropdown]);
+
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -73,8 +87,8 @@ const AdminLayout = () => {
         <nav className="flex-1 px-4 py-6 space-y-2">
           {menuItems.map((item) =>
             item.children ? (
-              <div key={item.name}>
-                <button onClick={() => handleDropdownToggle(item.name)} className="w-full flex justify-between items-center px-4 py-2.5 rounded-lg hover:bg-gray-700/50 transition-all duration-200">
+              <div key={item.name} className="dropdown-container relative">
+                <button onClick={() => handleDropdownToggle(item.name)} className="w-full flex justify-between items-center px-4 py-2.5 rounded-lg hover:bg-gray-700/50 transition-all duration-200 relative">
                   <div className="flex items-center">
                     <span className={`mr-3 transition-transform duration-300 ${collapsed ? "scale-125" : "scale-100"}`}>{item.icon}</span>
                     {!collapsed && item.name}
@@ -82,6 +96,7 @@ const AdminLayout = () => {
                   {!collapsed && (openDropdown === item.name ? <FiChevronUp /> : <FiChevronDown />)}
                 </button>
 
+                {/* Dropdown untuk sidebar normal */}
                 {openDropdown === item.name && !collapsed && (
                   <div className="pl-8 pt-2 space-y-2">
                     {item.children.map((sub) => (
@@ -89,6 +104,27 @@ const AdminLayout = () => {
                         {sub.name}
                       </NavLink>
                     ))}
+                  </div>
+                )}
+
+                {/* Dropdown untuk sidebar collapsed - muncul di samping */}
+                {openDropdown === item.name && collapsed && (
+                  <div className="absolute left-full top-0 ml-2 bg-[#0F2626] border border-gray-600 rounded-lg shadow-lg z-50 min-w-[250px]">
+                    <div className="p-2 border-b border-gray-600">
+                      <span className="text-sm font-semibold text-gray-300">{item.name}</span>
+                    </div>
+                    <div className="p-2 space-y-1">
+                      {item.children.map((sub) => (
+                        <NavLink 
+                          key={sub.name} 
+                          to={sub.path} 
+                          onClick={() => setOpenDropdown(null)}
+                          className={({ isActive }) => `block px-3 py-2 rounded text-sm transition-colors ${isActive ? "bg-cyan-600/50 text-white" : "hover:bg-gray-700/50 text-gray-300"}`}
+                        >
+                          {sub.name}
+                        </NavLink>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

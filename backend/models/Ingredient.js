@@ -8,8 +8,14 @@ const Ingredient = sequelize.define("Ingredient", {
     allowNull: false, // Wajib diisi
   },
   description: {
-    type: DataTypes.TEXT,
-    allowNull: false, // Wajib diisi
+    type: DataTypes.STRING(1000),
+    allowNull: false,
+    validate: {
+      len: {
+        args: [1, 1000],
+        msg: "Deskripsi harus antara 1-1000 karakter"
+      }
+    }
   },
   price: {
     type: DataTypes.INTEGER,

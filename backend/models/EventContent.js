@@ -7,8 +7,14 @@ const EventContent = sequelize.define("EventContent", {
     allowNull: false,
   },
   content: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING(10000),
     allowNull: false,
+    validate: {
+      len: {
+        args: [1, 10000],
+        msg: "Konten harus antara 1-10000 karakter"
+      }
+    }
   },
   imageUrls: {
     // Menyimpan banyak gambar sebagai array JSON

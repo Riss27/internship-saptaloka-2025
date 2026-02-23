@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FiInfo, FiMapPin, FiPhone, FiMail, FiInstagram, FiMessageCircle, FiImage, FiSave } from "react-icons/fi";
+import { FiInfo, FiMapPin, FiPhone, FiMail, FiInstagram, FiMessageCircle, FiImage, FiSave, FiUploadCloud } from "react-icons/fi";
 
 // Komponen InputField dengan tambahan ikon
 const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon }) => (
@@ -114,19 +114,37 @@ const AboutPage = () => {
             <InputField label="Instagram URL" name="instagram" value={formData.instagram} onChange={handleChange} placeholder="https://instagram.com/username" icon={<FiInstagram />} />
             <InputField label="WhatsApp URL (API Link)" name="whatsapp" value={formData.whatsapp} onChange={handleChange} placeholder="https://wa.me/6281234567890" icon={<FiMessageCircle />} />
             <div className="mb-6">
-              <label className="block mb-2 font-medium text-slate-300">Logo Footer</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                  <FiImage />
-                </span>
-                <input
-                  type="file"
-                  name="logoFooter"
-                  onChange={handleLogoChange}
-                  className="w-full pl-10 text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
-                />
+              <label className="mb-2 font-medium text-slate-300 flex items-center gap-2">
+                <FiImage className="text-cyan-400" />
+                Logo Footer
+              </label>
+              <div className="relative group">
+                <input type="file" id="logo-upload" name="logoFooter" onChange={handleLogoChange} className="hidden" accept="image/*" />
+                <label
+                  htmlFor="logo-upload"
+                  className="flex flex-col justify-center items-center w-full h-48 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900/50 cursor-pointer hover:border-cyan-500 hover:bg-slate-800/70 transition-all duration-300 overflow-hidden"
+                >
+                  {previewLogo ? (
+                    <div className="relative w-full h-full">
+                      <img src={previewLogo} alt="Logo Preview" className="w-full h-full object-contain p-4 bg-white/10" />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
+                        <FiUploadCloud className="h-12 w-12 text-white mb-2" />
+                        <span className="text-white font-semibold">Click to change logo</span>
+                        <span className="text-slate-300 text-sm mt-1">PNG, JPG up to 10MB</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center p-6">
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
+                        <FiUploadCloud className="h-10 w-10 text-cyan-400" />
+                      </div>
+                      <span className="block text-slate-200 font-semibold mb-1">Click to upload logo</span>
+                      <span className="text-slate-400 text-sm">or drag and drop</span>
+                      <p className="text-slate-500 text-xs mt-2">PNG, JPG up to 10MB</p>
+                    </div>
+                  )}
+                </label>
               </div>
-              {previewLogo && <img src={previewLogo} alt="Logo Preview" className="mt-4 rounded-md max-h-24 bg-white p-2" />}
             </div>
           </div>
         </div>

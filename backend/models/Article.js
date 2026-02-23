@@ -11,8 +11,14 @@ const Article = sequelize.define("Article", {
     allowNull: false,
   },
   mainDescription: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING(5000),
     allowNull: false,
+    validate: {
+      len: {
+        args: [1, 5000],
+        msg: "Deskripsi utama harus antara 1-5000 karakter"
+      }
+    }
   },
   featuredImageUrl: {
     type: DataTypes.STRING,

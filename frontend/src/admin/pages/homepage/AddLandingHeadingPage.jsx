@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { FiType, FiFileText, FiImage, FiSave } from "react-icons/fi";
+import { FiType, FiFileText, FiImage, FiSave, FiUploadCloud } from "react-icons/fi";
 
 // Komponen InputField dengan Ikon
-const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon, required = false }) => (
+const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon, required = false, maxLength }) => (
   <div className="mb-6">
     <label className="block mb-2 font-medium text-slate-300">
       {label}
@@ -13,9 +13,9 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder, 
     <div className="relative">
       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">{icon}</span>
       {type === "textarea" ? (
-        <textarea name={name} value={value || ""} onChange={onChange} rows="6" placeholder={placeholder} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <textarea name={name} value={value || ""} onChange={onChange} rows="6" placeholder={placeholder} maxLength={maxLength} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
       ) : (
-        <input type={type} name={name} value={value || ""} onChange={onChange} placeholder={placeholder} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input type={type} name={name} value={value || ""} onChange={onChange} placeholder={placeholder} maxLength={maxLength} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
       )}
     </div>
   </div>
@@ -28,7 +28,7 @@ const AddLandingHeadingPage = () => {
   const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isDragOver, setIsDragOver] = useState(false);
+  const [_isDragOver, setIsDragOver] = useState(false);
   const isEditMode = Boolean(id);
 
   useEffect(() => {
@@ -71,17 +71,17 @@ const AddLandingHeadingPage = () => {
     }
   };
 
-  const handleDragOver = (e) => {
+  const _handleDragOver = (e) => {
     e.preventDefault();
     setIsDragOver(true);
   };
 
-  const handleDragLeave = (e) => {
+  const _handleDragLeave = (e) => {
     e.preventDefault();
     setIsDragOver(false);
   };
 
-  const handleDrop = (e) => {
+  const _handleDrop = (e) => {
     e.preventDefault();
     setIsDragOver(false);
     const file = e.dataTransfer.files[0];
@@ -133,14 +133,18 @@ const AddLandingHeadingPage = () => {
           <div className="lg:col-span-2 bg-white/10 p-8 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Slide Details</h2>
 
-            <InputField label="Slide Heading" name="heading" value={formData.heading} onChange={handleChange} required={true} placeholder="Contoh: 'Welcome to Our Platform'" icon={<FiType />} />
+            <InputField label="Slide Heading" name="heading" value={formData.heading} onChange={handleChange} required={true} placeholder="Contoh: 'Welcome to Our Platform'" icon={<FiType />} maxLength={100} />
 
-            <InputField label="Paragraph" name="paragraph" type="textarea" value={formData.paragraph} onChange={handleChange} required={true} placeholder="Deskripsi singkat untuk slide..." icon={<FiFileText />} />
+            <InputField label="Paragraph" name="paragraph" type="textarea" value={formData.paragraph} onChange={handleChange} required={true} placeholder="Deskripsi singkat untuk slide..." icon={<FiFileText />} maxLength={500} />
 
             {/* Character Counter */}
-            <div className="text-sm text-slate-400 space-y-1">
-              <div>Heading: {formData.heading?.length || 0}/100 karakter</div>
-              <div>Paragraph: {formData.paragraph?.length || 0}/500 karakter</div>
+            <div className="text-sm space-y-1">
+              <div className={formData.heading?.length >= 100 ? "text-red-400" : "text-slate-400"}>
+                Heading: {formData.heading?.length || 0}/100 karakter
+              </div>
+              <div className={formData.paragraph?.length >= 500 ? "text-red-400" : "text-slate-400"}>
+                Paragraph: {formData.paragraph?.length || 0}/500 karakter
+              </div>
             </div>
           </div>
 
@@ -150,34 +154,38 @@ const AddLandingHeadingPage = () => {
 
             {/* Image Upload */}
             <div className="mb-6">
-              <label className="block mb-2 font-medium text-slate-300">
+              <label className="mb-2 font-medium text-slate-300 flex items-center gap-2">
+                <FiImage className="text-cyan-400" />
                 Slide Image
                 <span className="text-red-400 ml-1">*</span>
               </label>
-              <div
-                className={`mt-2 flex justify-center items-center w-full h-48 border-2 border-dashed rounded-lg transition-colors ${isDragOver ? "border-blue-400 bg-blue-400/10" : "border-slate-600 bg-slate-800/50"}`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-              >
-                {previewImage ? (
-                  <img src={previewImage} alt="Preview" className="h-full w-full object-contain rounded-lg" />
-                ) : (
-                  <div className="text-center text-slate-400">
-                    <FiImage className="mx-auto h-12 w-12 mb-2" />
-                    <span className="text-sm">{isDragOver ? "Drop image here" : "Image Preview"}</span>
-                    <p className="text-xs mt-1">Drag & drop or click to upload</p>
-                  </div>
-                )}
+              <div className="relative group">
+                <input type="file" id="slide-upload" name="image" onChange={handleImageChange} className="hidden" accept="image/*" />
+                <label
+                  htmlFor="slide-upload"
+                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900/50 cursor-pointer hover:border-cyan-500 hover:bg-slate-800/70 transition-all duration-300 overflow-hidden"
+                >
+                  {previewImage ? (
+                    <div className="relative w-full h-full">
+                      <img src={previewImage} alt="Slide Preview" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
+                        <FiUploadCloud className="h-12 w-12 text-white mb-2" />
+                        <span className="text-white font-semibold">Click to change image</span>
+                        <span className="text-slate-300 text-sm mt-1">PNG, JPG up to 10MB</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center p-6">
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
+                        <FiUploadCloud className="h-10 w-10 text-cyan-400" />
+                      </div>
+                      <span className="block text-slate-200 font-semibold mb-1">Click to upload slide image</span>
+                      <span className="text-slate-400 text-sm">or drag and drop</span>
+                      <p className="text-slate-500 text-xs mt-2">PNG, JPG up to 10MB</p>
+                    </div>
+                  )}
+                </label>
               </div>
-              <input
-                type="file"
-                name="image"
-                onChange={handleImageChange}
-                accept="image/*"
-                className="w-full mt-4 text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
-              />
-              <p className="text-xs text-slate-500 mt-2">Supported formats: JPG, PNG, GIF (Max: 5MB)</p>
             </div>
           </div>
         </div>

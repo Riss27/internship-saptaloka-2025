@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { languageButtonVariants } from "./navAnimations";
@@ -6,6 +6,16 @@ import { languageButtonVariants } from "./navAnimations";
 const LANGS = ["id", "en"];
 
 const LanguageSwitcher = ({ currentLang, onChange, isMobile = false }) => {
+  const [imageErrors, setImageErrors] = useState({});
+
+  const handleImageError = (lang) => {
+    setImageErrors((prev) => ({ ...prev, [lang]: true }));
+  };
+
+  const getFlagEmoji = (lang) => {
+    return lang === "id" ? "🇮🇩" : "🇬🇧";
+  };
+
   return (
     <div className={`${isMobile ? "flex" : "hidden lg:flex"} items-center gap-3`}>
       {isMobile && <span className="text-gray-600 text-sm">Bahasa:</span>}
@@ -21,13 +31,24 @@ const LanguageSwitcher = ({ currentLang, onChange, isMobile = false }) => {
           whileHover="hover"
           whileTap="tap"
         >
-          <motion.img
-            src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`}
-            alt={lang.toUpperCase()}
-            className="w-6 h-6 object-cover rounded-full"
-            animate={currentLang === lang ? { rotate: [0, 10, -10, 0] } : {}}
-            transition={{ duration: 0.5 }}
-          />
+          {imageErrors[lang] ? (
+            <motion.span
+              className="text-xl"
+              animate={currentLang === lang ? { rotate: [0, 10, -10, 0] } : {}}
+              transition={{ duration: 0.5 }}
+            >
+              {getFlagEmoji(lang)}
+            </motion.span>
+          ) : (
+            <motion.img
+              src={`https://flagcdn.com/w40/${lang === "id" ? "id" : "gb"}.png`}
+              alt={lang.toUpperCase()}
+              className="w-6 h-6 object-cover rounded-full"
+              onError={() => handleImageError(lang)}
+              animate={currentLang === lang ? { rotate: [0, 10, -10, 0] } : {}}
+              transition={{ duration: 0.5 }}
+            />
+          )}
         </motion.button>
       ))}
     </div>

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import RegistrationForm from "../components/molecules/forms/RegistrationForm";
 import Popup from "../components/atoms/feedback/Popup";
+import RichTextDisplay from "../components/common/RichTextDisplay";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faMapPin, faUsers, faRupiahSign } from "@fortawesome/free-solid-svg-icons";
@@ -98,7 +99,7 @@ const EventDetailPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Kolom utama */}
             <div className="lg:col-span-2">
-              <div className="prose prose-invert prose-lg max-w-none mb-12" dangerouslySetInnerHTML={{ __html: event.description }} />
+              <RichTextDisplay content={event.description} className="prose-lg mb-12" />
               <article className="space-y-12">
                 {event.EventContents &&
                   event.EventContents.map((content, index) => {
@@ -106,7 +107,7 @@ const EventDetailPage = () => {
                     return (
                       <section key={index}>
                         <h2 className="text-2xl font-bold text-cyan-400 mb-4 border-l-4 border-cyan-400 pl-4">{content.header}</h2>
-                        <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: content.content }} />
+                        <RichTextDisplay content={content.content} />
                         {images.length > 0 && (
                           <div className="grid grid-cols-2 gap-4 mt-6">
                             {images.map((url, i) => (

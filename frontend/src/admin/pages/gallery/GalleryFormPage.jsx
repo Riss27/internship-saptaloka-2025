@@ -90,17 +90,37 @@ const GalleryFormPage = () => {
           <input type="text" id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} required className="w-full p-2 bg-white/20 rounded border border-slate-500" />
         </div>
 
-        {/* Input Gambar (Sekarang selalu tampil) */}
+        {/* Input Gambar */}
         <div className="mb-6">
-          <label className="block mb-2 font-medium text-slate-300">{isEditMode ? "Ganti Gambar (Opsional)" : "Upload Gambar"}</label>
-          <div className="flex items-center gap-4">
-            <div className="w-48 h-48 flex items-center justify-center bg-white/10 rounded border-2 border-dashed border-slate-500">
-              {preview ? <img src={preview} alt="Preview" className="max-w-full max-h-full object-contain" /> : <FiImage className="text-slate-400" size={40} />}
-            </div>
-            <label htmlFor="image-upload" className="cursor-pointer flex items-center gap-2 bg-slate-600 hover:bg-slate-700 px-4 py-2 rounded-md font-semibold text-white">
-              <FiUpload />
-              Choose File
-              <input type="file" id="image-upload" name="image" onChange={handleFileChange} className="hidden" accept="image/*" required={!isEditMode} />
+          <label className="mb-2 font-medium text-slate-300 flex items-center gap-2">
+            <FiImage className="text-cyan-400" />
+            {isEditMode ? "Ganti Gambar (Opsional)" : "Upload Gambar"}
+          </label>
+          <div className="relative group">
+            <input type="file" id="image-upload" name="image" onChange={handleFileChange} className="hidden" accept="image/*" required={!isEditMode} />
+            <label
+              htmlFor="image-upload"
+              className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900/50 cursor-pointer hover:border-cyan-500 hover:bg-slate-800/70 transition-all duration-300 overflow-hidden"
+            >
+              {preview ? (
+                <div className="relative w-full h-full">
+                  <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
+                    <FiUpload className="h-12 w-12 text-white mb-2" />
+                    <span className="text-white font-semibold">Click to change image</span>
+                    <span className="text-slate-300 text-sm mt-1">PNG, JPG up to 10MB</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center p-6">
+                  <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
+                    <FiUpload className="h-10 w-10 text-cyan-400" />
+                  </div>
+                  <span className="block text-slate-200 font-semibold mb-1">Click to upload image</span>
+                  <span className="text-slate-400 text-sm">or drag and drop</span>
+                  <p className="text-slate-500 text-xs mt-2">PNG, JPG up to 10MB</p>
+                </div>
+              )}
             </label>
           </div>
         </div>

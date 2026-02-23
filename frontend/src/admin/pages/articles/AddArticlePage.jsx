@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 // TAMBAHKAN FiCalendar untuk ikon
 import { FiType, FiUser, FiFileText, FiImage, FiSave, FiPlus, FiTrash2, FiX, FiUploadCloud, FiCalendar } from "react-icons/fi";
+import RichTextEditor from "../../components/RichTextEditor";
 
 const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon, required = false }) => (
   <div className="mb-6">
@@ -223,27 +224,48 @@ const AddArticlePage = () => {
                 </div>
               </div>
 
-              <InputField label="Main Description" name="mainDescription" type="textarea" value={article.mainDescription} onChange={handleArticleChange} required={true} placeholder="Deskripsi pembuka artikel..." icon={<FiFileText />} />
+              <div className="mb-6">
+                <label className="block mb-2 font-medium text-slate-300 transition-colors duration-300 focus-within:text-cyan-400">Main Description</label>
+                <RichTextEditor 
+                  content={article.mainDescription} 
+                  onUpdate={(value) => setArticle((prev) => ({ ...prev, mainDescription: value }))}
+                  placeholder="Deskripsi pembuka artikel..."
+                  maxLength={5000}
+                />
+              </div>
             </div>
             <div>
-              <label className="block mb-2 font-medium text-slate-300">Featured Image</label>
-              <div className="mt-2 flex justify-center items-center w-full h-60 border-2 border-dashed border-slate-600 rounded-lg bg-slate-900/50 hover:border-cyan-500 transition-colors">
-                {previewFeaturedImage ? (
-                  <img src={previewFeaturedImage} alt="Preview" className="h-full w-full object-contain rounded-lg p-1" />
-                ) : (
-                  <div className="text-center text-slate-400">
-                    <FiImage className="mx-auto h-12 w-12" />
-                    <span className="mt-2 block">16:9 Image Preview</span>
-                  </div>
-                )}
+              <label className="mb-2 font-medium text-slate-300 flex items-center gap-2">
+                <FiImage className="text-cyan-400" />
+                Featured Image
+              </label>
+              <div className="relative group">
+                <input type="file" id="featured-upload" name="featuredImage" onChange={handleFeaturedImageChange} className="hidden" accept="image/*" required={!isEditMode} />
+                <label
+                  htmlFor="featured-upload"
+                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900/50 cursor-pointer hover:border-cyan-500 hover:bg-slate-800/70 transition-all duration-300 overflow-hidden"
+                >
+                  {previewFeaturedImage ? (
+                    <div className="relative w-full h-full">
+                      <img src={previewFeaturedImage} alt="Featured Preview" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
+                        <FiUploadCloud className="h-12 w-12 text-white mb-2" />
+                        <span className="text-white font-semibold">Click to change image</span>
+                        <span className="text-slate-300 text-sm mt-1">PNG, JPG up to 10MB</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center p-6">
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
+                        <FiUploadCloud className="h-10 w-10 text-cyan-400" />
+                      </div>
+                      <span className="block text-slate-200 font-semibold mb-1">Click to upload featured image</span>
+                      <span className="text-slate-400 text-sm">or drag and drop</span>
+                      <p className="text-slate-500 text-xs mt-2">PNG, JPG up to 10MB</p>
+                    </div>
+                  )}
+                </label>
               </div>
-              <input
-                type="file"
-                name="featuredImage"
-                onChange={handleFeaturedImageChange}
-                className="w-full mt-4 text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-cyan-600 file:text-white hover:file:bg-cyan-700"
-                required={!isEditMode}
-              />
             </div>
           </div>
         </div>
@@ -260,7 +282,19 @@ const AddArticlePage = () => {
                   </button>
                 </div>
                 <InputField label="Topic" name="topic" value={content.topic} onChange={(e) => handleContentChange(index, e)} required={true} placeholder="Judul sub-konten..." icon={<FiType />} />
-                <InputField label="Description" name="description" type="textarea" value={content.description} onChange={(e) => handleContentChange(index, e)} required={true} placeholder="Isi sub-konten..." icon={<FiFileText />} />
+                <div className="mb-6">
+                  <label className="block mb-2 font-medium text-slate-300">Description</label>
+                  <RichTextEditor 
+                    content={content.description} 
+                    onUpdate={(value) => {
+                      const newContents = [...contents];
+                      newContents[index].description = value;
+                      setContents(newContents);
+                    }}
+                    placeholder="Isi sub-konten..."
+                    maxLength={10000}
+                  />
+                </div>
                 <div className="mb-2">
                   <label className="block mb-2 font-medium text-slate-300">Images</label>
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 min-h-[7rem] bg-slate-800/70 p-4 rounded-md">

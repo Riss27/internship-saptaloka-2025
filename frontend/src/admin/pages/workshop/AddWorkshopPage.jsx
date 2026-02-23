@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import { FiSave, FiType, FiFileText, FiImage, FiCheckSquare, FiSquare, FiToggleLeft, FiToggleRight, FiTag, FiPlus, FiX } from "react-icons/fi";
+import { FiSave, FiType, FiFileText, FiImage, FiCheckSquare, FiSquare, FiToggleLeft, FiToggleRight, FiTag, FiPlus, FiX, FiUploadCloud } from "react-icons/fi";
+import RichTextEditor from "../../components/RichTextEditor";
 
 const InputField = ({ label, name, value, onChange, icon, ...props }) => (
     <div className="mb-6">
@@ -14,27 +13,6 @@ const InputField = ({ label, name, value, onChange, icon, ...props }) => (
         </div>
     </div>
 );
-
-const TiptapEditor = ({ content, onUpdate }) => {
-    const editor = useEditor({
-        extensions: [StarterKit],
-        content: content || "",
-        onUpdate: ({ editor }) => { onUpdate(editor.getHTML()); },
-        editorProps: { attributes: { class: "prose prose-invert max-w-none p-4 min-h-[200px] focus:outline-none" }, },
-    });
-    useEffect(() => {
-        if (editor && content !== editor.getHTML()) { editor.commands.setContent(content); }
-    }, [content, editor]);
-    return (
-        <div className="bg-slate-800 border border-slate-600 rounded-md">
-            <div className="flex flex-wrap gap-2 p-2 bg-slate-700/50 rounded-t-md border-b border-slate-600">
-                <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={editor?.isActive("bold") ? "bg-cyan-600 text-white p-2 rounded" : "p-2"}>Bold</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className={editor?.isActive("italic") ? "bg-cyan-600 text-white p-2 rounded" : "p-2"}>Italic</button>
-            </div>
-            <EditorContent editor={editor} />
-        </div>
-    );
-};
 
 const AddWorkshopPage = () => {
   const navigate = useNavigate();
@@ -213,15 +191,41 @@ const AddWorkshopPage = () => {
             </div>
 
             <div>
-              <label className="block mb-2 font-medium text-slate-300">Workshop Poster</label>
-              <div className="mt-2 flex justify-center items-center w-full h-48 border-2 border-dashed border-slate-600 rounded-lg bg-slate-900/50">
-                {previewImage ? <img src={previewImage} alt="Preview" className="h-full w-full object-contain p-1" /> : <div className="text-center text-slate-400"><FiImage className="mx-auto h-12 w-12" /></div>}
+              <label className="mb-2 font-medium text-slate-300 flex items-center gap-2">
+                <FiImage className="text-cyan-400" />
+                Workshop Poster
+              </label>
+              <div className="relative group">
+                <input type="file" id="poster-upload" name="imageUrl" onChange={handleImageChange} className="hidden" accept="image/*" required={!isEditMode} />
+                <label
+                  htmlFor="poster-upload"
+                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900/50 cursor-pointer hover:border-cyan-500 hover:bg-slate-800/70 transition-all duration-300 overflow-hidden"
+                >
+                  {previewImage ? (
+                    <div className="relative w-full h-full">
+                      <img src={previewImage} alt="Poster Preview" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
+                        <FiUploadCloud className="h-12 w-12 text-white mb-2" />
+                        <span className="text-white font-semibold">Click to change poster</span>
+                        <span className="text-slate-300 text-sm mt-1">PNG, JPG up to 10MB</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center p-6">
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
+                        <FiUploadCloud className="h-10 w-10 text-cyan-400" />
+                      </div>
+                      <span className="block text-slate-200 font-semibold mb-1">Click to upload poster</span>
+                      <span className="text-slate-400 text-sm">or drag and drop</span>
+                      <p className="text-slate-500 text-xs mt-2">PNG, JPG up to 10MB</p>
+                    </div>
+                  )}
+                </label>
               </div>
-              <input type="file" name="imageUrl" onChange={handleImageChange} className="w-full mt-4 text-sm" required={!isEditMode} />
             </div>
             <div className="mt-6">
               <label className="block mb-2 font-medium text-slate-300">Description</label>
-              <TiptapEditor content={workshop.description} onUpdate={handleDescriptionChange} />
+              <RichTextEditor content={workshop.description} onUpdate={handleDescriptionChange} maxLength={5000} />
             </div>
           </div>
         </div>

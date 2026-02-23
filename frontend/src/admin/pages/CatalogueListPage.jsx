@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { FiPlus, FiFilter, FiChevronDown } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 import GenericCatalogueList from "../components/catalogue/GenericCatalogueList";
 
 const CatalogueListPage = ({ pageTitle, itemType, apiEndpoint, categoryOptions }) => {
@@ -38,22 +38,25 @@ const CatalogueListPage = ({ pageTitle, itemType, apiEndpoint, categoryOptions }
 
   return (
     <div className="max-w-7xl mx-auto">
-      <header className="flex flex-col md:flex-row justify-between md:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-white">{pageTitle}</h1>
-          <p className="text-slate-400 mt-1">Tambahkan, edit, atau hapus {itemType}.</p>
-        </div>
+      <header className="mb-8">
+        <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-4">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{pageTitle}</h1>
+            <p className="text-slate-400 text-lg">Tambahkan, edit, atau hapus {itemType}</p>
+            <div className="flex items-center gap-4 mt-3">
+              <span className="text-sm text-slate-500">
+                Total {itemType}s: <span className="font-semibold text-cyan-400">{items.length}</span>
+              </span>
+            </div>
+          </div>
 
-        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
           {categoryOptions && (
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                <FiFilter size={16} />
-              </span>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full md:w-56 p-2 pl-10 bg-slate-800 border border-slate-600 text-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full md:w-56 p-2 bg-slate-800 border border-slate-600 text-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <option value="All">Semua Kategori</option>
                 {categoryOptions.map((opt) => (
@@ -62,14 +65,12 @@ const CatalogueListPage = ({ pageTitle, itemType, apiEndpoint, categoryOptions }
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
-                <FiChevronDown className="h-5 w-5" />
-              </div>
             </div>
           )}
-          <Link to={`/admin/catalogue/${apiEndpoint}/add`} className="bg-cyan-600 hover:bg-cyan-700 px-5 py-2 rounded-md font-semibold text-white no-underline flex items-center">
-            <FiPlus className="mr-2" /> Add New
+          <Link to={`/admin/catalogue/${apiEndpoint}/add`} className="bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold text-white no-underline flex items-center whitespace-nowrap transition-all duration-300">
+            <FiPlus className="mr-2" size={18} /> Add New
           </Link>
+          </div>
         </div>
       </header>
 

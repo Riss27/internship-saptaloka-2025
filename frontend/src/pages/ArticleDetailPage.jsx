@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { FiCalendar, FiUser } from "react-icons/fi";
+import RichTextDisplay from "../components/common/RichTextDisplay";
 import { useTranslateDB } from "../hooks/useTranslateDB";
 import { useTranslation } from "react-i18next";
 
@@ -94,8 +95,8 @@ const ArticleDetailPage = () => {
         </div>
 
         {/* Deskripsi utama */}
-        <div className="prose prose-lg max-w-none mb-12 text-slate-600">
-          <p className="lead">{translatedMainDescription}</p>
+        <div className="mb-12">
+          <RichTextDisplay content={translatedMainDescription} className="text-slate-600 text-lg" />
         </div>
 
         {/* Konten artikel */}
@@ -106,7 +107,7 @@ const ArticleDetailPage = () => {
               return (
                 <section key={index}>
                   <h2 className="text-2xl font-bold text-emerald-700 mb-4 border-l-4 border-emerald-500 pl-4">{content.topic}</h2>
-                  <div className="prose max-w-none text-slate-600" dangerouslySetInnerHTML={{ __html: content.description }} />
+                  <RichTextDisplay content={content.description} className="text-slate-600" />
                   {images.length > 0 && (
                     <div className="grid grid-cols-2 gap-4 mt-6">
                       {images.map((url, i) => (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import RichTextDisplay from "../components/common/RichTextDisplay";
 import { useTranslateDB } from "../hooks/useTranslateDB";
 import { useTranslation } from "react-i18next";
 
@@ -53,7 +54,7 @@ const WorkshopDetailPage = () => {
           {/* Info Workshop */}
           <div className="md:col-span-2">
             <h1 className="text-4xl font-bold text-emerald-800 mb-4">{translatedTitle}</h1>
-            <div className="prose prose-lg max-w-none text-slate-600" dangerouslySetInnerHTML={{ __html: translatedDescription }} />
+            <RichTextDisplay content={translatedDescription} className="prose-lg text-slate-600" />
           </div>
         </div>
 

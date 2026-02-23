@@ -140,12 +140,12 @@ const HomePage = () => {
           <SectionTitle title={t("homepage.recent_activities")} />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {data.events.map((e, i) => (
-              <motion.div key={e.id} {...fadeUp(i * 0.1)} whileHover={{ y: -6, scale: 1.02 }}>
-                <Link to={`/events/${e.id}`} className="block rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 bg-white">
-                  <div className="aspect-video overflow-hidden">
+              <motion.div key={e.id} {...fadeUp(i * 0.1)} whileHover={{ y: -6, scale: 1.02 }} className="h-full">
+                <Link to={`/events/${e.id}`} className="flex flex-col h-full rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 bg-white">
+                  <div className="aspect-video overflow-hidden flex-shrink-0">
                     <img src={`http://localhost:3000${e.imageBannerUrl}`} alt={e.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col flex-grow">
                     <p className="text-emerald-600 font-semibold mb-2 text-sm">
                       {new Date(e.startDateTime).toLocaleDateString("id-ID", {
                         day: "numeric",

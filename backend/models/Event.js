@@ -24,8 +24,14 @@ const Event = sequelize.define("Event", {
     defaultValue: 0,
   },
   description: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING(5000),
     allowNull: false,
+    validate: {
+      len: {
+        args: [1, 5000],
+        msg: "Deskripsi harus antara 1-5000 karakter"
+      }
+    }
   },
   imageBannerUrl: {
     type: DataTypes.STRING,

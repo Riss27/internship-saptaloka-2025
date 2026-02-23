@@ -7,8 +7,14 @@ const ArticleContent = sequelize.define("ArticleContent", {
     allowNull: false,
   },
   description: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING(10000),
     allowNull: false,
+    validate: {
+      len: {
+        args: [1, 10000],
+        msg: "Deskripsi harus antara 1-10000 karakter"
+      }
+    }
   },
   imageUrls: {
     type: DataTypes.JSON,

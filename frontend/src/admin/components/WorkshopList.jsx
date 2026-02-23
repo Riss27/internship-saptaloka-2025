@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FiEdit, FiTrash2, FiCalendar } from "react-icons/fi";
+import RichTextDisplay from "../../components/common/RichTextDisplay";
 
 const WorkshopList = ({ workshops, deleteWorkshop }) => {
   // Tampilkan pesan jika tidak ada data
@@ -20,7 +21,7 @@ const WorkshopList = ({ workshops, deleteWorkshop }) => {
           <div className="p-6 flex flex-col justify-between flex-1">
             <div>
               <h2 className="text-2xl font-bold text-white mt-2">{workshop.title}</h2>
-              <div className="prose prose-invert text-slate-300 mt-2 max-h-24 overflow-hidden" dangerouslySetInnerHTML={{ __html: workshop.description }} />
+              <RichTextDisplay content={workshop.description} className="text-slate-300 mt-2 max-h-24 overflow-hidden" isDark={true} />
 
               <h3 className="font-semibold text-slate-200 mt-4 mb-2 border-t border-slate-700 pt-3">Bundled Events:</h3>
               <div className="flex flex-wrap gap-2">

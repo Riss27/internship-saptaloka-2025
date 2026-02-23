@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FiPlus, FiTrash2, FiSave, FiType, FiUsers, FiMapPin, FiDollarSign, FiCalendar, FiImage, FiX, FiUploadCloud, FiTag, FiChevronDown, FiToggleLeft } from "react-icons/fi";
+import RichTextEditor from "../../components/RichTextEditor";
 
-// Komponen InputField
 const InputField = ({ label, name, value, onChange, icon, as = "input", options = [], ...props }) => (
   <div className="mb-6">
     <label className="block mb-2 font-medium text-slate-300">{label}</label>
@@ -31,34 +29,6 @@ const InputField = ({ label, name, value, onChange, icon, as = "input", options 
     </div>
   </div>
 );
-
-const TiptapEditor = ({ content, onUpdate }) => {
-  const editor = useEditor({
-    extensions: [StarterKit],
-    content: content || "",
-    onUpdate: ({ editor }) => onUpdate(editor.getHTML()),
-    editorProps: {
-      attributes: {
-        class: "prose prose-invert max-w-none p-4 min-h-[150px] focus:outline-none",
-      },
-    },
-  });
-
-  // update isi editor ketika content dari props berubah (misal data dari API baru masuk)
-  React.useEffect(() => {
-    if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content || "");
-    }
-  }, [content, editor]);
-
-  if (!editor) return null;
-
-  return (
-    <div className="bg-slate-800 border border-slate-600 rounded-md">
-      <EditorContent editor={editor} />
-    </div>
-  );
-};
 
 const AddEventPage = () => {
   const navigate = useNavigate();
@@ -318,7 +288,7 @@ const AddEventPage = () => {
 
           <div className="mt-6">
             <label className="block mb-2 font-medium text-slate-300">Description</label>
-            <TiptapEditor content={event.description} onUpdate={handleDescriptionChange} />
+            <RichTextEditor content={event.description} onUpdate={handleDescriptionChange} maxLength={5000} />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
             <div>
@@ -388,7 +358,7 @@ const AddEventPage = () => {
                 <InputField label="Header" name="header" value={content.header} onChange={(e) => handleContentTextChange(index, "header", e.target.value)} icon={<FiType />} placeholder="Judul section..." />
                 <div>
                   <label className="block mb-2 font-medium text-slate-300">Content</label>
-                  <TiptapEditor content={content.content} onUpdate={(value) => handleContentTextChange(index, "content", value)} />
+                  <RichTextEditor content={content.content} onUpdate={(value) => handleContentTextChange(index, "content", value)} maxLength={10000} />
                 </div>
 
                 {/* IMPROVED CONTENT IMAGES */}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { FiInfo, FiTag, FiDollarSign, FiFileText, FiLink, FiImage, FiSave, FiChevronDown } from "react-icons/fi";
+import { FiInfo, FiTag, FiDollarSign, FiFileText, FiLink, FiImage, FiSave, FiChevronDown, FiUploadCloud } from "react-icons/fi";
+import RichTextEditor from "../RichTextEditor";
 
 const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon }) => (
   <div className="mb-6">
@@ -103,7 +104,15 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
             <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">{itemTitle} Details</h2>
             <InputField label={`${itemTitle} Name`} name="name" value={formData.name} onChange={handleChange} required={true} placeholder={`Contoh: 'Nama ${itemType}'`} icon={<FiInfo />} />
             <InputField label="Price" name="price" type="number" value={formData.price} onChange={handleChange} required={true} placeholder="Contoh: 150000" icon={<FiDollarSign />} />
-            <InputField label="Description" name="description" type="textarea" value={formData.description} onChange={handleChange} required={true} placeholder={`Deskripsi singkat ${itemType}...`} icon={<FiFileText />} />
+            <div className="mb-6">
+              <label className="block mb-2 font-medium text-slate-300">Description</label>
+              <RichTextEditor 
+                content={formData.description} 
+                onUpdate={(value) => setFormData((prev) => ({ ...prev, description: value }))}
+                placeholder={`Deskripsi singkat ${itemType}...`}
+                maxLength={1000}
+              />
+            </div>
           </div>
 
           <div className="bg-white/10 p-8 rounded-lg shadow-lg">
@@ -144,24 +153,37 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
             )}
 
             <div className="mb-6">
-              <label className="block mb-2 font-medium text-slate-300">{itemTitle} Image</label>
-              <div className="mt-2 flex justify-center items-center w-full h-48 border-2 border-dashed border-slate-600 rounded-lg bg-slate-800/50">
-                {previewImage ? (
-                  <img src={previewImage} alt="Preview" className="h-full w-full object-contain rounded-lg" />
-                ) : (
-                  <div className="text-center text-slate-400">
-                    <FiImage className="mx-auto h-12 w-12" />
-                    <span>Image Preview</span>
-                  </div>
-                )}
+              <label className="mb-2 font-medium text-slate-300 flex items-center gap-2">
+                <FiImage className="text-cyan-400" />
+                {itemTitle} Image
+              </label>
+              <div className="relative group">
+                <input type="file" id="catalogue-upload" name="image" onChange={handleImageChange} className="hidden" accept="image/*" required={!isEditMode} />
+                <label
+                  htmlFor="catalogue-upload"
+                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900/50 cursor-pointer hover:border-cyan-500 hover:bg-slate-800/70 transition-all duration-300 overflow-hidden"
+                >
+                  {previewImage ? (
+                    <div className="relative w-full h-full">
+                      <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
+                        <FiUploadCloud className="h-12 w-12 text-white mb-2" />
+                        <span className="text-white font-semibold">Click to change image</span>
+                        <span className="text-slate-300 text-sm mt-1">PNG, JPG up to 10MB</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center p-6">
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
+                        <FiUploadCloud className="h-10 w-10 text-cyan-400" />
+                      </div>
+                      <span className="block text-slate-200 font-semibold mb-1">Click to upload image</span>
+                      <span className="text-slate-400 text-sm">or drag and drop</span>
+                      <p className="text-slate-500 text-xs mt-2">PNG, JPG up to 10MB</p>
+                    </div>
+                  )}
+                </label>
               </div>
-              <input
-                type="file"
-                name="image"
-                onChange={handleImageChange}
-                className="w-full mt-4 text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
-                required={!isEditMode}
-              />
             </div>
             <InputField label="Link Tokopedia" name="linkTokopedia" value={formData.linkTokopedia} onChange={handleChange} placeholder="https://..." icon={<FiLink />} />
             <InputField label="Link Shopee" name="linkShopee" value={formData.linkShopee} onChange={handleChange} placeholder="https://..." icon={<FiLink />} />

@@ -11,8 +11,14 @@ const Workshop = sequelize.define("Workshop", {
     allowNull: false,
   },
   description: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING(5000),
     allowNull: false,
+    validate: {
+      len: {
+        args: [1, 5000],
+        msg: "Deskripsi harus antara 1-5000 karakter"
+      }
+    }
   },
   imageUrl: {
     type: DataTypes.STRING,

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FiTag, FiCalendar } from "react-icons/fi";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import RichTextDisplay from "../../common/RichTextDisplay";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
 
 const WorkshopCard = ({ workshop }) => {
@@ -53,7 +54,7 @@ const WorkshopCard = ({ workshop }) => {
             </div>
           )}
 
-          <div className="prose prose-sm max-w-none text-slate-600 line-clamp-3" dangerouslySetInnerHTML={{ __html: translatedDescription }} />
+          <RichTextDisplay content={translatedDescription} className="prose-sm text-slate-600 line-clamp-3" />
         </div>
 
         <Link
