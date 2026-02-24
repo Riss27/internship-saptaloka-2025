@@ -19,8 +19,13 @@ const WorkshopsPage = () => {
     const fetchWorkshops = async () => {
       try {
         const response = await axios.get("http://localhost:3000/api/workshops?source=admin");
-        setWorkshops(response.data.data);
-        setFilteredWorkshops(response.data.data);
+        const workshopsData = response.data.data;
+        setWorkshops(workshopsData);
+        setFilteredWorkshops(workshopsData);
+        
+        // Extract unique categories from workshops
+        const uniqueCategories = [...new Set(workshopsData.map(w => w.category).filter(Boolean))];
+        setCategories(uniqueCategories.map((cat, index) => ({ id: index + 1, name: cat })));
       } catch (error) {
         console.error("Gagal mengambil data workshops:", error);
       } finally {
@@ -28,17 +33,7 @@ const WorkshopsPage = () => {
       }
     };
 
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/api/categories");
-        setCategories(response.data.data);
-      } catch (error) {
-        console.error("Gagal mengambil data kategori:", error);
-      }
-    };
-
     fetchWorkshops();
-    fetchCategories();
   }, []);
 
   useEffect(() => {
