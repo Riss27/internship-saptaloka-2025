@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../hooks/apiClient";
 import { FiImage } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 
@@ -9,8 +9,8 @@ const GalleryPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/gallery")
+    apiClient
+      .get("/api/gallery")
       .then((response) => {
         setImages(response.data.data);
         setIsLoading(false);
@@ -49,7 +49,7 @@ const GalleryPage = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
             {images.map((image) => (
               <div key={image.id} className="bg-white rounded-xl shadow-md hover:shadow-emerald-200 transition-all overflow-hidden">
-                <img src={`http://localhost:3000${image.imageUrl}`} alt={image.title} className="w-full h-56 object-cover hover:scale-105 transition-transform duration-300" />
+                <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${image.imageUrl}`} alt={image.title} className="w-full h-56 object-cover hover:scale-105 transition-transform duration-300" />
                 <div className="p-3">
                   <p className="text-emerald-800 font-semibold text-center break-words leading-snug">{image.title}</p>
                 </div>

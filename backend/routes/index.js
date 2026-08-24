@@ -15,20 +15,18 @@ const categoryRoutes = require("./categoryRoutes");
 const authRoutes = require("./authRoutes");
 const translateRoutes = require("./translateRoutes");
 
-// Rute untuk fitur terjemahan
+// Rute publik
+router.use("/auth", authRoutes);
 router.use("/translate", translateRoutes);
-
-// Atur agar semua request ke /path sesuai diarahkan ke rute yang benar
 router.use("/products", productRoutes);
-router.use("/about", aboutRoutes);
-router.use("/gallery", galleryRoutes);
-router.use("/landing-page", landingPageRoutes);
 router.use("/articles", articleRoutes);
-router.use("/ingredients", ingredientRoutes);
-router.use("/lab-tools", labToolRoutes);
 router.use("/events", eventRoutes);
 router.use("/workshops", workshopRoutes);
+router.use("/ingredients", ingredientRoutes);
+router.use("/lab-tools", labToolRoutes);
+router.use("/gallery", galleryRoutes);
+router.use("/landing-page", landingPageRoutes);
 router.use("/categories", categoryRoutes);
-router.use("/auth", authRoutes);
+router.use("/about", aboutRoutes);
 
 module.exports = router;

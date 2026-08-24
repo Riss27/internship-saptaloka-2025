@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 
 // TAMBAHKAN import untuk DatePicker
 import DatePicker from "react-datepicker";
@@ -56,8 +56,8 @@ const AddArticlePage = () => {
   useEffect(() => {
     if (isEditMode) {
       setIsLoading(true);
-      axios
-        .get(`http://localhost:3000/api/articles/${id}`)
+      apiClient
+        .get(`/api/articles/${id}`)
         .then((response) => {
           const fetchedArticle = response.data.data;
           setArticle({
@@ -177,9 +177,9 @@ const AddArticlePage = () => {
     try {
       const config = { headers: { "Content-Type": "multipart/form-data" } };
       if (isEditMode) {
-        await axios.put(`http://localhost:3000/api/articles/${id}`, submissionData, config);
+        await apiClient.put(`/api/articles/${id}`, submissionData, config);
       } else {
-        await axios.post("http://localhost:3000/api/articles", submissionData, config);
+        await apiClient.post("/api/articles", submissionData, config);
       }
       navigate("/admin/articles");
     } catch (error) {

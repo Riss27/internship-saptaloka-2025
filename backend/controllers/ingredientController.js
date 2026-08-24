@@ -5,13 +5,7 @@ const path = require("path");
 
 // Controller untuk (CREATE) - Membuat ingredient baru
 exports.createIngredient = async (req, res) => {
-  const uploader = upload.single("image");
-
-  uploader(req, res, async function (err) {
-    if (err) {
-      return res.status(400).json({ status: "fail", message: err.message || err });
-    }
-    try {
+  try {
       const { name, description, price, category, linkTokopedia, linkShopee } = req.body;
       if (!req.file) {
         return res.status(400).json({ status: "fail", message: "Gambar wajib diunggah." });
@@ -78,13 +72,7 @@ exports.getIngredientById = async (req, res) => {
 
 // Controller untuk (UPDATE) - Memperbarui ingredient
 exports.updateIngredient = async (req, res) => {
-  const uploader = upload.single("image");
-
-  uploader(req, res, async function (err) {
-    if (err) {
-      return res.status(400).json({ status: "fail", message: err.message || err });
-    }
-    try {
+  try {
       const ingredient = await Ingredient.findByPk(req.params.id);
       if (!ingredient) {
         return res.status(404).json({ status: "fail", message: "Bahan tidak ditemukan." });
@@ -108,13 +96,11 @@ exports.updateIngredient = async (req, res) => {
 
       await ingredient.update(updateData);
       res.status(200).json({ status: "success", data: ingredient });
-    } catch (error) {
-      res.status(500).json({ status: "fail", message: error.message });
-    }
-  });
+  } catch (error) {
+    res.status(500).json({ status: "fail", message: error.message });
+  }
 };
 
-// Controller untuk (DELETE) - Menghapus ingredient
 exports.deleteIngredient = async (req, res) => {
   try {
     const ingredient = await Ingredient.findByPk(req.params.id);

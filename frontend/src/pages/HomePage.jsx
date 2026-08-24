@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../hooks/apiClient";
 import { Link } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
@@ -30,10 +30,10 @@ const HomePage = () => {
     (async () => {
       try {
         const [p, e, a, g] = await Promise.all([
-          axios.get("http://localhost:3000/api/products"),
-          axios.get("http://localhost:3000/api/events"),
-          axios.get("http://localhost:3000/api/articles"),
-          axios.get("http://localhost:3000/api/gallery"),
+          apiClient.get("/api/products"),
+          apiClient.get("/api/events"),
+          apiClient.get("/api/articles"),
+          apiClient.get("/api/gallery"),
         ]);
         setData({
           products: p.data.data.slice(0, 4),
@@ -143,7 +143,7 @@ const HomePage = () => {
               <motion.div key={e.id} {...fadeUp(i * 0.1)} whileHover={{ y: -6, scale: 1.02 }} className="h-full">
                 <Link to={`/events/${e.id}`} className="flex flex-col h-full rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 bg-white">
                   <div className="aspect-video overflow-hidden flex-shrink-0">
-                    <img src={`http://localhost:3000${e.imageBannerUrl}`} alt={e.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                    <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${e.imageBannerUrl}`} alt={e.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
                   </div>
                   <div className="p-6 flex flex-col flex-grow">
                     <p className="text-emerald-600 font-semibold mb-2 text-sm">
@@ -193,7 +193,7 @@ const HomePage = () => {
           <motion.div className="flex overflow-x-auto gap-6 pb-6 scrollbar-hide snap-x snap-mandatory" whileTap={{ cursor: "grabbing" }}>
             {data.gallery.map((g, i) => (
               <motion.div key={g.id} {...fadeUp(i * 0.05)} whileHover={{ scale: 1.05 }} className="relative group flex-shrink-0 w-[350px] h-[220px] rounded-3xl overflow-hidden shadow-lg snap-center">
-                <img src={`http://localhost:3000${g.imageUrl}`} alt={g.title} className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500" />
+                <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${g.imageUrl}`} alt={g.title} className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                   <h4 className="font-bold text-lg">{g.title}</h4>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiInfo, FiMapPin, FiPhone, FiMail, FiInstagram, FiMessageCircle, FiImage, FiSave, FiUploadCloud } from "react-icons/fi";
 
 // Komponen InputField dengan tambahan ikon
@@ -39,10 +39,10 @@ const AboutPage = () => {
 
   const fetchAboutInfo = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/about");
+      const response = await apiClient.get("/api/about");
       setFormData(response.data.data);
       if (response.data.data.logoFooter) {
-        setPreviewLogo(`http://localhost:3000${response.data.data.logoFooter}`);
+        setPreviewLogo(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${response.data.data.logoFooter}`);
       }
     } catch (error) {
       console.error("Gagal mengambil data About:", error);
@@ -82,7 +82,7 @@ const AboutPage = () => {
     }
 
     try {
-      await axios.put("http://localhost:3000/api/about", submissionData, {
+      await apiClient.put("/api/about", submissionData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("Informasi berhasil diperbarui!");

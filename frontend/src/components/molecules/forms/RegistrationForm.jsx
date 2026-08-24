@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiUser, FiMail, FiPhone, FiChevronDown, FiUsers } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 
@@ -22,7 +22,7 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
     setMessage({ type: "", text: "" });
 
     try {
-      await axios.post(`http://localhost:3000/api/events/${eventId}/register`, formData);
+      await apiClient.post(`/api/events/${eventId}/register`, formData);
       setMessage({ type: "success", text: t("detail_pages.registration_success_message") });
       setFormData({ name: "", email: "", phone: "", role: participantRoles[0] || "Umum" });
     } catch (error) {

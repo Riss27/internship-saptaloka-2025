@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../hooks/apiClient";
 import WorkshopCard from "../components/molecules/cards/WorkshopCard";
 import { Search, X, Filter } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -18,7 +18,7 @@ const WorkshopsPage = () => {
   useEffect(() => {
     const fetchWorkshops = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/workshops?source=admin");
+        const response = await apiClient.get("/api/workshops?source=admin");
         const workshopsData = response.data.data;
         setWorkshops(workshopsData);
         setFilteredWorkshops(workshopsData);

@@ -65,13 +65,8 @@ exports.getWorkshopById = async (req, res) => {
 
 // Buat workshop baru + upload poster + relasi ke event
 exports.createWorkshop = async (req, res) => {
-  const uploader = upload.single("imageUrl");
-
-  uploader(req, res, async function (err) {
-    const t = await sequelize.transaction();
-    if (err) return res.status(400).json({ status: "fail", message: err.message || err });
-
-    try {
+  const t = await sequelize.transaction();
+  try {
       // UBAH: Tambahkan `category` di sini
       const { title, description, eventIds, category } = req.body;
 
@@ -92,15 +87,13 @@ exports.createWorkshop = async (req, res) => {
 
       await t.commit();
       res.status(201).json({ status: "success", data: newWorkshop });
-    } catch (error) {
-      await t.rollback();
-      if (req.file) deleteFile(`/uploads/${req.file.filename}`);
-      res.status(500).json({ status: "fail", message: error.message });
-    }
-  });
+  } catch (error) {
+    await t.rollback();
+    if (req.file) deleteFile(`/uploads/${req.file.filename}`);
+    res.status(500).json({ status: "fail", message: error.message });
+  }
 };
 
-// Hapus workshop + file poster
 exports.deleteWorkshop = async (req, res) => {
   try {
     const workshop = await Workshop.findByPk(req.params.id);
@@ -117,13 +110,8 @@ exports.deleteWorkshop = async (req, res) => {
 
 // Update workshop
 exports.updateWorkshop = async (req, res) => {
-  const uploader = upload.single("imageUrl");
-
-  uploader(req, res, async function (err) {
-    const t = await sequelize.transaction();
-    if (err) return res.status(400).json({ status: "fail", message: err.message || err });
-
-    try {
+  const t = await sequelize.transaction();
+  try {
       const workshop = await Workshop.findByPk(req.params.id, { transaction: t });
       if (!workshop) {
         await t.rollback();
@@ -149,10 +137,9 @@ exports.updateWorkshop = async (req, res) => {
 
       await t.commit();
       res.status(200).json({ status: "success", data: workshop });
-    } catch (error) {
-      await t.rollback();
-      if (req.file) deleteFile(`/uploads/${req.file.filename}`);
-      res.status(500).json({ status: "fail", message: error.message });
-    }
-  });
+  } catch (error) {
+    await t.rollback();
+    if (req.file) deleteFile(`/uploads/${req.file.filename}`);
+    res.status(500).json({ status: "fail", message: error.message });
+  }
 };

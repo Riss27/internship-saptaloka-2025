@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../hooks/apiClient";
 import EventCard from "../components/molecules/cards/EventCard";
 import { Search, X, Calendar } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -12,8 +12,8 @@ const EventsPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/events")
+    apiClient
+      .get("/api/events")
       .then((response) => {
         setEvents(response.data.data);
         setFilteredEvents(response.data.data);

@@ -2,9 +2,14 @@ const express = require("express");
 const router = express.Router();
 const galleryController = require("../controllers/galleryImageController");
 const upload = require("../middlewares/upload");
+const { protect, requireAdmin } = require("../middlewares/authMiddleware");
+const { createGalleryRules, updateGalleryRules, validate } = require("../middlewares/validators/galleryValidator.js");
 
-router.route("/").get(galleryController.getAllImages).post(upload.single("image"), galleryController.createImage);
+router.get("/", galleryController.getAllImages);
+router.get("/:id", galleryController.getImageById);
 
-router.route("/:id").get(galleryController.getImageById).put(upload.single("image"), galleryController.updateImage).delete(galleryController.deleteImage);
+router.post("/", protect, requireAdmin, upload.single("image"), createGalleryRules(), validate, galleryController.createImage);
+router.put("/:id", protect, requireAdmin, upload.single("image"), updateGalleryRules(), validate, galleryController.updateImage);
+router.delete("/:id", protect, requireAdmin, galleryController.deleteImage);
 
 module.exports = router;

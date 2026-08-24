@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiPlus, FiEdit, FiTrash2 } from "react-icons/fi";
 
 const ArticlePage = () => {
@@ -8,7 +8,7 @@ const ArticlePage = () => {
 
   const fetchArticles = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/articles");
+      const response = await apiClient.get("/api/articles");
       setArticles(response.data.data);
     } catch (error) {
       console.error("Gagal mengambil data artikel:", error);
@@ -22,7 +22,7 @@ const ArticlePage = () => {
   const deleteArticle = async (id) => {
     if (window.confirm("Apakah Anda yakin ingin menghapus artikel ini?")) {
       try {
-        await axios.delete(`http://localhost:3000/api/articles/${id}`);
+        await apiClient.delete(`/api/articles/${id}`);
         fetchArticles();
       } catch (error) {
         console.error("Gagal menghapus artikel:", error);
@@ -66,7 +66,7 @@ const ArticlePage = () => {
                 {articles.map((article) => (
                   <tr key={article.id} className="border-b border-slate-700 hover:bg-slate-800 transition-colors duration-200">
                     <td className="p-4 align-middle">
-                      <img src={`http://localhost:3000${article.featuredImageUrl}`} alt={article.title} className="h-16 w-32 object-cover rounded-md border-2 border-slate-600" />
+                      <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${article.featuredImageUrl}`} alt={article.title} className="h-16 w-32 object-cover rounded-md border-2 border-slate-600" />
                     </td>
                     <td className="p-4 align-middle font-medium text-white">{article.title}</td>
                     <td className="p-4 align-middle">{article.author}</td>

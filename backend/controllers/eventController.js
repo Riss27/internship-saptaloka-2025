@@ -77,11 +77,8 @@ exports.getEventById = async (req, res) => {
 };
 
 exports.createEvent = async (req, res) => {
-  const uploader = upload.fields([{ name: "imageBanner", maxCount: 1 }, { name: "contentImages" }]);
-  uploader(req, res, async function (err) {
-    const t = await sequelize.transaction();
-    if (err) return res.status(400).json({ status: "fail", message: err.message || err });
-    try {
+  const t = await sequelize.transaction();
+  try {
       const { title, quota, location, fee, description, startDateTime, endDateTime, participantRoles, contents, category, status } = req.body;
       if (!req.files || !req.files.imageBanner) {
         return res.status(400).json({ status: "fail", message: "Image Banner wajib diunggah." });
@@ -127,21 +124,17 @@ exports.createEvent = async (req, res) => {
       }
       await t.commit();
       res.status(201).json({ status: "success", data: newEvent });
-    } catch (error) {
-      await t.rollback();
-      if (req.files.imageBanner) deleteFile(`/uploads/${req.files.imageBanner[0].filename}`);
-      if (req.files.contentImages) req.files.contentImages.forEach((f) => deleteFile(`/uploads/${f.filename}`));
-      res.status(500).json({ status: "fail", message: error.message });
-    }
-  });
+  } catch (error) {
+    await t.rollback();
+    if (req.files.imageBanner) deleteFile(`/uploads/${req.files.imageBanner[0].filename}`);
+    if (req.files.contentImages) req.files.contentImages.forEach((f) => deleteFile(`/uploads/${f.filename}`));
+    res.status(500).json({ status: "fail", message: error.message });
+  }
 };
 
 exports.updateEvent = async (req, res) => {
-  const uploader = upload.fields([{ name: "imageBanner", maxCount: 1 }, { name: "contentImages" }]);
-  uploader(req, res, async function (err) {
-    const t = await sequelize.transaction();
-    if (err) return res.status(400).json({ status: "fail", message: err.message || err });
-    try {
+  const t = await sequelize.transaction();
+  try {
       const event = await Event.findByPk(req.params.id, { include: ["EventContents"], transaction: t });
       if (!event) {
         await t.rollback();
@@ -175,7 +168,7 @@ exports.updateEvent = async (req, res) => {
       const newContentImages = req.files.contentImages || [];
       let imageIndex = 0;
       for (const content of clientContents) {
-        const imageUrls = content.existingImageUrls.map((url) => url.replace("http://localhost:3000", "")) || [];
+        const imageUrls = (content.existingImageUrls || []).map((url) => url.replace("http://localhost:3000", ""));
         const newImageCount = content.imageCount || 0;
         for (let i = 0; i < newImageCount; i++) {
           if (newContentImages[imageIndex]) {
@@ -195,13 +188,12 @@ exports.updateEvent = async (req, res) => {
       }
       await t.commit();
       res.status(200).json({ status: "success", data: event });
-    } catch (error) {
-      await t.rollback();
-      if (req.files.imageBanner) deleteFile(`/uploads/${req.files.imageBanner[0].filename}`);
-      if (req.files.contentImages) req.files.contentImages.forEach((f) => deleteFile(`/uploads/${f.filename}`));
-      res.status(500).json({ status: "fail", message: error.message });
-    }
-  });
+  } catch (error) {
+    await t.rollback();
+    if (req.files.imageBanner) deleteFile(`/uploads/${req.files.imageBanner[0].filename}`);
+    if (req.files.contentImages) req.files.contentImages.forEach((f) => deleteFile(`/uploads/${f.filename}`));
+    res.status(500).json({ status: "fail", message: error.message });
+  }
 };
 
 exports.deleteEvent = async (req, res) => {
@@ -257,10 +249,11 @@ exports.registerForEvent = async (req, res) => {
       return res.status(400).json({ status: "fail", message: "Semua field wajib diisi." });
     }
 
-    // 2. Cek event dan jumlah pendaftar saat ini
+    // 2. Cek event dan jumlah pendaftar saat ini (lock baris untuk cegah race condition)
     const event = await Event.findByPk(id, {
       include: { model: EventRegistration, as: "EventRegistrations", attributes: ["id"] },
       transaction: t,
+      lock: true,
     });
 
     if (!event) {
@@ -293,6 +286,9 @@ exports.registerForEvent = async (req, res) => {
     res.status(201).json({ status: "success", data: newRegistration });
   } catch (error) {
     await t.rollback();
+    if (error.name === "SequelizeUniqueConstraintError") {
+      return res.status(409).json({ status: "fail", message: "Email ini sudah terdaftar untuk event ini." });
+    }
     console.error("ERROR di registerForEvent:", error);
     res.status(500).json({ status: "error", message: error.message });
   }

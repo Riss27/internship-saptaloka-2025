@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../hooks/apiClient";
 import ArticleCard from "../components/molecules/cards/ArticleCard";
 import { Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -12,8 +12,8 @@ const ArticlesPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/articles")
+    apiClient
+      .get("/api/articles")
       .then((response) => {
         const sortedArticles = response.data.data.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
         setArticles(sortedArticles);

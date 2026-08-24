@@ -21,6 +21,13 @@ const EventRegistration = sequelize.define("EventRegistration", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+}, {
+  indexes: [
+    {
+      unique: true,
+      fields: ["email", "EventId"],
+    },
+  ],
 });
 
 module.exports = EventRegistration;

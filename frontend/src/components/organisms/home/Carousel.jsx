@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const Carousel = () => {
@@ -8,8 +8,8 @@ const Carousel = () => {
 
   // Ambil data slide dari backend
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/landing-page")
+    apiClient
+      .get("/api/landing-page")
       .then((res) => setSlides(res.data.data))
       .catch((err) => console.error("Gagal memuat data:", err));
   }, []);
@@ -66,7 +66,7 @@ const Carousel = () => {
             className="min-w-full h-full flex-shrink-0 relative"
           >
             <img
-              src={`http://localhost:3000${slide.imageUrl}`}
+              src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${slide.imageUrl}`}
               alt={slide.heading}
               className="w-full h-full object-cover"
             />

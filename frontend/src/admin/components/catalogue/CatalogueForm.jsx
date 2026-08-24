@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiInfo, FiTag, FiDollarSign, FiFileText, FiLink, FiImage, FiSave, FiChevronDown, FiUploadCloud } from "react-icons/fi";
 import RichTextEditor from "../RichTextEditor";
 
@@ -30,13 +30,13 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
 
   useEffect(() => {
     if (isEditMode) {
-      axios
-        .get(`http://localhost:3000/api/${apiEndpoint}/${id}`)
+      apiClient
+        .get(`/api/${apiEndpoint}/${id}`)
         .then((response) => {
           const data = response.data.data;
           setFormData(data);
           if (data.imageUrl) {
-            setPreviewImage(`http://localhost:3000${data.imageUrl}`);
+            setPreviewImage(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${data.imageUrl}`);
           }
         })
         .catch((error) => console.error(`Gagal mengambil detail ${itemType}:`, error));
@@ -70,9 +70,9 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
       const config = { headers: { "Content-Type": "multipart/form-data" } };
 
       if (isEditMode) {
-        await axios.put(`http://localhost:3000/api/${apiEndpoint}/${id}`, submissionData, config);
+        await apiClient.put(`/api/${apiEndpoint}/${id}`, submissionData, config);
       } else {
-        await axios.post(`http://localhost:3000/api/${apiEndpoint}`, submissionData, config);
+        await apiClient.post(`/api/${apiEndpoint}`, submissionData, config);
       }
 
       navigate(navigateBackUrl);

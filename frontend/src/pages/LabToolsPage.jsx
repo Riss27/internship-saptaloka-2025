@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../hooks/apiClient";
 import LabToolCard from "../components/molecules/cards/LabToolCard";
 import { Search, X, Wrench } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -12,8 +12,8 @@ const LabToolsPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/lab-tools")
+    apiClient
+      .get("/api/lab-tools")
       .then((response) => {
         setLabTools(response.data.data);
         setFilteredTools(response.data.data);

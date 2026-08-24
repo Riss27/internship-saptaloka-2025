@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiShoppingCart, FiTag, FiFileText, FiArrowLeft, FiAlertCircle } from "react-icons/fi";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
 import { useTranslation } from "react-i18next";
@@ -26,7 +26,7 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
       try {
         setIsLoading(true);
         setError(null);
-        const response = await axios.get(`${API_URL}/api/${apiEndpoint}/${id}`);
+        const response = await apiClient.get(`/api/${apiEndpoint}/${id}`);
         setItem(response.data.data);
       } catch (err) {
         console.error(`Gagal mengambil detail ${apiEndpoint}:`, err);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../hooks/apiClient";
 import { FiCalendar, FiUser } from "react-icons/fi";
 import RichTextDisplay from "../components/common/RichTextDisplay";
 import { useTranslateDB } from "../hooks/useTranslateDB";
@@ -19,7 +19,7 @@ const ArticleDetailPage = () => {
     const fetchArticle = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`http://localhost:3000/api/articles/${id}`);
+        const response = await apiClient.get(`/api/articles/${id}`);
         setArticle(response.data.data);
       } catch (error) {
         console.error("Gagal mengambil detail artikel:", error);
@@ -91,7 +91,7 @@ const ArticleDetailPage = () => {
 
         {/* Gambar utama */}
         <div className="mb-8 rounded-2xl overflow-hidden shadow-xl">
-          <img src={`http://localhost:3000${article.featuredImageUrl}`} alt={article.title} className="w-full h-auto object-cover" />
+          <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${article.featuredImageUrl}`} alt={article.title} className="w-full h-auto object-cover" />
         </div>
 
         {/* Deskripsi utama */}
@@ -111,7 +111,7 @@ const ArticleDetailPage = () => {
                   {images.length > 0 && (
                     <div className="grid grid-cols-2 gap-4 mt-6">
                       {images.map((url, i) => (
-                        <img key={i} src={`http://localhost:3000${url}`} alt={`${content.topic} ${i + 1}`} className="rounded-lg object-cover w-full shadow-md" />
+                        <img key={i} src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${url}`} alt={`${content.topic} ${i + 1}`} className="rounded-lg object-cover w-full shadow-md" />
                       ))}
                     </div>
                   )}

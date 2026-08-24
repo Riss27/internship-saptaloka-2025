@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiPlus } from "react-icons/fi";
 import WorkshopList from "../../components/WorkshopList";
 
@@ -9,7 +9,7 @@ const WorkshopPage = () => {
 
   const fetchWorkshops = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/workshops?source=admin");
+      const response = await apiClient.get("/api/workshops?source=admin");
       setWorkshops(response.data.data);
     } catch (error) {
       console.error("Gagal mengambil data workshop:", error);
@@ -23,7 +23,7 @@ const WorkshopPage = () => {
   const deleteWorkshop = async (id) => {
     if (window.confirm("Apakah Anda yakin ingin menghapus workshop ini?")) {
       try {
-        await axios.delete(`http://localhost:3000/api/workshops/${id}`);
+        await apiClient.delete(`/api/workshops/${id}`);
         fetchWorkshops();
       } catch (error) {
         console.error("Gagal menghapus workshop:", error);

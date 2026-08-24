@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../hooks/apiClient";
 import { FiMapPin, FiPhone, FiMail, FiInstagram } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 
@@ -15,8 +15,8 @@ const AboutPage = () => {
   });
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/about")
+    apiClient
+      .get("/api/about")
       .then((res) => {
         setAboutInfo(res.data.data);
         setIsLoading(false);

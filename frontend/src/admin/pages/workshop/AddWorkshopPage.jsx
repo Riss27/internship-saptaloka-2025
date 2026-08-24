@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiSave, FiType, FiFileText, FiImage, FiCheckSquare, FiSquare, FiToggleLeft, FiToggleRight, FiTag, FiPlus, FiX, FiUploadCloud } from "react-icons/fi";
 import RichTextEditor from "../../components/RichTextEditor";
 
@@ -31,7 +31,7 @@ const AddWorkshopPage = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/categories");
+      const response = await apiClient.get("/api/categories");
       setCategories(response.data.data);
     } catch (error) {
       console.error("Gagal mengambil data kategori:", error);
@@ -41,8 +41,8 @@ const AddWorkshopPage = () => {
   useEffect(() => {
     fetchCategories();
 
-    axios
-      .get("http://localhost:3000/api/events?search=")
+    apiClient
+      .get("/api/events?search=")
       .then((response) => {
         const events = response.data.data;
         const grouped = events.reduce((acc, event) => {
@@ -58,12 +58,12 @@ const AddWorkshopPage = () => {
       .catch((error) => console.error("Gagal mengambil data events:", error));
 
     if (isEditMode) {
-      axios
-        .get(`http://localhost:3000/api/workshops/${id}`)
+      apiClient
+        .get(`/api/workshops/${id}`)
         .then((response) => {
           const fetched = response.data.data;
           setWorkshop({ title: fetched.title, description: fetched.description, category: fetched.category });
-          setPreviewImage(`http://localhost:3000${fetched.imageUrl}`);
+          setPreviewImage(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${fetched.imageUrl}`);
           setSelectedEventIds(new Set(fetched.Events.map((e) => e.id)));
         })
         .catch((error) => console.error("Gagal mengambil data workshop:", error));
@@ -98,7 +98,7 @@ const AddWorkshopPage = () => {
 
     setIsAddingCategory(true);
     try {
-      const response = await axios.post("http://localhost:3000/api/categories", {
+      const response = await apiClient.post("/api/categories", {
         name: newCategoryName.trim(),
       });
       
@@ -132,9 +132,9 @@ const AddWorkshopPage = () => {
     formData.append("eventIds", JSON.stringify(Array.from(selectedEventIds)));
     try {
       if (isEditMode) {
-        await axios.put(`http://localhost:3000/api/workshops/${id}`, formData, { headers: { "Content-Type": "multipart/form-data" } });
+        await apiClient.put(`/api/workshops/${id}`, formData, { headers: { "Content-Type": "multipart/form-data" } });
       } else {
-        await axios.post("http://localhost:3000/api/workshops", formData, { headers: { "Content-Type": "multipart/form-data" } });
+        await apiClient.post("/api/workshops", formData, { headers: { "Content-Type": "multipart/form-data" } });
       }
       navigate("/admin/workshop");
     } catch (error) {
@@ -248,7 +248,7 @@ const AddWorkshopPage = () => {
                             className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-colors ${selectedEventIds.has(event.id) ? "bg-cyan-900/50 border-cyan-500" : "bg-slate-900/50 border-transparent hover:border-slate-600"}`}
                           >
                             {selectedEventIds.has(event.id) ? <FiCheckSquare className="text-cyan-400 mr-4 flex-shrink-0" /> : <FiSquare className="text-slate-500 mr-4 flex-shrink-0" />}
-                            <img src={`http://localhost:3000${event.imageBannerUrl}`} alt={event.title} className="w-16 h-10 object-cover rounded-md" />
+                            <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${event.imageBannerUrl}`} alt={event.title} className="w-16 h-10 object-cover rounded-md" />
                             <div className="ml-4"><p className="font-semibold text-white text-sm">{event.title}</p></div>
                           </div>
                         ))}

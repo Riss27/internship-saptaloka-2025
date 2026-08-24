@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
+import apiClient from "./apiClient";
 
 const translationCache = new Map();
 
@@ -31,7 +31,7 @@ export const useTranslateDB = (text, isHTML = false) => {
     let isMounted = true;
     const translateText = async () => {
       try {
-        const response = await axios.post("http://localhost:3000/api/translate", {
+        const response = await apiClient.post("/api/translate", {
           text: text,
           target: targetLanguage,
           source: "id",

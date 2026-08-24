@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../hooks/apiClient";
 import { useAuth } from "../../hooks/useAuth";
 import { FiLogIn, FiMail, FiLock } from "react-icons/fi";
 
@@ -29,7 +29,7 @@ const LoginPage = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/login", formData);
+      const response = await apiClient.post("/api/auth/login", formData);
       const { token } = response.data;
 
       // Gunakan fungsi login dari context

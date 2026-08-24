@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../hooks/apiClient";
 import RegistrationForm from "../components/molecules/forms/RegistrationForm";
 import Popup from "../components/atoms/feedback/Popup";
 import RichTextDisplay from "../components/common/RichTextDisplay";
@@ -19,7 +19,7 @@ const EventDetailPage = () => {
     const fetchEvent = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`http://localhost:3000/api/events/${id}`);
+        const response = await apiClient.get(`/api/events/${id}`);
         setEvent(response.data.data);
       } catch (error) {
         console.error("Gagal mengambil detail event:", error);
@@ -89,7 +89,7 @@ const EventDetailPage = () => {
       <div className="bg-gradient-to-b from-emerald-50 to-white text-slate-700 min-h-screen pt-10 pb-20">
         <div className="container mx-auto px-4 max-w-5xl">
           <header className="relative mb-8 text-center">
-            <img src={`http://localhost:3000${event.imageBannerUrl}`} alt={event.title} className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg" />
+            <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${event.imageBannerUrl}`} alt={event.title} className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg" />
             <div className="absolute inset-0 bg-gradient-to-t from-emerald-50 via-emerald-50/70 to-transparent rounded-lg"></div>
             <div className="absolute bottom-0 left-0 right-0 p-8">
               <h1 className="text-4xl md:text-5xl font-bold text-emerald-900 leading-tight">{event.title}</h1>
@@ -111,7 +111,7 @@ const EventDetailPage = () => {
                         {images.length > 0 && (
                           <div className="grid grid-cols-2 gap-4 mt-6">
                             {images.map((url, i) => (
-                              <img key={i} src={`http://localhost:3000${url}`} alt={`${content.header} ${i + 1}`} className="rounded-lg object-cover w-full" />
+                              <img key={i} src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${url}`} alt={`${content.header} ${i + 1}`} className="rounded-lg object-cover w-full" />
                             ))}
                           </div>
                         )}

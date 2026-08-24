@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiTrash2, FiDownload } from "react-icons/fi";
 
 const RegisteredPeoplePage = () => {
@@ -10,7 +10,7 @@ const RegisteredPeoplePage = () => {
 
   const fetchEventDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/events/${eventId}`);
+      const response = await apiClient.get(`/api/events/${eventId}`);
       setEvent(response.data.data || { title: "Event", quota: 0 });
       setRegistrations(response.data.data?.EventRegistrations || []);
     } catch (error) {
@@ -28,7 +28,7 @@ const RegisteredPeoplePage = () => {
   const deleteRegistration = async (id) => {
     if (window.confirm("Yakin ingin menghapus pendaftar ini?")) {
       try {
-        await axios.delete(`http://localhost:3000/api/events/registrations/${id}`);
+        await apiClient.delete(`/api/events/registrations/${id}`);
         fetchEventDetails();
       } catch (error) {
         console.error("Gagal menghapus pendaftar:", error);

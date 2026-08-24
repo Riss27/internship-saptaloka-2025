@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiPlus, FiTrash2, FiEdit } from "react-icons/fi";
 
 const GalleryPage = () => {
@@ -8,7 +8,7 @@ const GalleryPage = () => {
 
   const fetchImages = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/gallery");
+      const response = await apiClient.get("/api/gallery");
       setImages(response.data.data);
     } catch (error) {
       console.error("Gagal mengambil data galeri:", error);
@@ -22,7 +22,7 @@ const GalleryPage = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Apakah Anda yakin ingin menghapus gambar ini?")) {
       try {
-        await axios.delete(`http://localhost:3000/api/gallery/${id}`);
+        await apiClient.delete(`/api/gallery/${id}`);
         fetchImages();
       } catch (error) {
         console.error("Gagal menghapus gambar:", error);
@@ -47,7 +47,7 @@ const GalleryPage = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
             {images.map((image) => (
               <div key={image.id} className="bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:shadow-blue-500/30 transition-shadow">
-                <img src={`http://localhost:3000${image.imageUrl}`} alt={image.title} className="w-full h-48 object-cover" />
+                <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${image.imageUrl}`} alt={image.title} className="w-full h-48 object-cover" />
                 <div className="p-3 flex justify-between items-center">
                   <p className="text-white font-semibold truncate max-w-[70%]">{image.title}</p>
                   <div className="flex gap-2">

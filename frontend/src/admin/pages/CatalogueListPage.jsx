@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../hooks/apiClient";
 import { Link } from "react-router-dom";
 import { FiPlus } from "react-icons/fi";
 import GenericCatalogueList from "../components/catalogue/GenericCatalogueList";
@@ -10,11 +10,11 @@ const CatalogueListPage = ({ pageTitle, itemType, apiEndpoint, categoryOptions }
 
   const fetchItems = async () => {
     try {
-      let url = `http://localhost:3000/api/${apiEndpoint}`;
+      let url = `/api/${apiEndpoint}`;
       if (selectedCategory !== "All") {
         url += `?category=${selectedCategory}`;
       }
-      const response = await axios.get(url);
+      const response = await apiClient.get(url);
       setItems(response.data.data);
     } catch (error) {
       console.error(`Gagal mengambil data ${itemType}:`, error);
@@ -28,7 +28,7 @@ const CatalogueListPage = ({ pageTitle, itemType, apiEndpoint, categoryOptions }
   const deleteItem = async (id) => {
     if (window.confirm(`Apakah Anda yakin ingin menghapus ${itemType} ini?`)) {
       try {
-        await axios.delete(`http://localhost:3000/api/${apiEndpoint}/${id}`);
+        await apiClient.delete(`/api/${apiEndpoint}/${id}`);
         fetchItems();
       } catch (error) {
         console.error(`Gagal menghapus ${itemType}:`, error);

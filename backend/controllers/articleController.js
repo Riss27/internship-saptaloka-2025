@@ -42,13 +42,8 @@ exports.getArticleById = async (req, res) => {
 };
 
 exports.createArticle = async (req, res) => {
-  const uploader = upload.fields([{ name: "featuredImage", maxCount: 1 }, { name: "contentImages" }]);
-
-  uploader(req, res, async function (err) {
-    const t = await sequelize.transaction();
-    if (err) return res.status(400).json({ status: "fail", message: err.message || err });
-
-    try {
+  const t = await sequelize.transaction();
+  try {
       const { title, author, mainDescription, publishedAt } = req.body;
       if (!req.files || !req.files.featuredImage) {
         return res.status(400).json({ status: "fail", message: "Gambar utama wajib diunggah." });
@@ -95,15 +90,14 @@ exports.createArticle = async (req, res) => {
 
       await t.commit();
       res.status(201).json({ status: "success", data: newArticle });
-    } catch (error) {
-      await t.rollback();
-      if (req.files.featuredImage) deleteFile(`/uploads/${req.files.featuredImage[0].filename}`);
-      if (req.files.contentImages) {
-        req.files.contentImages.forEach((file) => deleteFile(`/uploads/${file.filename}`));
-      }
-      res.status(500).json({ status: "fail", message: error.message });
+  } catch (error) {
+    await t.rollback();
+    if (req.files.featuredImage) deleteFile(`/uploads/${req.files.featuredImage[0].filename}`);
+    if (req.files.contentImages) {
+      req.files.contentImages.forEach((file) => deleteFile(`/uploads/${file.filename}`));
     }
-  });
+    res.status(500).json({ status: "fail", message: error.message });
+  }
 };
 
 exports.deleteArticle = async (req, res) => {
@@ -119,7 +113,15 @@ exports.deleteArticle = async (req, res) => {
     deleteFile(article.featuredImageUrl);
     if (article.ArticleContents) {
       article.ArticleContents.forEach((content) => {
-        deleteFile(content.imageUrl);
+        if (content.imageUrls) {
+          let urls = content.imageUrls;
+          if (typeof urls === "string") {
+            try { urls = JSON.parse(urls); } catch (e) { urls = []; }
+          }
+          if (Array.isArray(urls)) {
+            urls.forEach((url) => deleteFile(url));
+          }
+        }
       });
     }
 
@@ -132,13 +134,8 @@ exports.deleteArticle = async (req, res) => {
 };
 
 exports.updateArticle = async (req, res) => {
-  const uploader = upload.fields([{ name: "featuredImage", maxCount: 1 }, { name: "contentImages" }]);
-
-  uploader(req, res, async function (err) {
-    const t = await sequelize.transaction();
-    if (err) return res.status(400).json({ status: "fail", message: err.message || err });
-
-    try {
+  const t = await sequelize.transaction();
+  try {
       const article = await Article.findByPk(req.params.id, { include: ["ArticleContents"], transaction: t });
       if (!article) {
         await t.rollback();
@@ -207,11 +204,10 @@ exports.updateArticle = async (req, res) => {
 
       await t.commit();
       res.status(200).json({ status: "success", data: article });
-    } catch (error) {
-      await t.rollback();
-      if (req.files.featuredImage) deleteFile(`/uploads/${req.files.featuredImage[0].filename}`);
-      if (req.files.contentImages) req.files.contentImages.forEach((f) => deleteFile(`/uploads/${f.filename}`));
-      res.status(500).json({ status: "fail", message: error.message });
-    }
-  });
+  } catch (error) {
+    await t.rollback();
+    if (req.files.featuredImage) deleteFile(`/uploads/${req.files.featuredImage[0].filename}`);
+    if (req.files.contentImages) req.files.contentImages.forEach((f) => deleteFile(`/uploads/${f.filename}`));
+    res.status(500).json({ status: "fail", message: error.message });
+  }
 };

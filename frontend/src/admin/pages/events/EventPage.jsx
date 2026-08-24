@@ -1,7 +1,7 @@
 // EventPage.jsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import EventList from "../../components/EventList";
 
@@ -12,7 +12,7 @@ const EventPage = () => {
   // Ambil data event
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/events`, {
+      const response = await apiClient.get(`/api/events`, {
         params: { search: searchTerm },
       });
       setEvents(response.data.data);
@@ -35,7 +35,7 @@ const EventPage = () => {
       )
     ) {
       try {
-        await axios.delete(`http://localhost:3000/api/events/${id}`);
+        await apiClient.delete(`/api/events/${id}`);
         fetchEvents();
       } catch (error) {
         console.error("Gagal menghapus event:", error);

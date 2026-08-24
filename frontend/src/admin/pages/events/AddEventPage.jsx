@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FiPlus, FiTrash2, FiSave, FiType, FiUsers, FiMapPin, FiDollarSign, FiCalendar, FiImage, FiX, FiUploadCloud, FiTag, FiChevronDown, FiToggleLeft } from "react-icons/fi";
@@ -46,7 +46,7 @@ const AddEventPage = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/categories");
+      const response = await apiClient.get("/api/categories");
       setCategories(response.data.data);
     } catch (error) {
       console.error("Gagal mengambil data kategori:", error);
@@ -60,8 +60,8 @@ const AddEventPage = () => {
   useEffect(() => {
     if (!isEditMode) return;
     setIsLoading(true);
-    axios
-      .get(`http://localhost:3000/api/events/${id}`)
+    apiClient
+      .get(`/api/events/${id}`)
       .then((res) => {
         const fetched = res.data.data || {};
         setEvent({
@@ -75,7 +75,7 @@ const AddEventPage = () => {
           category: fetched.category || "",
           status: fetched.status || "Coming Soon",
         });
-        if (fetched.imageBannerUrl) setPreviewBanner(`http://localhost:3000${fetched.imageBannerUrl}`);
+        if (fetched.imageBannerUrl) setPreviewBanner(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${fetched.imageBannerUrl}`);
         if (fetched.participantRoles) {
           try {
             const parsedRoles = Array.isArray(fetched.participantRoles) ? fetched.participantRoles : JSON.parse(fetched.participantRoles);
@@ -104,7 +104,7 @@ const AddEventPage = () => {
               header: c.header || "",
               content: c.content || "",
               images: imageUrls,
-              previews: imageUrls.map((url) => `http://localhost:3000${url}`),
+              previews: imageUrls.map((url) => `${import.meta.env.VITE_API_URL || "http://localhost:3000"}${url}`),
             };
           });
           setContents(fetchedContents);
@@ -161,7 +161,7 @@ const AddEventPage = () => {
     formData.append("participantRoles", JSON.stringify(roles));
     const contentData = contents.map((c) => {
       const newFiles = c.images.filter((img) => typeof img !== "string");
-      const existingUrls = c.images.filter((img) => typeof img === "string").map((url) => url.replace("http://localhost:3000", ""));
+      const existingUrls = c.images.filter((img) => typeof img === "string").map((url) => url.replace(import.meta.env.VITE_API_URL || "http://localhost:3000", ""));
       return { header: c.header, content: c.content, imageCount: newFiles.length, existingImageUrls: existingUrls };
     });
     formData.append("contents", JSON.stringify(contentData));
@@ -173,9 +173,9 @@ const AddEventPage = () => {
 
     try {
       if (isEditMode) {
-        await axios.put(`http://localhost:3000/api/events/${id}`, formData, { headers: { "Content-Type": "multipart/form-data" } });
+        await apiClient.put(`/api/events/${id}`, formData, { headers: { "Content-Type": "multipart/form-data" } });
       } else {
-        await axios.post("http://localhost:3000/api/events", formData, { headers: { "Content-Type": "multipart/form-data" } });
+        await apiClient.post("/api/events", formData, { headers: { "Content-Type": "multipart/form-data" } });
       }
       navigate("/admin/events");
     } catch (err) {

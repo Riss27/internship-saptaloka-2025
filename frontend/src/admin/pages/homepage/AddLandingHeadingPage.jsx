@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiType, FiFileText, FiImage, FiSave, FiUploadCloud } from "react-icons/fi";
 
 // Komponen InputField dengan Ikon
@@ -33,13 +33,13 @@ const AddLandingHeadingPage = () => {
 
   useEffect(() => {
     if (isEditMode) {
-      axios
-        .get(`http://localhost:3000/api/landing-page/${id}`)
+      apiClient
+        .get(`/api/landing-page/${id}`)
         .then((response) => {
           const data = response.data.data;
           setFormData(data);
           if (data.imageUrl) {
-            setPreviewImage(`http://localhost:3000${data.imageUrl}`);
+            setPreviewImage(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${data.imageUrl}`);
           }
         })
         .catch((error) => console.error("Gagal mengambil detail slide:", error));
@@ -105,9 +105,9 @@ const AddLandingHeadingPage = () => {
     try {
       const config = { headers: { "Content-Type": "multipart/form-data" } };
       if (isEditMode) {
-        await axios.put(`http://localhost:3000/api/landing-page/${id}`, submissionData, config);
+        await apiClient.put(`/api/landing-page/${id}`, submissionData, config);
       } else {
-        await axios.post("http://localhost:3000/api/landing-page", submissionData, config);
+        await apiClient.post("/api/landing-page", submissionData, config);
       }
       navigate("/admin/homepage");
     } catch (error) {

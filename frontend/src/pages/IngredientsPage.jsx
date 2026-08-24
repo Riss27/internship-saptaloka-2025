@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../hooks/apiClient";
 import IngredientCard from "../components/molecules/cards/IngredientCard";
 import { Search, X, FlaskConical } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -13,8 +13,8 @@ const IngredientsPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/ingredients")
+    apiClient
+      .get("/api/ingredients")
       .then((response) => {
         setIngredients(response.data.data);
         setFilteredIngredients(response.data.data);

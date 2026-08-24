@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../hooks/apiClient";
 import ProductCard from "../components/molecules/cards/ProductCard";
 import { Search, X, Package } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -14,8 +14,8 @@ const ProductsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/products")
+    apiClient
+      .get("/api/products")
       .then((response) => {
         setProducts(response.data.data);
         setFilteredProducts(response.data.data);

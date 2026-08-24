@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const workshopController = require("../controllers/workshopController");
+const { protect, requireAdmin } = require("../middlewares/authMiddleware");
+const upload = require("../middlewares/upload");
+const { createWorkshopRules, updateWorkshopRules, validate } = require("../middlewares/validators/workshopValidator.js");
 
-// Menghubungkan URL ke fungsi controller yang sesuai
 router.get("/", workshopController.getAllWorkshops);
-router.post("/", workshopController.createWorkshop);
 router.get("/:id", workshopController.getWorkshopById);
-router.put("/:id", workshopController.updateWorkshop);
-router.delete("/:id", workshopController.deleteWorkshop);
+
+router.post("/", protect, requireAdmin, upload.single("imageUrl"), createWorkshopRules(), validate, workshopController.createWorkshop);
+router.put("/:id", protect, requireAdmin, upload.single("imageUrl"), updateWorkshopRules(), validate, workshopController.updateWorkshop);
+router.delete("/:id", protect, requireAdmin, workshopController.deleteWorkshop);
 
 module.exports = router;

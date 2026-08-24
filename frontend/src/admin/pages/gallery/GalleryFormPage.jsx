@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../../hooks/apiClient";
 import { FiUpload, FiSave, FiImage } from "react-icons/fi";
 
 const GalleryFormPage = () => {
@@ -16,12 +16,12 @@ const GalleryFormPage = () => {
   useEffect(() => {
     if (isEditMode) {
       setIsLoading(true);
-      axios
-        .get(`http://localhost:3000/api/gallery/${id}`)
+      apiClient
+        .get(`/api/gallery/${id}`)
         .then((response) => {
           const { title, imageUrl } = response.data.data;
           setTitle(title);
-          setPreview(`http://localhost:3000${imageUrl}`);
+          setPreview(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${imageUrl}`);
         })
         .catch((error) => {
           console.error("Gagal mengambil data gambar:", error);
@@ -60,9 +60,9 @@ const GalleryFormPage = () => {
     try {
       const config = { headers: { "Content-Type": "multipart/form-data" } };
       if (isEditMode) {
-        await axios.put(`http://localhost:3000/api/gallery/${id}`, formData, config);
+        await apiClient.put(`/api/gallery/${id}`, formData, config);
       } else {
-        await axios.post("http://localhost:3000/api/gallery", formData, config);
+        await apiClient.post("/api/gallery", formData, config);
       }
       navigate("/admin/gallery");
     } catch (error) {
