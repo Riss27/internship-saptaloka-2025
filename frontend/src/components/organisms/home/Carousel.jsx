@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import apiClient from "../../../hooks/apiClient";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import API_BASE from "../../../lib/apiBase";
 
 const Carousel = () => {
   const [slides, setSlides] = useState([]);
@@ -66,7 +67,7 @@ const Carousel = () => {
             className="min-w-full h-full flex-shrink-0 relative"
           >
             <img
-              src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${slide.imageUrl}`}
+              src={`${API_BASE}${slide.imageUrl}`}
               alt={slide.heading}
               className="w-full h-full object-cover"
             />

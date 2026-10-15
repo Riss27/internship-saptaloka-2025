@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { FiSave, FiType, FiFileText, FiImage, FiCheckSquare, FiSquare, FiToggleLeft, FiToggleRight, FiTag, FiPlus, FiX, FiUploadCloud } from "react-icons/fi";
 import RichTextEditor from "../../components/RichTextEditor";
+import API_BASE from "../../../lib/apiBase";
 
 const InputField = ({ label, name, value, onChange, icon, ...props }) => (
     <div className="mb-6">
@@ -63,7 +64,7 @@ const AddWorkshopPage = () => {
         .then((response) => {
           const fetched = response.data.data;
           setWorkshop({ title: fetched.title, description: fetched.description, category: fetched.category });
-          setPreviewImage(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${fetched.imageUrl}`);
+          setPreviewImage(`${API_BASE}${fetched.imageUrl}`);
           setSelectedEventIds(new Set(fetched.Events.map((e) => e.id)));
         })
         .catch((error) => console.error("Gagal mengambil data workshop:", error));
@@ -248,7 +249,7 @@ const AddWorkshopPage = () => {
                             className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-colors ${selectedEventIds.has(event.id) ? "bg-cyan-900/50 border-cyan-500" : "bg-slate-900/50 border-transparent hover:border-slate-600"}`}
                           >
                             {selectedEventIds.has(event.id) ? <FiCheckSquare className="text-cyan-400 mr-4 flex-shrink-0" /> : <FiSquare className="text-slate-500 mr-4 flex-shrink-0" />}
-                            <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${event.imageBannerUrl}`} alt={event.title} className="w-16 h-10 object-cover rounded-md" />
+                            <img src={`${API_BASE}${event.imageBannerUrl}`} alt={event.title} className="w-16 h-10 object-cover rounded-md" />
                             <div className="ml-4"><p className="font-semibold text-white text-sm">{event.title}</p></div>
                           </div>
                         ))}

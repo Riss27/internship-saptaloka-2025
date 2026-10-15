@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 // TAMBAHKAN FiCalendar untuk ikon
 import { FiType, FiUser, FiFileText, FiImage, FiSave, FiPlus, FiTrash2, FiX, FiUploadCloud, FiCalendar } from "react-icons/fi";
 import RichTextEditor from "../../components/RichTextEditor";
+import API_BASE from "../../../lib/apiBase";
 
 const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon, required = false }) => (
   <div className="mb-6">
@@ -68,7 +69,7 @@ const AddArticlePage = () => {
             publishedAt: fetchedArticle.publishedAt ? new Date(fetchedArticle.publishedAt) : new Date(),
           });
           if (fetchedArticle.featuredImageUrl) {
-            setPreviewFeaturedImage(`http://localhost:3000${fetchedArticle.featuredImageUrl}`);
+            setPreviewFeaturedImage(`${API_BASE}${fetchedArticle.featuredImageUrl}`);
           }
           if (fetchedArticle.ArticleContents && fetchedArticle.ArticleContents.length > 0) {
             const fetchedContents = fetchedArticle.ArticleContents.map((content) => {
@@ -90,7 +91,7 @@ const AddArticlePage = () => {
                 topic: content.topic,
                 description: content.description,
                 images: imageUrls,
-                previews: imageUrls.map((url) => `http://localhost:3000${url}`),
+                previews: imageUrls.map((url) => `${API_BASE}${url}`),
               };
             });
             setContents(fetchedContents);
@@ -116,7 +117,7 @@ const AddArticlePage = () => {
     if (files.length > 0) {
       const newContents = [...contents];
       const newImages = [...newContents[index].images, ...files];
-      const newPreviews = newImages.map((img) => (typeof img === "string" ? `http://localhost:3000${img}` : URL.createObjectURL(img)));
+      const newPreviews = newImages.map((img) => (typeof img === "string" ? `${API_BASE}${img}` : URL.createObjectURL(img)));
 
       newContents[index].images = newImages;
       newContents[index].previews = newPreviews;

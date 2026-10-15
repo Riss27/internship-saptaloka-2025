@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
+import API_BASE from "../../../lib/apiBase";
 
 const ProductCard = ({ product }) => {
   const translatedName = useTranslateDB(product?.name);
@@ -15,7 +16,7 @@ const ProductCard = ({ product }) => {
         <div className="w-full h-56 overflow-hidden bg-slate-100">
           <LazyLoadImage
             alt={product.name}
-            src={`http://localhost:3000${product.imageUrl}`}
+            src={`${API_BASE}${product.imageUrl}`}
             effect="blur"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             placeholderSrc="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23f1f5f9' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='18' fill='%2394a3b8'%3ELoading...%3C/text%3E%3C/svg%3E"

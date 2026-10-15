@@ -4,6 +4,7 @@ import { FiCalendar, FiMapPin, FiClock, FiDollarSign, FiUsers } from "react-icon
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
+import API_BASE from "../../../lib/apiBase";
 
 const getStatusBadge = (status) => {
   const badges = {
@@ -43,7 +44,7 @@ const EventCard = ({ event }) => {
         <div className="w-full h-56 overflow-hidden bg-slate-100 relative">
           <LazyLoadImage
             alt={event.title}
-            src={`http://localhost:3000${event.imageBannerUrl}`}
+            src={`${API_BASE}${event.imageBannerUrl}`}
             effect="blur"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             wrapperClassName="w-full h-full"

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { FiInfo, FiTag, FiDollarSign, FiFileText, FiLink, FiImage, FiSave, FiChevronDown, FiUploadCloud } from "react-icons/fi";
 import RichTextEditor from "../RichTextEditor";
+import API_BASE from "../../../lib/apiBase";
 
 const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon }) => (
   <div className="mb-6">
@@ -36,7 +37,7 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
           const data = response.data.data;
           setFormData(data);
           if (data.imageUrl) {
-            setPreviewImage(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${data.imageUrl}`);
+            setPreviewImage(`${API_BASE}${data.imageUrl}`);
           }
         })
         .catch((error) => console.error(`Gagal mengambil detail ${itemType}:`, error));

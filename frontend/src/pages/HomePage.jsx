@@ -8,6 +8,7 @@ import ProductCard from "../components/molecules/cards/ProductCard";
 import ArticleCard from "../components/molecules/cards/ArticleCard";
 import ServiceCard from "../components/molecules/cards/ServiceCard";
 import { useTranslation } from "react-i18next";
+import API_BASE from "../lib/apiBase";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 30 },
@@ -143,7 +144,7 @@ const HomePage = () => {
               <motion.div key={e.id} {...fadeUp(i * 0.1)} whileHover={{ y: -6, scale: 1.02 }} className="h-full">
                 <Link to={`/events/${e.id}`} className="flex flex-col h-full rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 bg-white">
                   <div className="aspect-video overflow-hidden flex-shrink-0">
-                    <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${e.imageBannerUrl}`} alt={e.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                    <img src={`${API_BASE}${e.imageBannerUrl}`} alt={e.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
                   </div>
                   <div className="p-6 flex flex-col flex-grow">
                     <p className="text-emerald-600 font-semibold mb-2 text-sm">
@@ -193,7 +194,7 @@ const HomePage = () => {
           <motion.div className="flex overflow-x-auto gap-6 pb-6 scrollbar-hide snap-x snap-mandatory" whileTap={{ cursor: "grabbing" }}>
             {data.gallery.map((g, i) => (
               <motion.div key={g.id} {...fadeUp(i * 0.05)} whileHover={{ scale: 1.05 }} className="relative group flex-shrink-0 w-[350px] h-[220px] rounded-3xl overflow-hidden shadow-lg snap-center">
-                <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${g.imageUrl}`} alt={g.title} className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500" />
+                <img src={`${API_BASE}${g.imageUrl}`} alt={g.title} className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                   <h4 className="font-bold text-lg">{g.title}</h4>

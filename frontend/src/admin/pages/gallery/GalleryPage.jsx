@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { FiPlus, FiTrash2, FiEdit } from "react-icons/fi";
+import API_BASE from "../../../lib/apiBase";
 
 const GalleryPage = () => {
   const [images, setImages] = useState([]);
@@ -47,7 +48,7 @@ const GalleryPage = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
             {images.map((image) => (
               <div key={image.id} className="bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:shadow-blue-500/30 transition-shadow">
-                <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${image.imageUrl}`} alt={image.title} className="w-full h-48 object-cover" />
+                <img src={`${API_BASE}${image.imageUrl}`} alt={image.title} className="w-full h-48 object-cover" />
                 <div className="p-3 flex justify-between items-center">
                   <p className="text-white font-semibold truncate max-w-[70%]">{image.title}</p>
                   <div className="flex gap-2">

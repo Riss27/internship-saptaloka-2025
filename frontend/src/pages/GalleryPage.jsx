@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
 import { FiImage } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
+import API_BASE from "../lib/apiBase";
 
 const GalleryPage = () => {
   const [images, setImages] = useState([]);
@@ -49,7 +50,7 @@ const GalleryPage = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
             {images.map((image) => (
               <div key={image.id} className="bg-white rounded-xl shadow-md hover:shadow-emerald-200 transition-all overflow-hidden">
-                <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${image.imageUrl}`} alt={image.title} className="w-full h-56 object-cover hover:scale-105 transition-transform duration-300" />
+                <img src={`${API_BASE}${image.imageUrl}`} alt={image.title} className="w-full h-56 object-cover hover:scale-105 transition-transform duration-300" />
                 <div className="p-3">
                   <p className="text-emerald-800 font-semibold text-center break-words leading-snug">{image.title}</p>
                 </div>

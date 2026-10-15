@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { FiChevronDown, FiChevronUp, FiHome, FiGrid, FiInfo, FiFileText, FiImage, FiLogOut, FiCalendar, FiBriefcase } from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
 import apiClient from "../hooks/apiClient";
+import API_BASE from "../lib/apiBase";
 
 const AdminLayout = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -18,7 +19,7 @@ const AdminLayout = () => {
         const response = await apiClient.get("/api/about");
         const data = response.data;
         if (data?.data?.logoFooter) {
-          setLogoFooter(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${data.data.logoFooter}`);
+          setLogoFooter(`${API_BASE}${data.data.logoFooter}`);
         }
       } catch (error) {
         console.error("Gagal ambil logo footer:", error);

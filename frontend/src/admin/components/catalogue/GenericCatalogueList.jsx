@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
+import API_BASE from "../../../lib/apiBase";
 
 const GenericCatalogueList = ({ items, itemType, deleteItem }) => {
   const editPath = `/admin/catalogue/${itemType}s/edit/`;
@@ -31,7 +32,7 @@ const GenericCatalogueList = ({ items, itemType, deleteItem }) => {
                 <tr key={item.id} className="border-b border-slate-700 hover:bg-white/5 transition-colors duration-200">
                   <td className="p-3">{index + 1}</td>
                   <td className="p-3">
-                    <img src={`http://localhost:3000${item.imageUrl}`} alt={item.name} className="w-12 h-12 sm:w-16 sm:h-16 md:w-24 md:h-24 object-cover rounded-md border border-slate-700" />
+                    <img src={`${API_BASE}${item.imageUrl}`} alt={item.name} className="w-12 h-12 sm:w-16 sm:h-16 md:w-24 md:h-24 object-cover rounded-md border border-slate-700" />
                   </td>
                   <td className="p-3 font-medium">{item.name}</td>
                   <td className="p-3">{item.category || "-"}</td>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { FiPlus, FiEdit, FiTrash2 } from "react-icons/fi";
+import API_BASE from "../../../lib/apiBase";
 
 const ArticlePage = () => {
   const [articles, setArticles] = useState([]);
@@ -66,7 +67,7 @@ const ArticlePage = () => {
                 {articles.map((article) => (
                   <tr key={article.id} className="border-b border-slate-700 hover:bg-slate-800 transition-colors duration-200">
                     <td className="p-4 align-middle">
-                      <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${article.featuredImageUrl}`} alt={article.title} className="h-16 w-32 object-cover rounded-md border-2 border-slate-600" />
+                      <img src={`${API_BASE}${article.featuredImageUrl}`} alt={article.title} className="h-16 w-32 object-cover rounded-md border-2 border-slate-600" />
                     </td>
                     <td className="p-4 align-middle font-medium text-white">{article.title}</td>
                     <td className="p-4 align-middle">{article.author}</td>

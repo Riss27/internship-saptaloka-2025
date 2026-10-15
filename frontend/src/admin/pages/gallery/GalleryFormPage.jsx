@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { FiUpload, FiSave, FiImage } from "react-icons/fi";
+import API_BASE from "../../../lib/apiBase";
 
 const GalleryFormPage = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const GalleryFormPage = () => {
         .then((response) => {
           const { title, imageUrl } = response.data.data;
           setTitle(title);
-          setPreview(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${imageUrl}`);
+          setPreview(`${API_BASE}${imageUrl}`);
         })
         .catch((error) => {
           console.error("Gagal mengambil data gambar:", error);

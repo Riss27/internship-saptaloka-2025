@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { FiType, FiFileText, FiImage, FiSave, FiUploadCloud } from "react-icons/fi";
+import API_BASE from "../../../lib/apiBase";
 
 // Komponen InputField dengan Ikon
 const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon, required = false, maxLength }) => (
@@ -39,7 +40,7 @@ const AddLandingHeadingPage = () => {
           const data = response.data.data;
           setFormData(data);
           if (data.imageUrl) {
-            setPreviewImage(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${data.imageUrl}`);
+            setPreviewImage(`${API_BASE}${data.imageUrl}`);
           }
         })
         .catch((error) => console.error("Gagal mengambil detail slide:", error));

@@ -10,7 +10,7 @@ const RegisteredPeoplePage = () => {
 
   const fetchEventDetails = async () => {
     try {
-      const response = await apiClient.get(`/api/events/${eventId}`);
+      const response = await apiClient.get(`/api/events/${eventId}/registrations`);
       setEvent(response.data.data || { title: "Event", quota: 0 });
       setRegistrations(response.data.data?.EventRegistrations || []);
     } catch (error) {

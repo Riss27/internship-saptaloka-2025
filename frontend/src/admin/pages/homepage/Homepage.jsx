@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { FiPlus, FiTrash2, FiEdit, FiImage, FiType, FiFileText, FiAlertCircle } from "react-icons/fi";
+import API_BASE from "../../../lib/apiBase";
 
 const Homepage = () => {
   const [slides, setSlides] = useState([]);
@@ -172,7 +173,7 @@ const Homepage = () => {
                         {slide.imageUrl ? (
                           <div className="relative group/image">
                             <img
-                              src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${slide.imageUrl}`}
+                              src={`${API_BASE}${slide.imageUrl}`}
                               alt={`Slide ${index + 1}`}
                               className="w-full h-48 object-cover rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group-hover/image:scale-[1.02]"
                             />

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiEdit, FiTrash2, FiUsers, FiCalendar, FiImage } from "react-icons/fi";
+import API_BASE from "../../lib/apiBase";
 
 const EventList = ({ events, deleteEvent }) => {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ const EventList = ({ events, deleteEvent }) => {
                 <td className="p-5 align-middle">
                   <div className="relative group">
                     <img
-                      src={`http://localhost:3000${event.imageBannerUrl}`}
+                      src={`${API_BASE}${event.imageBannerUrl}`}
                       alt={event.title}
                       className="h-16 w-28 object-cover rounded-lg border border-slate-600/50 shadow-md transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => {

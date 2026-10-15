@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../../../hooks/apiClient";
 import { FiInfo, FiMapPin, FiPhone, FiMail, FiInstagram, FiMessageCircle, FiImage, FiSave, FiUploadCloud } from "react-icons/fi";
+import API_BASE from "../../../lib/apiBase";
 
 // Komponen InputField dengan tambahan ikon
 const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon }) => (
@@ -42,7 +43,7 @@ const AboutPage = () => {
       const response = await apiClient.get("/api/about");
       setFormData(response.data.data || {});
       if (response.data.data?.logoFooter) {
-        setPreviewLogo(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${response.data.data.logoFooter}`);
+        setPreviewLogo(`${API_BASE}${response.data.data.logoFooter}`);
       }
     } catch (error) {
       console.error("Gagal mengambil data About:", error);

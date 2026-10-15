@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FiEdit, FiTrash2, FiCalendar } from "react-icons/fi";
 import RichTextDisplay from "../../components/common/RichTextDisplay";
+import API_BASE from "../../lib/apiBase";
 
 const WorkshopList = ({ workshops, deleteWorkshop }) => {
   // Tampilkan pesan jika tidak ada data
@@ -17,7 +18,7 @@ const WorkshopList = ({ workshops, deleteWorkshop }) => {
     <div className="space-y-6">
       {workshops.map((workshop) => (
         <div key={workshop.id} className="bg-slate-800/50 rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row transition-all duration-300 hover:shadow-cyan-500/20">
-          <img src={`http://localhost:3000${workshop.imageUrl}`} alt={workshop.title} className="w-full md:w-1/3 h-48 md:h-auto object-cover" />
+          <img src={`${API_BASE}${workshop.imageUrl}`} alt={workshop.title} className="w-full md:w-1/3 h-48 md:h-auto object-cover" />
           <div className="p-6 flex flex-col justify-between flex-1">
             <div>
               <h2 className="text-2xl font-bold text-white mt-2">{workshop.title}</h2>

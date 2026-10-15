@@ -5,6 +5,7 @@ import { FiCalendar, FiUser } from "react-icons/fi";
 import RichTextDisplay from "../components/common/RichTextDisplay";
 import { useTranslateDB } from "../hooks/useTranslateDB";
 import { useTranslation } from "react-i18next";
+import API_BASE from "../lib/apiBase";
 
 const ArticleDetailPage = () => {
   const { id } = useParams();
@@ -91,7 +92,7 @@ const ArticleDetailPage = () => {
 
         {/* Gambar utama */}
         <div className="mb-8 rounded-2xl overflow-hidden shadow-xl">
-          <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${article.featuredImageUrl}`} alt={article.title} className="w-full h-auto object-cover" />
+          <img src={`${API_BASE}${article.featuredImageUrl}`} alt={article.title} className="w-full h-auto object-cover" />
         </div>
 
         {/* Deskripsi utama */}
@@ -111,7 +112,7 @@ const ArticleDetailPage = () => {
                   {images.length > 0 && (
                     <div className="grid grid-cols-2 gap-4 mt-6">
                       {images.map((url, i) => (
-                        <img key={i} src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${url}`} alt={`${content.topic} ${i + 1}`} className="rounded-lg object-cover w-full shadow-md" />
+                        <img key={i} src={`${API_BASE}${url}`} alt={`${content.topic} ${i + 1}`} className="rounded-lg object-cover w-full shadow-md" />
                       ))}
                     </div>
                   )}

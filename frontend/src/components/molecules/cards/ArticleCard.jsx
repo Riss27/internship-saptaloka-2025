@@ -4,6 +4,7 @@ import { Calendar } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
+import API_BASE from "../../../lib/apiBase";
 
 const ArticleCard = ({ article }) => {
   const translatedTitle = useTranslateDB(article.title);
@@ -21,7 +22,7 @@ const ArticleCard = ({ article }) => {
         <div className="w-full h-56 overflow-hidden bg-slate-100">
           <LazyLoadImage
             alt={article.title}
-            src={`http://localhost:3000${article.featuredImageUrl}`}
+            src={`${API_BASE}${article.featuredImageUrl}`}
             effect="blur"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             wrapperClassName="w-full h-full"

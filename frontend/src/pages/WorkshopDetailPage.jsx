@@ -4,6 +4,7 @@ import apiClient from "../hooks/apiClient";
 import RichTextDisplay from "../components/common/RichTextDisplay";
 import { useTranslateDB } from "../hooks/useTranslateDB";
 import { useTranslation } from "react-i18next";
+import API_BASE from "../lib/apiBase";
 
 const WorkshopDetailPage = () => {
   const { id } = useParams();
@@ -48,7 +49,7 @@ const WorkshopDetailPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 items-center">
           {/* Gambar Workshop */}
           <div className="md:col-span-1">
-            <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${workshop.imageUrl}`} alt={workshop.title} className="rounded-2xl shadow-2xl w-full object-cover" />
+            <img src={`${API_BASE}${workshop.imageUrl}`} alt={workshop.title} className="rounded-2xl shadow-2xl w-full object-cover" />
           </div>
 
           {/* Info Workshop */}
@@ -66,7 +67,7 @@ const WorkshopDetailPage = () => {
               {workshop.Events.map((event) => (
                 <Link to={`/events/${event.id}`} key={event.id} className="group block bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
                   <div className="h-48 overflow-hidden">
-                    <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${event.imageBannerUrl}`} alt={`Poster ${event.title}`} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" />
+                    <img src={`${API_BASE}${event.imageBannerUrl}`} alt={`Poster ${event.title}`} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" />
                   </div>
                   <div className="p-4">
                     <h3 className="font-bold text-lg text-slate-800 group-hover:text-emerald-600 transition-colors">{event.title}</h3>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../../../hooks/apiClient";
 import { FiInstagram, FiPhone, FiMail, FiMapPin, FiArrowUp } from "react-icons/fi";
+import API_BASE from "../../../lib/apiBase";
 
 const Footer = () => {
   const [aboutInfo, setAboutInfo] = useState({});
@@ -27,7 +28,7 @@ const Footer = () => {
             {/* Logo Section */}
             <div className="w-full flex items-center justify-center lg:col-span-2 py-8 md:py-0">
               {aboutInfo.logoFooter ? (
-                <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${aboutInfo.logoFooter}`} alt="Askreative Logo" className="max-h-32 sm:max-h-40 md:max-h-48 lg:max-h-56 w-auto object-contain" />
+                <img src={`${API_BASE}${aboutInfo.logoFooter}`} alt="Askreative Logo" className="max-h-32 sm:max-h-40 md:max-h-48 lg:max-h-56 w-auto object-contain" />
               ) : (
                 <div className="w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 bg-white rounded-lg flex items-center justify-center">
                   <span className="text-[#184737] font-bold text-2xl md:text-3xl lg:text-4xl">askr</span>

@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FiPlus, FiTrash2, FiSave, FiType, FiUsers, FiMapPin, FiDollarSign, FiCalendar, FiImage, FiX, FiUploadCloud, FiTag, FiChevronDown, FiToggleLeft } from "react-icons/fi";
 import RichTextEditor from "../../components/RichTextEditor";
+import API_BASE from "../../../lib/apiBase";
 
 const InputField = ({ label, name, value, onChange, icon, as = "input", options = [], ...props }) => (
   <div className="mb-6">
@@ -75,7 +76,7 @@ const AddEventPage = () => {
           category: fetched.category || "",
           status: fetched.status || "Coming Soon",
         });
-        if (fetched.imageBannerUrl) setPreviewBanner(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${fetched.imageBannerUrl}`);
+        if (fetched.imageBannerUrl) setPreviewBanner(`${API_BASE}${fetched.imageBannerUrl}`);
         if (fetched.participantRoles) {
           try {
             const parsedRoles = Array.isArray(fetched.participantRoles) ? fetched.participantRoles : JSON.parse(fetched.participantRoles);
@@ -104,7 +105,7 @@ const AddEventPage = () => {
               header: c.header || "",
               content: c.content || "",
               images: imageUrls,
-              previews: imageUrls.map((url) => `${import.meta.env.VITE_API_URL || "http://localhost:3000"}${url}`),
+              previews: imageUrls.map((url) => `${API_BASE}${url}`),
             };
           });
           setContents(fetchedContents);
@@ -161,7 +162,7 @@ const AddEventPage = () => {
     formData.append("participantRoles", JSON.stringify(roles));
     const contentData = contents.map((c) => {
       const newFiles = c.images.filter((img) => typeof img !== "string");
-      const existingUrls = c.images.filter((img) => typeof img === "string").map((url) => url.replace(import.meta.env.VITE_API_URL || "http://localhost:3000", ""));
+      const existingUrls = c.images.filter((img) => typeof img === "string").map((url) => url.replace(API_BASE, ""));
       return { header: c.header, content: c.content, imageCount: newFiles.length, existingImageUrls: existingUrls };
     });
     formData.append("contents", JSON.stringify(contentData));

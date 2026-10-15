@@ -5,6 +5,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import RichTextDisplay from "../../common/RichTextDisplay";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
+import API_BASE from "../../../lib/apiBase";
 
 const WorkshopCard = ({ workshop }) => {
   const translatedTitle = useTranslateDB(workshop.title);
@@ -17,7 +18,7 @@ const WorkshopCard = ({ workshop }) => {
         <div className="w-full h-56 overflow-hidden bg-slate-100 relative">
           <LazyLoadImage
             alt={workshop.title}
-            src={`http://localhost:3000${workshop.imageUrl}`}
+            src={`${API_BASE}${workshop.imageUrl}`}
             effect="blur"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             wrapperClassName="w-full h-full"

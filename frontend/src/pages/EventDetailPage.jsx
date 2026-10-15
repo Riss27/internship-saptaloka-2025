@@ -7,6 +7,7 @@ import RichTextDisplay from "../components/common/RichTextDisplay";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faMapPin, faUsers, faRupiahSign } from "@fortawesome/free-solid-svg-icons";
+import API_BASE from "../lib/apiBase";
 
 const EventDetailPage = () => {
   const { id } = useParams();
@@ -89,7 +90,7 @@ const EventDetailPage = () => {
       <div className="bg-gradient-to-b from-emerald-50 to-white text-slate-700 min-h-screen pt-10 pb-20">
         <div className="container mx-auto px-4 max-w-5xl">
           <header className="relative mb-8 text-center">
-            <img src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${event.imageBannerUrl}`} alt={event.title} className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg" />
+            <img src={`${API_BASE}${event.imageBannerUrl}`} alt={event.title} className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg" />
             <div className="absolute inset-0 bg-gradient-to-t from-emerald-50 via-emerald-50/70 to-transparent rounded-lg"></div>
             <div className="absolute bottom-0 left-0 right-0 p-8">
               <h1 className="text-4xl md:text-5xl font-bold text-emerald-900 leading-tight">{event.title}</h1>
@@ -111,7 +112,7 @@ const EventDetailPage = () => {
                         {images.length > 0 && (
                           <div className="grid grid-cols-2 gap-4 mt-6">
                             {images.map((url, i) => (
-                              <img key={i} src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${url}`} alt={`${content.header} ${i + 1}`} className="rounded-lg object-cover w-full" />
+                              <img key={i} src={`${API_BASE}${url}`} alt={`${content.header} ${i + 1}`} className="rounded-lg object-cover w-full" />
                             ))}
                           </div>
                         )}
@@ -152,7 +153,7 @@ const EventDetailPage = () => {
                   <div>
                     <p className="font-semibold text-emerald-800">{t("detail_pages.quota")}</p>
                     <p className="text-sm">
-                      {event.EventRegistrations.length} / {event.quota} {t("detail_pages.participants")}
+                      {event.registeredCount ?? 0} / {event.quota} {t("detail_pages.participants")}
                     </p>
                   </div>
                 </div>

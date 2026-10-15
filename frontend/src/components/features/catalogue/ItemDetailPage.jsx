@@ -5,6 +5,7 @@ import { FiShoppingCart, FiTag, FiFileText, FiArrowLeft, FiAlertCircle } from "r
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
 import { useTranslation } from "react-i18next";
 import RichTextDisplay from "../../common/RichTextDisplay";
+import API_BASE from "../../../lib/apiBase";
 
 const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
   const { id } = useParams();
@@ -19,7 +20,7 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
   const translatedDescription = useTranslateDB(item?.description);
   const translatedCategory = useTranslateDB(item?.category);
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const API_URL = API_BASE;
 
   useEffect(() => {
     const fetchItem = async () => {
