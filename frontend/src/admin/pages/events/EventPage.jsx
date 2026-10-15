@@ -1,5 +1,5 @@
 // EventPage.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { FiPlus, FiSearch } from "react-icons/fi";
@@ -10,7 +10,7 @@ const EventPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Ambil data event
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     try {
       const response = await apiClient.get(`/api/events`, {
         params: { search: searchTerm },
@@ -19,13 +19,13 @@ const EventPage = () => {
     } catch (error) {
       console.error("Gagal mengambil data event:", error);
     }
-  };
+  }, [searchTerm]);
 
   // Fetch data saat komponen mount & searchTerm berubah
   useEffect(() => {
     const handler = setTimeout(fetchEvents, 500);
     return () => clearTimeout(handler);
-  }, [searchTerm]);
+  }, [fetchEvents]);
 
   // Hapus event
   const deleteEvent = async (id) => {

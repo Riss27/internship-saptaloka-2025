@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import apiClient from "../../hooks/apiClient";
 import { Link } from "react-router-dom";
 import { FiPlus } from "react-icons/fi";
@@ -8,7 +8,7 @@ const CatalogueListPage = ({ pageTitle, itemType, apiEndpoint, categoryOptions }
   const [items, setItems] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async () => {
     try {
       let url = `/api/${apiEndpoint}`;
       if (selectedCategory !== "All") {
@@ -19,11 +19,11 @@ const CatalogueListPage = ({ pageTitle, itemType, apiEndpoint, categoryOptions }
     } catch (error) {
       console.error(`Gagal mengambil data ${itemType}:`, error);
     }
-  };
+  }, [apiEndpoint, selectedCategory, itemType]);
 
   useEffect(() => {
     fetchItems();
-  }, [selectedCategory, apiEndpoint]);
+  }, [fetchItems]);
 
   const deleteItem = async (id) => {
     if (window.confirm(`Apakah Anda yakin ingin menghapus ${itemType} ini?`)) {

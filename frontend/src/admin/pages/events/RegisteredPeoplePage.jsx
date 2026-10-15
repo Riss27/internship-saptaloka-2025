@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { FiTrash2, FiDownload } from "react-icons/fi";
@@ -8,7 +8,7 @@ const RegisteredPeoplePage = () => {
   const [event, setEvent] = useState({ title: "Event", quota: 0 });
   const [registrations, setRegistrations] = useState([]);
 
-  const fetchEventDetails = async () => {
+  const fetchEventDetails = useCallback(async () => {
     try {
       const response = await apiClient.get(`/api/events/${eventId}/registrations`);
       setEvent(response.data.data || { title: "Event", quota: 0 });
@@ -19,11 +19,11 @@ const RegisteredPeoplePage = () => {
       setEvent({ title: "Event", quota: 0 });
       setRegistrations([]);
     }
-  };
+  }, [eventId]);
 
   useEffect(() => {
     fetchEventDetails();
-  }, [eventId]);
+  }, [fetchEventDetails]);
 
   const deleteRegistration = async (id) => {
     if (window.confirm("Yakin ingin menghapus pendaftar ini?")) {
