@@ -2,6 +2,7 @@ const Ingredient = require("../models/Ingredient");
 const upload = require("../middlewares/upload");
 const fs = require("fs");
 const path = require("path");
+const { getPagination } = require("../utils/pagination");
 
 // Controller untuk (CREATE) - Membuat ingredient baru
 exports.createIngredient = async (req, res) => {
@@ -44,10 +45,22 @@ exports.getAllIngredients = async (req, res) => {
     }
 
     // Lakukan pencarian dengan opsi filter
-    const ingredients = await Ingredient.findAll(filterOptions);
+    const pagination = getPagination(req.query);
+    let data;
+    let meta;
+    if (pagination) {
+      filterOptions.limit = pagination.limit;
+      filterOptions.offset = pagination.offset;
+      const { rows, count } = await Ingredient.findAndCountAll(filterOptions);
+      data = rows;
+      meta = { page: pagination.page, limit: pagination.limit, total: count, totalPages: Math.ceil(count / pagination.limit) };
+    } else {
+      data = await Ingredient.findAll(filterOptions);
+    }
     res.status(200).json({
       status: "success",
-      data: ingredients,
+      data,
+      ...(meta && { meta }),
     });
   } catch (error) {
     res.status(500).json({

@@ -2,6 +2,7 @@ const Product = require("../models/Product");
 const upload = require("../middlewares/upload");
 const fs = require("fs");
 const path = require("path");
+const { getPagination } = require("../utils/pagination");
 
 // Controller untuk (READ) - Mendapatkan semua produk DENGAN FILTER
 exports.getAllProducts = async (req, res) => {
@@ -13,10 +14,22 @@ exports.getAllProducts = async (req, res) => {
       filterOptions.where = { category: category };
     }
 
-    const products = await Product.findAll(filterOptions);
+    const pagination = getPagination(req.query);
+    let data;
+    let meta;
+    if (pagination) {
+      filterOptions.limit = pagination.limit;
+      filterOptions.offset = pagination.offset;
+      const { rows, count } = await Product.findAndCountAll(filterOptions);
+      data = rows;
+      meta = { page: pagination.page, limit: pagination.limit, total: count, totalPages: Math.ceil(count / pagination.limit) };
+    } else {
+      data = await Product.findAll(filterOptions);
+    }
     res.status(200).json({
       status: "success",
-      data: products,
+      data,
+      ...(meta && { meta }),
     });
   } catch (error) {
     // Tambahkan ini untuk melihat error detail di terminal backend

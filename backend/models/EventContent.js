@@ -21,6 +21,12 @@ const EventContent = sequelize.define("EventContent", {
     type: DataTypes.JSON,
     allowNull: true,
   },
+}, {
+  indexes: [
+    {
+      fields: ["EventId"],
+    },
+  ],
 });
 
 module.exports = EventContent;

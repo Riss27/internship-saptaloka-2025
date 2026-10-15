@@ -1,12 +1,25 @@
 const GalleryImage = require("../models/GalleryImage");
 const upload = require("../middlewares/upload");
 const { deleteFile } = require("../utils/fileHelper");
+const { getPagination } = require("../utils/pagination");
 
 // MENDAPATKAN SEMUA GAMBAR
 exports.getAllImages = async (req, res) => {
   try {
-    const images = await GalleryImage.findAll({ order: [["id", "DESC"]] });
-    res.status(200).json({ status: "success", data: images });
+    const options = { order: [["id", "DESC"]] };
+    const pagination = getPagination(req.query);
+    let data;
+    let meta;
+    if (pagination) {
+      options.limit = pagination.limit;
+      options.offset = pagination.offset;
+      const { rows, count } = await GalleryImage.findAndCountAll(options);
+      data = rows;
+      meta = { page: pagination.page, limit: pagination.limit, total: count, totalPages: Math.ceil(count / pagination.limit) };
+    } else {
+      data = await GalleryImage.findAll(options);
+    }
+    res.status(200).json({ status: "success", data, ...(meta && { meta }) });
   } catch (error) {
     console.error("ERROR di getAllImages:", error);
     res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });

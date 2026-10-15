@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
 import ArticleCard from "../components/molecules/cards/ArticleCard";
+import Pagination from "../components/molecules/Pagination";
 import { Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -9,22 +10,36 @@ const ArticlesPage = () => {
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
 
   useEffect(() => {
+    const hasFilter = Boolean(searchQuery.trim());
+    let active = true;
     apiClient
-      .get("/api/articles")
+      .get(hasFilter ? "/api/articles" : `/api/articles?page=${page}&limit=12`)
       .then((response) => {
+        if (!active) return;
         const sortedArticles = response.data.data.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
         setArticles(sortedArticles);
         setFilteredArticles(sortedArticles);
+        setMeta(response.data.meta || null);
         setIsLoading(false);
       })
       .catch((error) => {
+        if (!active) return;
         console.error("Gagal mengambil data artikel:", error);
         setIsLoading(false);
       });
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [page, searchQuery]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -96,6 +111,8 @@ const ArticlesPage = () => {
             </button>
           </div>
         )}
+
+        <Pagination meta={meta} onPageChange={setPage} />
       </div>
     </div>
   );

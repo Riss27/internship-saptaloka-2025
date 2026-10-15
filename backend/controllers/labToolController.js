@@ -1,5 +1,6 @@
 const LabTool = require("../models/LabTool");
 const { deleteFile } = require("../utils/fileHelper");
+const { getPagination } = require("../utils/pagination");
 
 // Catatan: upload file sudah ditangani middleware upload.single("image") di route —
 // controller hanya membaca req.file.
@@ -34,10 +35,25 @@ exports.createLabTool = async (req, res) => {
 // Controller untuk (READ) - Mendapatkan semua alat lab
 exports.getAllLabTools = async (req, res) => {
   try {
-    const labTools = await LabTool.findAll();
+    const pagination = getPagination(req.query);
+    let data;
+    let meta;
+    if (pagination) {
+      const options = {
+        order: [["id", "DESC"]],
+        limit: pagination.limit,
+        offset: pagination.offset,
+      };
+      const { rows, count } = await LabTool.findAndCountAll(options);
+      data = rows;
+      meta = { page: pagination.page, limit: pagination.limit, total: count, totalPages: Math.ceil(count / pagination.limit) };
+    } else {
+      data = await LabTool.findAll();
+    }
     res.status(200).json({
       status: "success",
-      data: labTools,
+      data,
+      ...(meta && { meta }),
     });
   } catch (error) {
     console.error("ERROR di getAllLabTools:", error);

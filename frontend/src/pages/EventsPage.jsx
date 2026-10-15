@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
 import EventCard from "../components/molecules/cards/EventCard";
+import Pagination from "../components/molecules/Pagination";
 import { Search, X, Calendar } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -9,21 +10,35 @@ const EventsPage = () => {
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
 
   useEffect(() => {
+    const hasFilter = Boolean(searchQuery.trim());
+    let active = true;
     apiClient
-      .get("/api/events")
+      .get(hasFilter ? "/api/events" : `/api/events?page=${page}&limit=12`)
       .then((response) => {
+        if (!active) return;
         setEvents(response.data.data);
         setFilteredEvents(response.data.data);
+        setMeta(response.data.meta || null);
         setIsLoading(false);
       })
       .catch((error) => {
+        if (!active) return;
         console.error("Gagal mengambil data events:", error);
         setIsLoading(false);
       });
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [page, searchQuery]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -115,6 +130,8 @@ const EventsPage = () => {
             )}
           </div>
         )}
+
+        <Pagination meta={meta} onPageChange={setPage} />
       </div>
     </div>
   );

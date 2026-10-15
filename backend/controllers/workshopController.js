@@ -3,6 +3,7 @@ const Event = require("../models/Event");
 const upload = require("../middlewares/upload");
 const sequelize = require("../config/database");
 const { deleteFile } = require("../utils/fileHelper");
+const { getPagination } = require("../utils/pagination");
 
 // Controller Workshop
 // Ambil semua workshop + daftar event terkait (sudah ada filter kategori)
@@ -28,8 +29,20 @@ exports.getAllWorkshops = async (req, res) => {
       filterOptions.limit = 1;
     }
 
-    const workshops = await Workshop.findAll(filterOptions);
-    res.status(200).json({ status: "success", data: workshops });
+    const pagination = getPagination(req.query);
+    let data;
+    let meta;
+    if (pagination) {
+      filterOptions.limit = pagination.limit;
+      filterOptions.offset = pagination.offset;
+      filterOptions.distinct = true;
+      const { rows, count } = await Workshop.findAndCountAll(filterOptions);
+      data = rows;
+      meta = { page: pagination.page, limit: pagination.limit, total: count, totalPages: Math.ceil(count / pagination.limit) };
+    } else {
+      data = await Workshop.findAll(filterOptions);
+    }
+    res.status(200).json({ status: "success", data, ...(meta && { meta }) });
   } catch (error) {
     console.error("ERROR di getAllWorkshops:", error);
     res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });

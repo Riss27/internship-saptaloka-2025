@@ -20,6 +20,12 @@ const ArticleContent = sequelize.define("ArticleContent", {
     type: DataTypes.JSON,
     allowNull: true, // Gambar untuk sub-konten boleh kosong
   },
+}, {
+  indexes: [
+    {
+      fields: ["ArticleId"],
+    },
+  ],
 });
 
 module.exports = ArticleContent;

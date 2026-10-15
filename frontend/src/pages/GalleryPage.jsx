@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
+import Pagination from "../components/molecules/Pagination";
 import { FiImage } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 import API_BASE from "../lib/apiBase";
@@ -7,20 +8,23 @@ import API_BASE from "../lib/apiBase";
 const GalleryPage = () => {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
 
   useEffect(() => {
     apiClient
-      .get("/api/gallery")
+      .get(`/api/gallery?page=${page}&limit=12`)
       .then((response) => {
         setImages(response.data.data);
+        setMeta(response.data.meta || null);
         setIsLoading(false);
       })
       .catch((error) => {
         console.error("Gagal mengambil data galeri:", error);
         setIsLoading(false);
       });
-  }, []);
+  }, [page]);
 
   if (isLoading) {
     return (
@@ -58,6 +62,8 @@ const GalleryPage = () => {
             ))}
           </div>
         )}
+
+        <Pagination meta={meta} onPageChange={setPage} />
       </div>
     </div>
   );

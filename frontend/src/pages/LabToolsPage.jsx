@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
 import LabToolCard from "../components/molecules/cards/LabToolCard";
+import Pagination from "../components/molecules/Pagination";
 import { Search, X, Wrench } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -9,21 +10,35 @@ const LabToolsPage = () => {
   const [filteredTools, setFilteredTools] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
 
   useEffect(() => {
+    const hasFilter = Boolean(searchQuery.trim());
+    let active = true;
     apiClient
-      .get("/api/lab-tools")
+      .get(hasFilter ? "/api/lab-tools" : `/api/lab-tools?page=${page}&limit=12`)
       .then((response) => {
+        if (!active) return;
         setLabTools(response.data.data);
         setFilteredTools(response.data.data);
+        setMeta(response.data.meta || null);
         setIsLoading(false);
       })
       .catch((error) => {
+        if (!active) return;
         console.error("Gagal mengambil data alat lab:", error);
         setIsLoading(false);
       });
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [page, searchQuery]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -100,6 +115,8 @@ const LabToolsPage = () => {
             </button>
           </div>
         )}
+
+        <Pagination meta={meta} onPageChange={setPage} />
       </div>
     </div>
   );

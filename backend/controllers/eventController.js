@@ -2,6 +2,7 @@ const Event = require("../models/Event");
 const EventContent = require("../models/EventContent");
 const EventRegistration = require("../models/EventRegistration");
 const { deleteFile } = require("../utils/fileHelper");
+const { getPagination } = require("../utils/pagination");
 const sequelize = require("../config/database");
 const { Op } = require("sequelize");
 
@@ -15,17 +16,18 @@ exports.getAllEvents = async (req, res) => {
 
     const options = {
       order: [["startDateTime", "DESC"]],
+      // Subquery korrelated: aman dipakai bersama limit/offset (group+include
+      // membuat Sequelize memecah query ke derived table yang kehilangan join)
       attributes: {
-        include: [[sequelize.fn("COUNT", sequelize.col("EventRegistrations.id")), "registeredCount"]],
+        include: [
+          [
+            sequelize.literal(
+              "(SELECT COUNT(*) FROM `EventRegistrations` WHERE `EventRegistrations`.`EventId` = `Event`.`id`)"
+            ),
+            "registeredCount",
+          ],
+        ],
       },
-      include: [
-        {
-          model: EventRegistration,
-          as: "EventRegistrations",
-          attributes: [],
-        },
-      ],
-      group: ["Event.id"],
     };
 
     if (search) {
@@ -36,8 +38,19 @@ exports.getAllEvents = async (req, res) => {
       };
     }
 
-    const events = await Event.findAll(options);
-    res.status(200).json({ status: "success", data: events });
+    const pagination = getPagination(req.query);
+    let data;
+    let meta;
+    if (pagination) {
+      options.limit = pagination.limit;
+      options.offset = pagination.offset;
+      data = await Event.findAll(options);
+      const total = await Event.count({ where: options.where });
+      meta = { page: pagination.page, limit: pagination.limit, total, totalPages: Math.ceil(total / pagination.limit) };
+    } else {
+      data = await Event.findAll(options);
+    }
+    res.status(200).json({ status: "success", data, ...(meta && { meta }) });
   } catch (error) {
     console.error("ERROR di getAllEvents:", error);
     res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
@@ -159,8 +172,10 @@ exports.updateEvent = async (req, res) => {
       }
       const { title, quota, location, fee, description, startDateTime, endDateTime, participantRoles, category, status } = req.body;
       let imageBannerUrl = event.imageBannerUrl;
-      if (req.files.imageBanner) {
-        deleteFile(event.imageBannerUrl);
+      // File lama dihapus hanya SETELAH commit sukses; kalau rollback, file tetap ada
+      const filesToDelete = [];
+      if (req.files?.imageBanner) {
+        filesToDelete.push(event.imageBannerUrl);
         imageBannerUrl = `/uploads/${req.files.imageBanner[0].filename}`;
       }
       await event.update({ title, quota, location, fee, description, startDateTime, endDateTime, imageBannerUrl, participantRoles: JSON.parse(participantRoles || "[]"), category, status }, { transaction: t });
@@ -175,7 +190,7 @@ exports.updateEvent = async (req, res) => {
           if (Array.isArray(oldImageUrls)) {
             oldImageUrls.forEach((url) => {
               if (!existingUrlsFromClient.has(url)) {
-                deleteFile(url);
+                filesToDelete.push(url);
               }
             });
           }
@@ -205,6 +220,7 @@ exports.updateEvent = async (req, res) => {
         await EventContent.bulkCreate(contentRows, { transaction: t });
       }
       await t.commit();
+      filesToDelete.forEach((url) => deleteFile(url));
       res.status(200).json({ status: "success", data: event });
   } catch (error) {
     await t.rollback();

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import apiClient from "../hooks/apiClient";
 import WorkshopCard from "../components/molecules/cards/WorkshopCard";
+import Pagination from "../components/molecules/Pagination";
 import { Search, X, Filter } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -13,28 +14,49 @@ const WorkshopsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
 
   useEffect(() => {
+    const hasFilter = Boolean(searchQuery.trim() || selectedCategory);
+    let active = true;
     const fetchWorkshops = async () => {
       try {
-        const response = await apiClient.get("/api/workshops?source=admin");
+        const response = await apiClient.get(hasFilter ? "/api/workshops?source=admin" : `/api/workshops?source=admin&page=${page}&limit=12`);
+        if (!active) return;
         const workshopsData = response.data.data;
         setWorkshops(workshopsData);
         setFilteredWorkshops(workshopsData);
-        
-        // Extract unique categories from workshops
-        const uniqueCategories = [...new Set(workshopsData.map(w => w.category).filter(Boolean))];
-        setCategories(uniqueCategories.map((cat, index) => ({ id: index + 1, name: cat })));
+        setMeta(response.data.meta || null);
       } catch (error) {
+        if (!active) return;
         console.error("Gagal mengambil data workshops:", error);
       } finally {
-        setIsLoading(false);
+        if (active) setIsLoading(false);
       }
     };
 
     fetchWorkshops();
+    return () => {
+      active = false;
+    };
+  }, [page, searchQuery, selectedCategory]);
+
+  // Kategori dropdown diambil dari daftar lengkap (bukan halaman yang sedang ditampilkan)
+  useEffect(() => {
+    apiClient
+      .get("/api/workshops?source=admin")
+      .then((response) => {
+        const uniqueCategories = [...new Set(response.data.data.map((w) => w.category).filter(Boolean))];
+        setCategories(uniqueCategories.map((name, index) => ({ id: index + 1, name })));
+      })
+      .catch((error) => console.error("Gagal mengambil kategori workshops:", error));
   }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [selectedCategory, searchQuery]);
 
   useEffect(() => {
     let filtered = workshops;
@@ -176,6 +198,8 @@ const WorkshopsPage = () => {
             )}
           </div>
         )}
+
+        <Pagination meta={meta} onPageChange={setPage} />
       </div>
     </div>
   );

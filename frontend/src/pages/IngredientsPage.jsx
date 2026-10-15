@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
 import IngredientCard from "../components/molecules/cards/IngredientCard";
+import Pagination from "../components/molecules/Pagination";
 import { Search, X, FlaskConical } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -10,21 +11,35 @@ const IngredientsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
 
   useEffect(() => {
+    const hasFilter = Boolean(searchQuery.trim()) || selectedCategory !== "All";
+    let active = true;
     apiClient
-      .get("/api/ingredients")
+      .get(hasFilter ? "/api/ingredients" : `/api/ingredients?page=${page}&limit=12`)
       .then((response) => {
+        if (!active) return;
         setIngredients(response.data.data);
         setFilteredIngredients(response.data.data);
+        setMeta(response.data.meta || null);
         setIsLoading(false);
       })
       .catch((error) => {
+        if (!active) return;
         console.error("Gagal mengambil data bahan:", error);
         setIsLoading(false);
       });
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [page, searchQuery, selectedCategory]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [selectedCategory, searchQuery]);
 
   useEffect(() => {
     let filtered = ingredients;
@@ -145,6 +160,8 @@ const IngredientsPage = () => {
             )}
           </div>
         )}
+
+        <Pagination meta={meta} onPageChange={setPage} />
       </div>
     </div>
   );
