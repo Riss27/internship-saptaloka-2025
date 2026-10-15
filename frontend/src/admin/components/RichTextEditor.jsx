@@ -21,7 +21,7 @@ import {
 } from "react-icons/fi";
 import { MdFormatStrikethrough, MdFormatListNumbered } from "react-icons/md";
 
-const RichTextEditor = ({ content, onUpdate, maxLength, placeholder }) => {
+const RichTextEditor = ({ content, onUpdate, maxLength }) => {
   const [charCount, setCharCount] = React.useState(0);
 
   const editor = useEditor({
