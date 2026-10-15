@@ -7,6 +7,8 @@ const buildLimiter = (windowMs, limit, message) =>
     standardHeaders: true,
     legacyHeaders: false,
     message: { status: "fail", message },
+    // Rate limit dimatikan saat test agar tidak membuat hasil test flaky
+    skip: () => process.env.NODE_ENV === "test",
   });
 
 // Batasi percobaan login (anti brute-force)

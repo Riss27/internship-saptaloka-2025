@@ -78,17 +78,22 @@ EventRegistration.belongsTo(Event);
 Workshop.belongsToMany(Event, { through: "WorkshopEvents" });
 Event.belongsToMany(Workshop, { through: "WorkshopEvents" });
 
+// Sinkronisasi skema dijalankan sekali; test menunggu lewat module.exports.ready
+const ready = (async () => {
+  if (process.env.NODE_ENV === "production") {
+    // Di production jangan pakai alter: true (berisiko mengubah/menghapus kolom).
+    // Gunakan migration untuk perubahan skema.
+    await sequelize.authenticate();
+  } else {
+    await sequelize.sync({ alter: true });
+    console.log("✅ Semua model telah disinkronisasi.");
+  }
+})();
+
 // Fungsi untuk menjalankan server
 async function startServer() {
   try {
-    if (process.env.NODE_ENV === "production") {
-      // Di production jangan pakai alter: true (berisiko mengubah/menghapus kolom).
-      // Gunakan migration untuk perubahan skema.
-      await sequelize.authenticate();
-    } else {
-      await sequelize.sync({ alter: true });
-      console.log("✅ Semua model telah disinkronisasi.");
-    }
+    await ready;
     app.listen(port, () => {
       console.log(`🚀 Server berjalan di http://localhost:${port}`);
     });
@@ -103,3 +108,4 @@ if (require.main === module) {
 }
 
 module.exports = app;
+module.exports.ready = ready;
