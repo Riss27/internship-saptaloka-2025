@@ -5,7 +5,7 @@ const { protect, requireAdmin } = require("../middlewares/authMiddleware");
 const upload = require("../middlewares/upload");
 const { createArticleRules, updateArticleRules, validate } = require("../middlewares/validators/articleValidator.js");
 
-const articleUpload = upload.fields([{ name: "featuredImage", maxCount: 1 }, { name: "contentImages" }]);
+const articleUpload = upload.fields([{ name: "featuredImage", maxCount: 1 }, { name: "contentImages", maxCount: 20 }]);
 
 router.get("/", articleController.getAllArticles);
 router.get("/:id", articleController.getArticleById);

@@ -1,19 +1,6 @@
 const GalleryImage = require("../models/GalleryImage");
-const fs = require("fs");
-const path = require("path");
 const upload = require("../middlewares/upload");
-
-// Helper untuk menghapus file
-const deleteFile = (filePath) => {
-  if (filePath) {
-    const fullPath = path.join(__dirname, "..", "public", filePath);
-    if (fs.existsSync(fullPath)) {
-      fs.unlink(fullPath, (err) => {
-        if (err) console.error(`Gagal menghapus file: ${fullPath}`, err);
-      });
-    }
-  }
-};
+const { deleteFile } = require("../utils/fileHelper");
 
 // MENDAPATKAN SEMUA GAMBAR
 exports.getAllImages = async (req, res) => {
@@ -21,7 +8,8 @@ exports.getAllImages = async (req, res) => {
     const images = await GalleryImage.findAll({ order: [["id", "DESC"]] });
     res.status(200).json({ status: "success", data: images });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di getAllImages:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -34,7 +22,8 @@ exports.getImageById = async (req, res) => {
     }
     res.status(200).json({ status: "success", data: image });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di getImageById:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -98,6 +87,7 @@ exports.deleteImage = async (req, res) => {
     await image.destroy();
     res.status(204).json();
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di deleteImage:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };

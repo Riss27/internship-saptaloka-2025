@@ -40,8 +40,8 @@ const AboutPage = () => {
   const fetchAboutInfo = async () => {
     try {
       const response = await apiClient.get("/api/about");
-      setFormData(response.data.data);
-      if (response.data.data.logoFooter) {
+      setFormData(response.data.data || {});
+      if (response.data.data?.logoFooter) {
         setPreviewLogo(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${response.data.data.logoFooter}`);
       }
     } catch (error) {

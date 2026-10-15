@@ -38,7 +38,7 @@ exports.getProductById = async (req, res) => {
     res.status(200).json({ status: "success", data: product });
   } catch (error) {
     console.error("ERROR di getProductById:", error);
-    res.status(500).json({ status: "error", message: error.message });
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -72,7 +72,7 @@ exports.createProduct = async (req, res) => {
       fs.unlinkSync(req.file.path);
     }
     console.error("ERROR di createProduct:", error);
-    res.status(500).json({ status: "fail", message: "Terjadi kesalahan di server." });
+    res.status(500).json({ status: "fail", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -103,7 +103,7 @@ exports.updateProduct = async (req, res) => {
     res.status(200).json({ status: "success", data: product });
   } catch (error) {
     console.error("ERROR di updateProduct:", error);
-    res.status(500).json({ status: "fail", message: error.message });
+    res.status(500).json({ status: "fail", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -136,6 +136,6 @@ exports.deleteProduct = async (req, res) => {
     res.status(204).json();
   } catch (error) {
     console.error("ERROR di deleteProduct:", error);
-    res.status(500).json({ status: "error", message: error.message });
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };

@@ -18,7 +18,7 @@ const AboutPage = () => {
     apiClient
       .get("/api/about")
       .then((res) => {
-        setAboutInfo(res.data.data);
+        setAboutInfo(res.data.data || {});
         setIsLoading(false);
       })
       .catch((err) => {

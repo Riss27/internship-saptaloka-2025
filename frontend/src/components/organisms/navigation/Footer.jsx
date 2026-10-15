@@ -9,7 +9,7 @@ const Footer = () => {
   useEffect(() => {
     apiClient
       .get("/api/about")
-      .then((response) => setAboutInfo(response.data.data))
+      .then((response) => setAboutInfo(response.data.data || {}))
       .catch((error) => console.error("Gagal mengambil info kontak:", error));
 
     const handleScroll = () => setShowScrollTop(window.scrollY > 400);

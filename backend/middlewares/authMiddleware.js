@@ -9,8 +9,8 @@ const protect = async (req, res, next) => {
       // Ambil token dari header
       token = req.headers.authorization.split(" ")[1];
 
-      // Verifikasi token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      // Verifikasi token (paksa algoritma HS256 agar tidak ada algoritme lain yang diterima)
+      const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ["HS256"] });
 
       // Temukan user berdasarkan ID di token (tanpa password)
       req.user = await User.findByPk(decoded.id, {

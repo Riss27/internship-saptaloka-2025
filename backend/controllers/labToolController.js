@@ -1,39 +1,34 @@
 const LabTool = require("../models/LabTool");
-const upload = require("../middlewares/upload");
-const fs = require("fs");
-const path = require("path");
+const { deleteFile } = require("../utils/fileHelper");
+
+// Catatan: upload file sudah ditangani middleware upload.single("image") di route —
+// controller hanya membaca req.file.
 
 // Controller untuk (CREATE) - Membuat alat lab baru
 exports.createLabTool = async (req, res) => {
-  const uploader = upload.single("image");
-
-  uploader(req, res, async function (err) {
-    if (err) {
-      return res.status(400).json({ status: "fail", message: err.message || err });
+  try {
+    const { name, description, price, linkTokopedia, linkShopee } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ status: "fail", message: "Gambar wajib diunggah." });
     }
-    try {
-      const { name, description, price, linkTokopedia, linkShopee } = req.body;
-      if (!req.file) {
-        return res.status(400).json({ status: "fail", message: "Gambar wajib diunggah." });
-      }
-      const imageUrl = `/uploads/${req.file.filename}`;
-      const newLabTool = await LabTool.create({
-        name,
-        description,
-        price,
-        imageUrl,
-        linkTokopedia,
-        linkShopee,
-      });
-      res.status(201).json({
-        status: "success",
-        message: "Alat berhasil ditambahkan!",
-        data: newLabTool,
-      });
-    } catch (error) {
-      res.status(500).json({ status: "fail", message: error.message });
-    }
-  });
+    const imageUrl = `/uploads/${req.file.filename}`;
+    const newLabTool = await LabTool.create({
+      name,
+      description,
+      price,
+      imageUrl,
+      linkTokopedia,
+      linkShopee,
+    });
+    res.status(201).json({
+      status: "success",
+      message: "Alat berhasil ditambahkan!",
+      data: newLabTool,
+    });
+  } catch (error) {
+    console.error("ERROR di createLabTool:", error);
+    res.status(500).json({ status: "fail", message: "Terjadi kesalahan pada server." });
+  }
 };
 
 // Controller untuk (READ) - Mendapatkan semua alat lab
@@ -45,6 +40,7 @@ exports.getAllLabTools = async (req, res) => {
       data: labTools,
     });
   } catch (error) {
+    console.error("ERROR di getAllLabTools:", error);
     res.status(500).json({
       status: "error",
       message: "Gagal mengambil data alat.",
@@ -61,46 +57,36 @@ exports.getLabToolById = async (req, res) => {
     }
     res.status(200).json({ status: "success", data: labTool });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di getLabToolById:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };
 
 // Controller untuk (UPDATE) - Memperbarui alat lab
 exports.updateLabTool = async (req, res) => {
-  const uploader = upload.single("image");
-
-  uploader(req, res, async function (err) {
-    if (err) {
-      return res.status(400).json({ status: "fail", message: err.message || err });
+  try {
+    const labTool = await LabTool.findByPk(req.params.id);
+    if (!labTool) {
+      return res.status(404).json({ status: "fail", message: "Alat tidak ditemukan." });
     }
-    try {
-      const labTool = await LabTool.findByPk(req.params.id);
-      if (!labTool) {
-        return res.status(404).json({ status: "fail", message: "Alat tidak ditemukan." });
-      }
 
-      const oldImagePath = labTool.imageUrl;
-      const updateData = { ...req.body };
+    // Whitelist field yang boleh diubah (mencegah mass assignment); buang undefined
+    const { name, description, price, linkTokopedia, linkShopee } = req.body;
+    const updateData = Object.fromEntries(
+      Object.entries({ name, description, price, linkTokopedia, linkShopee }).filter(([, v]) => v !== undefined)
+    );
 
-      if (req.file) {
-        updateData.imageUrl = `/uploads/${req.file.filename}`;
-        if (oldImagePath) {
-          const fullPathOldImage = path.join(__dirname, "..", "public", oldImagePath);
-          if (fs.existsSync(fullPathOldImage)) {
-            fs.unlink(fullPathOldImage, (unlinkErr) => {
-              if (unlinkErr) console.error("Gagal hapus gambar lama:", unlinkErr);
-              else console.log("Gambar lama berhasil dihapus.");
-            });
-          }
-        }
-      }
-
-      await labTool.update(updateData);
-      res.status(200).json({ status: "success", data: labTool });
-    } catch (error) {
-      res.status(500).json({ status: "fail", message: error.message });
+    if (req.file) {
+      deleteFile(labTool.imageUrl);
+      updateData.imageUrl = `/uploads/${req.file.filename}`;
     }
-  });
+
+    await labTool.update(updateData);
+    res.status(200).json({ status: "success", data: labTool });
+  } catch (error) {
+    console.error("ERROR di updateLabTool:", error);
+    res.status(500).json({ status: "fail", message: "Terjadi kesalahan pada server." });
+  }
 };
 
 // Controller untuk (DELETE) - Menghapus alat lab
@@ -112,17 +98,10 @@ exports.deleteLabTool = async (req, res) => {
     }
     const imagePath = labTool.imageUrl;
     await labTool.destroy();
-    if (imagePath) {
-      const fullPathImage = path.join(__dirname, "..", "public", imagePath);
-      if (fs.existsSync(fullPathImage)) {
-        fs.unlink(fullPathImage, (err) => {
-          if (err) console.error("Gagal hapus file gambar:", err);
-          else console.log("File gambar berhasil dihapus.");
-        });
-      }
-    }
+    deleteFile(imagePath);
     res.status(204).json();
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di deleteLabTool:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };

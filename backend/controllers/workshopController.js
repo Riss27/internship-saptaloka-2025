@@ -1,21 +1,8 @@
 const Workshop = require("../models/Workshop");
 const Event = require("../models/Event");
 const upload = require("../middlewares/upload");
-const fs = require("fs");
-const path = require("path");
 const sequelize = require("../config/database");
-
-// Hapus file secara fisik dari folder public/uploads
-const deleteFile = (filePath) => {
-  if (filePath) {
-    const fullPath = path.join(__dirname, "..", "public", filePath);
-    if (fs.existsSync(fullPath)) {
-      fs.unlink(fullPath, (err) => {
-        if (err) console.error(`Gagal menghapus file: ${fullPath}`, err);
-      });
-    }
-  }
-};
+const { deleteFile } = require("../utils/fileHelper");
 
 // Controller Workshop
 // Ambil semua workshop + daftar event terkait (sudah ada filter kategori)
@@ -44,7 +31,8 @@ exports.getAllWorkshops = async (req, res) => {
     const workshops = await Workshop.findAll(filterOptions);
     res.status(200).json({ status: "success", data: workshops });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di getAllWorkshops:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -59,7 +47,8 @@ exports.getWorkshopById = async (req, res) => {
     }
     res.status(200).json({ status: "success", data: workshop });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di getWorkshopById:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -90,7 +79,8 @@ exports.createWorkshop = async (req, res) => {
   } catch (error) {
     await t.rollback();
     if (req.file) deleteFile(`/uploads/${req.file.filename}`);
-    res.status(500).json({ status: "fail", message: error.message });
+    console.error("ERROR di createWorkshop:", error);
+    res.status(500).json({ status: "fail", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -104,7 +94,8 @@ exports.deleteWorkshop = async (req, res) => {
     await workshop.destroy();
     res.status(204).json();
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di deleteWorkshop:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -140,6 +131,7 @@ exports.updateWorkshop = async (req, res) => {
   } catch (error) {
     await t.rollback();
     if (req.file) deleteFile(`/uploads/${req.file.filename}`);
-    res.status(500).json({ status: "fail", message: error.message });
+    console.error("ERROR di updateWorkshop:", error);
+    res.status(500).json({ status: "fail", message: "Terjadi kesalahan pada server." });
   }
 };

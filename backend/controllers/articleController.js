@@ -1,21 +1,8 @@
 const Article = require("../models/Article");
 const ArticleContent = require("../models/ArticleContent");
 const upload = require("../middlewares/upload");
-const fs = require("fs");
-const path = require("path");
 const sequelize = require("../config/database");
-
-// Helper untuk menghapus file
-const deleteFile = (filePath) => {
-  if (filePath) {
-    const fullPath = path.join(__dirname, "..", "public", filePath);
-    if (fs.existsSync(fullPath)) {
-      fs.unlink(fullPath, (err) => {
-        if (err) console.error(`Gagal menghapus file: ${fullPath}`, err);
-      });
-    }
-  }
-};
+const { deleteFile } = require("../utils/fileHelper");
 
 // --- Controller Functions ---
 exports.getAllArticles = async (req, res) => {
@@ -23,7 +10,8 @@ exports.getAllArticles = async (req, res) => {
     const articles = await Article.findAll({ order: [["publishedAt", "DESC"]] });
     res.status(200).json({ status: "success", data: articles });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di getAllArticles:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -37,7 +25,8 @@ exports.getArticleById = async (req, res) => {
     }
     res.status(200).json({ status: "success", data: article });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di getArticleById:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -96,7 +85,8 @@ exports.createArticle = async (req, res) => {
     if (req.files.contentImages) {
       req.files.contentImages.forEach((file) => deleteFile(`/uploads/${file.filename}`));
     }
-    res.status(500).json({ status: "fail", message: error.message });
+    console.error("ERROR di createArticle:", error);
+    res.status(500).json({ status: "fail", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -129,7 +119,8 @@ exports.deleteArticle = async (req, res) => {
 
     res.status(204).json();
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di deleteArticle:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -208,6 +199,7 @@ exports.updateArticle = async (req, res) => {
     await t.rollback();
     if (req.files.featuredImage) deleteFile(`/uploads/${req.files.featuredImage[0].filename}`);
     if (req.files.contentImages) req.files.contentImages.forEach((f) => deleteFile(`/uploads/${f.filename}`));
-    res.status(500).json({ status: "fail", message: error.message });
+    console.error("ERROR di updateArticle:", error);
+    res.status(500).json({ status: "fail", message: "Terjadi kesalahan pada server." });
   }
 };

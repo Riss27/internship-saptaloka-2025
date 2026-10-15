@@ -58,7 +58,7 @@ exports.createCategory = async (req, res) => {
     console.error("ERROR di createCategory:", error);
     res.status(500).json({
       status: "error",
-      message: error.message || "Terjadi kesalahan di server.",
+      message: "Terjadi kesalahan pada server.",
     });
   }
 };
@@ -103,7 +103,7 @@ exports.deleteCategory = async (req, res) => {
     console.error("ERROR di deleteCategory:", error);
     res.status(500).json({
       status: "error",
-      message: error.message || "Terjadi kesalahan di server.",
+      message: "Terjadi kesalahan pada server.",
     });
   }
 };

@@ -11,21 +11,24 @@ const storage = multer.diskStorage({
   },
 });
 
-// Filter untuk hanya menerima file gambar
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|gif/;
-  const mimeType = allowedTypes.test(file.mimetype);
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+// Filter untuk hanya menerima file gambar (cocokkan persis, bukan regex lepas)
+const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+const ALLOWED_EXTENSIONS = [".jpeg", ".jpg", ".png", ".gif", ".webp"];
 
-  if (mimeType && extname) {
+const fileFilter = (req, file, cb) => {
+  const extname = path.extname(file.originalname).toLowerCase();
+
+  if (ALLOWED_MIME_TYPES.includes(file.mimetype) && ALLOWED_EXTENSIONS.includes(extname)) {
     return cb(null, true);
   }
-  cb("Error: Hanya file gambar (jpeg, jpg, png, gif) yang diizinkan!");
+  const error = new Error("Hanya file gambar (jpeg, jpg, png, gif, webp) yang diizinkan!");
+  error.status = 400;
+  cb(error);
 };
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 5 * 1024 * 1024, files: 20 },
   fileFilter: fileFilter,
 });
 

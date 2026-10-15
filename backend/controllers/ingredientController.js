@@ -26,9 +26,9 @@ exports.createIngredient = async (req, res) => {
         data: newIngredient,
       });
     } catch (error) {
-      res.status(500).json({ status: "fail", message: error.message });
+      console.error("ERROR di createIngredient:", error);
+      res.status(500).json({ status: "fail", message: "Terjadi kesalahan pada server." });
     }
-  });
 };
 
 // Controller untuk (READ) - Mendapatkan semua ingredient
@@ -66,7 +66,8 @@ exports.getIngredientById = async (req, res) => {
     }
     res.status(200).json({ status: "success", data: ingredient });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di getIngredientById:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -97,7 +98,8 @@ exports.updateIngredient = async (req, res) => {
       await ingredient.update(updateData);
       res.status(200).json({ status: "success", data: ingredient });
   } catch (error) {
-    res.status(500).json({ status: "fail", message: error.message });
+    console.error("ERROR di updateIngredient:", error);
+    res.status(500).json({ status: "fail", message: "Terjadi kesalahan pada server." });
   }
 };
 
@@ -120,6 +122,7 @@ exports.deleteIngredient = async (req, res) => {
     }
     res.status(204).json();
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    console.error("ERROR di deleteIngredient:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };

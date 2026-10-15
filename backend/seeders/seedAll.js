@@ -87,15 +87,20 @@ const seed = async () => {
   try {
     // ----------------- User Admin -----------------
     console.log('\n=== Memulai proses seeding untuk User ===');
-    const existingUser = await User.findOne({ where: { email: 'admin@ask.com' } });
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@ask.com';
+    const existingUser = await User.findOne({ where: { email: adminEmail } });
     if (!existingUser) {
-      await User.create({
-        name: 'Admin ASK',
-        email: 'admin@ask.com',
-        password: 'admin123',
-        role: 'admin'
-      });
-      console.log('✅ User admin berhasil dibuat (email: admin@ask.com, password: admin123)');
+      if (!process.env.ADMIN_PASSWORD) {
+        console.log('⚠️ Lewati pembuatan user admin: set ADMIN_PASSWORD di .env terlebih dahulu');
+      } else {
+        await User.create({
+          name: 'Admin ASK',
+          email: adminEmail,
+          password: process.env.ADMIN_PASSWORD,
+          role: 'admin'
+        });
+        console.log(`✅ User admin berhasil dibuat (email: ${adminEmail})`);
+      }
     } else {
       console.log('ℹ️ User admin sudah ada');
     }
