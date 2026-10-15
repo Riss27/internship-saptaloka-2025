@@ -7,14 +7,20 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import "./i18n"; // Impor konfigurasi i18n
 
-  ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading...</div>}>
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center h-screen">
+            Loading...
+          </div>
+        }
+      >
         <AuthProvider>
           <App />
         </AuthProvider>
       </Suspense>
     </ErrorBoundary>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

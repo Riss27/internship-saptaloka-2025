@@ -10,7 +10,9 @@ const RegisteredPeoplePage = () => {
 
   const fetchEventDetails = useCallback(async () => {
     try {
-      const response = await apiClient.get(`/api/events/${eventId}/registrations`);
+      const response = await apiClient.get(
+        `/api/events/${eventId}/registrations`,
+      );
       setEvent(response.data.data || { title: "Event", quota: 0 });
       setRegistrations(response.data.data?.EventRegistrations || []);
     } catch (error) {
@@ -39,15 +41,17 @@ const RegisteredPeoplePage = () => {
   return (
     <div className="max-w-7xl mx-auto">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Registered People for: {event.title}</h1>
-        <p className="text-slate-400 mt-1">
+        <h1 className="text-3xl font-bold text-cream">
+          Registered People for: {event.title}
+        </h1>
+        <p className="text-cream/60 mt-1">
           Total pendaftar: {registrations.length} / {event.quota}
         </p>
       </header>
 
-      <div className="bg-slate-800/50 rounded-lg shadow-lg overflow-hidden">
-        <table className="w-full text-left text-slate-300">
-          <thead className="bg-slate-900/50">
+      <div className="bg-brand-800/50 rounded-lg overflow-hidden">
+        <table className="w-full text-left text-cream/80">
+          <thead className="bg-brand-800">
             <tr>
               <th className="p-4">No</th>
               <th className="p-4">Name</th>
@@ -60,22 +64,30 @@ const RegisteredPeoplePage = () => {
           <tbody>
             {registrations.length === 0 ? (
               <tr>
-                <td colSpan="6" className="p-4 text-center text-slate-400">
+                <td colSpan="6" className="p-4 text-center text-cream/60">
                   Belum ada pendaftar
                 </td>
               </tr>
             ) : (
               registrations.map((reg, index) => (
-                <tr key={reg.id} className="border-b border-slate-700 hover:bg-slate-800">
+                <tr
+                  key={reg.id}
+                  className="border-b border-border bg-brand-800"
+                >
                   <td className="p-4">{index + 1}</td>
-                  <td className="p-4 text-white font-medium">{reg.name}</td>
+                  <td className="p-4 text-cream font-medium">{reg.name}</td>
                   <td className="p-4">{reg.email}</td>
                   <td className="p-4">{reg.phone}</td>
                   <td className="p-4">
-                    <span className="bg-blue-600/50 text-blue-300 px-2 py-1 rounded-full text-xs">{reg.role}</span>
+                    <span className="bg-brand-600/40 text-cream px-2 py-1 rounded-full text-xs">
+                      {reg.role}
+                    </span>
                   </td>
                   <td className="p-4 text-center">
-                    <button onClick={() => deleteRegistration(reg.id)} className="p-2 text-red-500 hover:text-red-400">
+                    <button
+                      onClick={() => deleteRegistration(reg.id)}
+                      className="p-2 text-red-500 text-red-400"
+                    >
                       <FiTrash2 />
                     </button>
                   </td>

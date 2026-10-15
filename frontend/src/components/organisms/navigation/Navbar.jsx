@@ -1,13 +1,26 @@
 import React, { useState, useRef, useEffect, forwardRef } from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+// The lint config does not track JSX usage, so the motion import looks unused.
 // eslint-disable-next-line no-unused-vars
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { logoVariants, menuItemVariants, dropdownVariants, mobileMenuVariants, mobileItemVariants } from "./navAnimations";
+import {
+  logoVariants,
+  menuItemVariants,
+  dropdownVariants,
+  mobileMenuVariants,
+  mobileItemVariants,
+} from "./navAnimations";
+
+// Every interactive control in the header shares the same visible keyboard
+// focus treatment. On a dark canvas a cream focus ring is impossible to miss.
+const FOCUS_RING =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
 
 const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
   const { t, i18n } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
 
   const menuItems = [
     { name: t("navbar.home"), to: "/" },
@@ -15,7 +28,10 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
     {
       name: t("navbar.services"),
       dropdown: [
-        { name: t("services_dropdown.workshop_kami", "Workshop Kami"), to: "/workshops" },
+        {
+          name: t("services_dropdown.workshop_kami", "Workshop Kami"),
+          to: "/workshops",
+        },
         { name: t("services_dropdown.custom_perfume"), to: "/pos" },
         { name: t("services_dropdown.lab_tools"), to: "/lab-tools" },
         { name: t("services_dropdown.ingredients"), to: "/ingredients" },
@@ -46,6 +62,20 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Escape closes the open dropdown so it can be dismissed without a pointer.
+  useEffect(() => {
+    if (dropdownOpen === null && !mobileMenu) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setDropdownOpen(null);
+        setMobileMenu(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [dropdownOpen, mobileMenu]);
+
   const handleNavClick = () => {
     setMobileMenu(false);
     setDropdownOpen(null);
@@ -54,14 +84,26 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
   const renderMenuItem = (item, idx, isMobile = false) => {
     if (!item.dropdown) {
       return (
-        <motion.div key={idx} variants={isMobile ? mobileItemVariants : menuItemVariants} initial={isMobile ? "hidden" : "initial"} animate={isMobile ? "visible" : "initial"} whileHover={!isMobile ? "hover" : {}} custom={idx}>
+        <motion.div
+          key={idx}
+          variants={isMobile ? mobileItemVariants : menuItemVariants}
+          initial={isMobile ? "hidden" : "initial"}
+          animate={isMobile ? "visible" : "initial"}
+          whileHover={!isMobile && !prefersReducedMotion ? "hover" : {}}
+          custom={idx}
+        >
           <NavLink
             to={item.to}
             onClick={handleNavClick}
             className={({ isActive }) =>
-              isActive
-                ? `py-2 px-3 rounded-lg text-emerald-700 font-semibold bg-emerald-50 ${isMobile ? "ml-2" : ""} block relative overflow-hidden`
-                : `py-2 px-3 rounded-lg text-gray-700 hover:text-emerald-700 hover:bg-emerald-50 font-medium transition-all ${isMobile ? "ml-2" : ""} block relative overflow-hidden`
+              [
+                "flex items-center min-h-11 relative py-2 px-3 rounded-buttons-outlined uppercase text-xs font-medium tracking-wide transition-colors",
+                isMobile ? "w-full px-4 justify-between" : "",
+                FOCUS_RING,
+                isActive
+                  ? "bg-brand-600 text-cream"
+                  : "text-cream/80 hover:bg-brand-700 hover:text-cream",
+              ].join(" ")
             }
           >
             {item.name}
@@ -70,25 +112,64 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
       );
     }
 
+    const panelId = `nav-dropdown-${idx}`;
+
     return (
-      <motion.div key={idx} className="relative" ref={dropdownRef} variants={isMobile ? mobileItemVariants : {}} initial={isMobile ? "hidden" : "initial"} animate={isMobile ? "visible" : "initial"} custom={idx}>
+      <motion.div
+        key={idx}
+        className="relative"
+        ref={dropdownRef}
+        variants={isMobile ? mobileItemVariants : {}}
+        initial={isMobile ? "hidden" : "initial"}
+        animate={isMobile ? "visible" : "initial"}
+        custom={idx}
+      >
         <motion.button
+          type="button"
           onClick={() => setDropdownOpen(dropdownOpen === idx ? null : idx)}
           aria-expanded={dropdownOpen === idx}
-          className={`flex items-center justify-between w-full py-2 px-3 rounded-lg text-gray-700 font-medium transition-all hover:bg-emerald-50 hover:text-emerald-700 ${isMobile ? "ml-2" : "hover:bg-emerald-700 hover:text-white"}`}
-          whileHover={!isMobile ? { scale: 1.02 } : {}}
-          whileTap={{ scale: 0.98 }}
+          aria-haspopup="true"
+          aria-controls={panelId}
+          className={[
+            "flex items-center justify-between gap-2 min-h-11 py-2 px-3 rounded-buttons-outlined uppercase text-xs font-medium tracking-wide transition-colors",
+            isMobile ? "w-full px-4" : "",
+            FOCUS_RING,
+            dropdownOpen === idx
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80 hover:bg-brand-700 hover:text-cream",
+          ].join(" ")}
+          whileHover={!isMobile && !prefersReducedMotion ? { scale: 1.02 } : {}}
+          whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
         >
           {item.name}
-          <motion.svg className={`w-4 h-4 ml-1`} fill="none" stroke="currentColor" viewBox="0 0 24 24" animate={{ rotate: dropdownOpen === idx ? 180 : 0 }} transition={{ duration: 0.3 }}>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <motion.svg
+            className="w-3.5 h-3.5 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+            animate={{ rotate: dropdownOpen === idx ? 180 : 0 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
           </motion.svg>
         </motion.button>
 
         <AnimatePresence>
           {dropdownOpen === idx && (
             <motion.div
-              className={`absolute ${isMobile ? "left-0 mt-2 ml-2 flex flex-col" : "top-full left-0 w-56"} bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50`}
+              id={panelId}
+              className={`absolute ${
+                isMobile
+                  ? "left-0 right-0 mt-1 flex flex-col"
+                  : "top-full left-0 w-56"
+              } bg-brand-700 text-cream rounded-cards border border-border py-2 z-50`}
               variants={dropdownVariants}
               initial="hidden"
               animate="visible"
@@ -101,11 +182,15 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
                   animate={{
                     opacity: 1,
                     x: 0,
-                    transition: { delay: i * 0.05 },
+                    transition: { delay: prefersReducedMotion ? 0 : i * 0.05 },
                   }}
-                  whileHover={{ x: 5, backgroundColor: "rgba(16, 185, 129, 0.1)" }}
+                  whileHover={prefersReducedMotion ? {} : { x: 5 }}
                 >
-                  <NavLink to={sub.to} onClick={handleNavClick} className={`block px-4 py-2 rounded-lg text-gray-700 hover:text-emerald-700 transition-all`}>
+                  <NavLink
+                    to={sub.to}
+                    onClick={handleNavClick}
+                    className={`flex items-center min-h-11 px-4 rounded-buttons-outlined text-cream/80 transition-colors hover:bg-brand-800 hover:text-cream ${FOCUS_RING}`}
+                  >
                     {sub.name}
                   </NavLink>
                 </motion.div>
@@ -119,35 +204,110 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
 
   return (
     <motion.header
-      className="bg-white/95 backdrop-blur-sm shadow fixed w-full z-40 border-b border-gray-200"
+      className="bg-brand-800/95 backdrop-blur-sm fixed w-full z-40 border-b border-border text-cream"
       ref={ref}
       animate={{ top: isTopNavbarVisible ? topNavbarHeight : 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      transition={
+        prefersReducedMotion
+          ? { duration: 0 }
+          : { type: "spring", stiffness: 300, damping: 30 }
+      }
     >
-      <nav className="container mx-auto flex justify-between items-center px-6 py-3">
-        <NavLink to="/" className="flex items-center">
-          <motion.img src="/Assets/asklogo2.png" alt="Logo" className="h-16 w-auto object-contain rounded-xl shadow-sm" variants={logoVariants} initial="initial" whileHover="hover" />
+      <nav
+        aria-label="Main navigation"
+        className="container mx-auto flex justify-between items-center gap-3 px-4 sm:px-6 lg:px-8 py-2 sm:py-3"
+      >
+        <NavLink
+          to="/"
+          aria-label="Askreative Parfum, back to the home page"
+          className={`flex items-center shrink-0 ${FOCUS_RING}`}
+        >
+          <motion.img
+            src="/Assets/asklogo2.png"
+            alt=""
+            aria-hidden="true"
+            className="h-10 sm:h-12 lg:h-16 w-auto max-w-[8rem] sm:max-w-none object-contain"
+            variants={logoVariants}
+            initial="initial"
+            whileHover={prefersReducedMotion ? "initial" : "hover"}
+          />
         </NavLink>
 
-        <div className="hidden lg:flex items-center gap-6">{menuItems.map((item, idx) => renderMenuItem(item, idx))}</div>
+        <div className="hidden lg:flex items-center gap-6">
+          {menuItems.map((item, idx) => renderMenuItem(item, idx))}
+        </div>
 
-        <LanguageSwitcher currentLang={i18n.resolvedLanguage} onChange={changeLanguage} />
+        <LanguageSwitcher
+          currentLang={i18n.resolvedLanguage}
+          onChange={changeLanguage}
+        />
 
-        <motion.button onClick={() => setMobileMenu(!mobileMenu)} className="lg:hidden p-2" whileTap={{ scale: 0.9 }}>
-          <motion.svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" animate={{ rotate: mobileMenu ? 90 : 0 }} transition={{ duration: 0.3 }}>
-            {mobileMenu ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
+        <motion.button
+          type="button"
+          onClick={() => setMobileMenu(!mobileMenu)}
+          aria-label={mobileMenu ? "Close menu" : "Open menu"}
+          aria-expanded={mobileMenu}
+          aria-controls="mobile-menu"
+          className={`lg:hidden h-11 w-11 shrink-0 grid place-items-center rounded-buttons-outlined text-cream/80 hover:bg-brand-700 hover:text-cream transition-colors ${FOCUS_RING}`}
+          whileTap={prefersReducedMotion ? {} : { scale: 0.9 }}
+        >
+          <motion.svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+            animate={{ rotate: mobileMenu ? 90 : 0 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
+          >
+            {mobileMenu ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            )}
           </motion.svg>
         </motion.button>
       </nav>
 
       <AnimatePresence>
         {mobileMenu && (
-          <motion.div className="lg:hidden bg-white border-t border-gray-200 shadow-lg overflow-hidden" variants={mobileMenuVariants} initial="hidden" animate="visible" exit="hidden">
-            <div className="container mx-auto flex flex-col px-6 py-4 space-y-3">
+          <motion.div
+            id="mobile-menu"
+            className="lg:hidden bg-brand-800 border-t border-border overflow-hidden"
+            variants={mobileMenuVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+          >
+            <div className="container mx-auto flex flex-col px-4 sm:px-6 py-4 space-y-2">
               {menuItems.map((item, idx) => renderMenuItem(item, idx, true))}
 
-              <motion.div className="pt-3 border-t border-gray-200" initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: menuItems.length * 0.05 } }}>
-                <LanguageSwitcher currentLang={i18n.resolvedLanguage} onChange={changeLanguage} isMobile />
+              <motion.div
+                className="pt-4 border-t border-border mt-2"
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  transition: {
+                    delay: prefersReducedMotion ? 0 : menuItems.length * 0.05,
+                  },
+                }}
+              >
+                <LanguageSwitcher
+                  currentLang={i18n.resolvedLanguage}
+                  onChange={changeLanguage}
+                  isMobile
+                />
               </motion.div>
             </div>
           </motion.div>

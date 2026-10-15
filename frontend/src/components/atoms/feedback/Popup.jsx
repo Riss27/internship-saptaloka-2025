@@ -1,20 +1,68 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { FiX } from "react-icons/fi";
 
+const FOCUS_RING =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
+
 const Popup = ({ isOpen, onClose, title, children }) => {
+  const closeButtonRef = useRef(null);
+
+  // Callers pass onClose as a fresh inline function on every render, so it is
+  // kept in a ref. Otherwise the effect below would re-run on every keystroke
+  // typed into the form and pull focus back onto the close button.
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  // The dialog behaves like a real one: Escape closes it and focus moves into
+  // the panel when it opens, so a keyboard reader is never left behind the
+  // scrim on the page underneath.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onCloseRef.current();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
   if (!isOpen) {
     return null;
   }
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50" onClick={onClose}>
+    <div
+      className="fixed inset-0 bg-brand-900/85 backdrop-blur-sm flex justify-center items-end sm:items-center z-50 p-0 sm:p-4"
+      onClick={onClose}
+    >
       {/* Konten Popup */}
-      <div className="bg-slate-800 rounded-lg shadow-xl w-full max-w-md m-4 p-6 relative animate-fade-in" onClick={(e) => e.stopPropagation()}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="popup-title"
+        className="bg-brand-700 text-cream rounded-t-cards sm:rounded-cards border border-border w-full sm:max-w-md max-h-[92svh] sm:max-h-[85vh] overflow-y-auto p-5 sm:p-6 relative"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header Popup */}
-        <div className="flex justify-between items-center border-b border-slate-700 pb-3 mb-4">
-          <h3 className="text-xl font-bold text-white">{title}</h3>
-          <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:bg-slate-700">
-            <FiX size={20} />
+        <div className="flex justify-between items-start gap-4 border-b border-border pb-3 mb-4 sticky top-0 bg-brand-700 z-10">
+          <h2
+            id="popup-title"
+            className="text-lg sm:text-xl font-medium text-cream uppercase leading-snug break-words"
+          >
+            {title}
+          </h2>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            onClick={onClose}
+            aria-label="Close the dialog"
+            className={`flex-shrink-0 h-11 w-11 grid place-items-center rounded-full text-cream bg-brand-800 hover:bg-brand-600 transition-colors ${FOCUS_RING}`}
+          >
+            <FiX size={20} aria-hidden="true" />
           </button>
         </div>
 
@@ -25,5 +73,3 @@ const Popup = ({ isOpen, onClose, title, children }) => {
 };
 
 export default Popup;
-
-

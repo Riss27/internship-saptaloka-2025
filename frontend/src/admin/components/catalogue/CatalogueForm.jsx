@@ -1,28 +1,74 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
-import { FiInfo, FiTag, FiDollarSign, FiFileText, FiLink, FiImage, FiSave, FiChevronDown, FiUploadCloud } from "react-icons/fi";
+import {
+  FiInfo,
+  FiTag,
+  FiDollarSign,
+  FiFileText,
+  FiLink,
+  FiImage,
+  FiSave,
+  FiChevronDown,
+  FiUploadCloud,
+} from "react-icons/fi";
 import RichTextEditor from "../RichTextEditor";
 import API_BASE from "../../../lib/apiBase";
 
-const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon }) => (
+const InputField = ({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  placeholder,
+  icon,
+}) => (
   <div className="mb-6">
-    <label className="block mb-2 font-medium text-slate-300">{label}</label>
+    <label className="block mb-2 font-medium text-cream/90">{label}</label>
     <div className="relative">
-      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">{icon}</span>
+      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/50">
+        {icon}
+      </span>
       {type === "textarea" ? (
-        <textarea name={name} value={value || ""} onChange={onChange} rows="6" placeholder={placeholder} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <textarea
+          name={name}
+          value={value || ""}
+          onChange={onChange}
+          rows="6"
+          placeholder={placeholder}
+          className="w-full p-2 pl-10 bg-brand-800 text-cream border border-border rounded-lg focus:outline-none focus:border-brand-400"
+        />
       ) : (
-        <input type={type} name={name} value={value || ""} onChange={onChange} placeholder={placeholder} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input
+          type={type}
+          name={name}
+          value={value || ""}
+          onChange={onChange}
+          placeholder={placeholder}
+          className="w-full p-2 pl-10 bg-brand-800 text-cream border border-border rounded-lg focus:outline-none focus:border-brand-400"
+        />
       )}
     </div>
   </div>
 );
 
-const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions }) => {
+const CatalogueForm = ({
+  itemType,
+  apiEndpoint,
+  navigateBackUrl,
+  categoryOptions,
+}) => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [formData, setFormData] = useState({ name: "", price: "", description: "", category: "", linkTokopedia: "", linkShopee: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    description: "",
+    category: "",
+    linkTokopedia: "",
+    linkShopee: "",
+  });
   const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +86,9 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
             setPreviewImage(`${API_BASE}${data.imageUrl}`);
           }
         })
-        .catch((error) => console.error(`Gagal mengambil detail ${itemType}:`, error));
+        .catch((error) =>
+          console.error(`Gagal mengambil detail ${itemType}:`, error),
+        );
     }
   }, [id, isEditMode, apiEndpoint, itemType]);
 
@@ -61,7 +109,9 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
     e.preventDefault();
     setIsLoading(true);
     const submissionData = new FormData();
-    Object.keys(formData).forEach((key) => submissionData.append(key, formData[key] || ""));
+    Object.keys(formData).forEach((key) =>
+      submissionData.append(key, formData[key] || ""),
+    );
 
     if (imageFile) {
       submissionData.append("image", imageFile);
@@ -71,7 +121,11 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
       const config = { headers: { "Content-Type": "multipart/form-data" } };
 
       if (isEditMode) {
-        await apiClient.put(`/api/${apiEndpoint}/${id}`, submissionData, config);
+        await apiClient.put(
+          `/api/${apiEndpoint}/${id}`,
+          submissionData,
+          config,
+        );
       } else {
         await apiClient.post(`/api/${apiEndpoint}`, submissionData, config);
       }
@@ -79,7 +133,10 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
       navigate(navigateBackUrl);
     } catch (error) {
       if (error.response && error.response.data) {
-        console.error(`Gagal menyimpan ${itemType}:`, error.response.data.message);
+        console.error(
+          `Gagal menyimpan ${itemType}:`,
+          error.response.data.message,
+        );
         alert(`Gagal menyimpan: ${error.response.data.message}`);
       } else {
         console.error(`Gagal menyimpan ${itemType}:`, error);
@@ -91,42 +148,75 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
   };
 
   return (
-    <div className="max-w-7xl mx-auto text-white">
+    <div className="max-w-7xl mx-auto text-cream">
       <header className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">{isEditMode ? `Edit ${itemTitle}` : `Add New ${itemTitle}`}</h1>
-        <Link to={navigateBackUrl} className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold text-white no-underline">
+        <h1 className="text-3xl font-bold uppercase">
+          {isEditMode ? `Edit ${itemTitle}` : `Add New ${itemTitle}`}
+        </h1>
+        <Link
+          to={navigateBackUrl}
+          className="bg-red-700 hover:bg-red-800 px-5 py-2 rounded-md font-semibold text-cream no-underline"
+        >
           BACK
         </Link>
       </header>
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 bg-white/10 p-8 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">{itemTitle} Details</h2>
-            <InputField label={`${itemTitle} Name`} name="name" value={formData.name} onChange={handleChange} required={true} placeholder={`Contoh: 'Nama ${itemType}'`} icon={<FiInfo />} />
-            <InputField label="Price" name="price" type="number" value={formData.price} onChange={handleChange} required={true} placeholder="Contoh: 150000" icon={<FiDollarSign />} />
+          <div className="lg:col-span-2 bg-brand-700 p-8 rounded-lg border border-border">
+            <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4 uppercase">
+              {itemTitle} Details
+            </h2>
+            <InputField
+              label={`${itemTitle} Name`}
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required={true}
+              placeholder={`Contoh: 'Nama ${itemType}'`}
+              icon={<FiInfo />}
+            />
+            <InputField
+              label="Price"
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={handleChange}
+              required={true}
+              placeholder="Contoh: 150000"
+              icon={<FiDollarSign />}
+            />
             <div className="mb-6">
-              <label className="block mb-2 font-medium text-slate-300">Description</label>
-              <RichTextEditor 
-                content={formData.description} 
-                onUpdate={(value) => setFormData((prev) => ({ ...prev, description: value }))}
+              <label className="block mb-2 font-medium text-cream/80">
+                Description
+              </label>
+              <RichTextEditor
+                content={formData.description}
+                onUpdate={(value) =>
+                  setFormData((prev) => ({ ...prev, description: value }))
+                }
                 placeholder={`Deskripsi singkat ${itemType}...`}
                 maxLength={1000}
               />
             </div>
           </div>
 
-          <div className="bg-white/10 p-8 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Organize</h2>
+          <div className="bg-brand-700 p-8 rounded-lg border border-border">
+            <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4 uppercase">
+              Organize
+            </h2>
 
             {/* Tampilkan kategori hanya jika ada opsinya */}
             {categoryOptions && (
               <div className="mb-6">
-                <label htmlFor="category" className="block mb-2 font-medium text-slate-300">
+                <label
+                  htmlFor="category"
+                  className="block mb-2 font-medium text-cream/90"
+                >
                   Category
                 </label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/50">
                     <FiTag />
                   </span>
                   <select
@@ -135,7 +225,7 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
                     value={formData.category || ""}
                     onChange={handleChange}
                     required={true}
-                    className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                    className="w-full p-2 pl-10 bg-brand-800 text-cream border border-border rounded-lg focus:outline-none focus:border-brand-400 appearance-none"
                   >
                     <option value="" disabled>
                       -- Pilih Kategori --
@@ -146,7 +236,7 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
                       </option>
                     ))}
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-cream/50">
                     <FiChevronDown className="h-5 w-5" />
                   </div>
                 </div>
@@ -154,46 +244,90 @@ const CatalogueForm = ({ itemType, apiEndpoint, navigateBackUrl, categoryOptions
             )}
 
             <div className="mb-6">
-              <label className="mb-2 font-medium text-slate-300 flex items-center gap-2">
-                <FiImage className="text-cyan-400" />
+              <label className="mb-2 font-medium text-cream/90 flex items-center gap-2">
+                <FiImage className="text-brand-400" />
                 {itemTitle} Image
               </label>
               <div className="relative group">
-                <input type="file" id="catalogue-upload" name="image" onChange={handleImageChange} className="hidden" accept="image/*" required={!isEditMode} />
+                <input
+                  type="file"
+                  id="catalogue-upload"
+                  name="image"
+                  onChange={handleImageChange}
+                  className="hidden"
+                  accept="image/*"
+                  required={!isEditMode}
+                />
                 <label
                   htmlFor="catalogue-upload"
-                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900/50 cursor-pointer hover:border-cyan-500 hover:bg-slate-800/70 transition-all duration-300 overflow-hidden"
+                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-border rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden"
                 >
                   {previewImage ? (
                     <div className="relative w-full h-full">
-                      <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-                        <FiUploadCloud className="h-12 w-12 text-white mb-2" />
-                        <span className="text-white font-semibold">Click to change image</span>
-                        <span className="text-slate-300 text-sm mt-1">PNG, JPG up to 10MB</span>
+                      <img
+                        src={previewImage}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-brand-900/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
+                        <FiUploadCloud className="h-12 w-12 text-cream mb-2" />
+                        <span className="text-cream font-semibold">
+                          Click to change image
+                        </span>
+                        <span className="text-cream/70 text-sm mt-1">
+                          PNG, JPG up to 10MB
+                        </span>
                       </div>
                     </div>
                   ) : (
                     <div className="text-center p-6">
-                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
-                        <FiUploadCloud className="h-10 w-10 text-cyan-400" />
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-brand-900 flex items-center justify-center">
+                        <FiUploadCloud className="h-10 w-10 text-brand-400" />
                       </div>
-                      <span className="block text-slate-200 font-semibold mb-1">Click to upload image</span>
-                      <span className="text-slate-400 text-sm">or drag and drop</span>
-                      <p className="text-slate-500 text-xs mt-2">PNG, JPG up to 10MB</p>
+                      <span className="block text-cream font-semibold mb-1">
+                        Click to upload image
+                      </span>
+                      <span className="text-cream/70 text-sm">
+                        or drag and drop
+                      </span>
+                      <p className="text-cream/50 text-xs mt-2">
+                        PNG, JPG up to 10MB
+                      </p>
                     </div>
                   )}
                 </label>
               </div>
             </div>
-            <InputField label="Link Tokopedia" name="linkTokopedia" value={formData.linkTokopedia} onChange={handleChange} placeholder="https://..." icon={<FiLink />} />
-            <InputField label="Link Shopee" name="linkShopee" value={formData.linkShopee} onChange={handleChange} placeholder="https://..." icon={<FiLink />} />
+            <InputField
+              label="Link Tokopedia"
+              name="linkTokopedia"
+              value={formData.linkTokopedia}
+              onChange={handleChange}
+              placeholder="https://..."
+              icon={<FiLink />}
+            />
+            <InputField
+              label="Link Shopee"
+              name="linkShopee"
+              value={formData.linkShopee}
+              onChange={handleChange}
+              placeholder="https://..."
+              icon={<FiLink />}
+            />
           </div>
         </div>
         <div className="mt-8">
-          <button type="submit" disabled={isLoading} className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 py-3 rounded-md font-bold text-lg flex items-center justify-center">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-brand-600 hover:bg-brand-500 disabled:bg-brand-800 py-3 rounded-lg font-bold text-lg flex items-center justify-center text-cream"
+          >
             <FiSave className="mr-2" />
-            {isLoading ? "Saving..." : isEditMode ? "SAVE CHANGES" : `ADD ${itemTitle.toUpperCase()}`}
+            {isLoading
+              ? "Saving..."
+              : isEditMode
+                ? "SAVE CHANGES"
+                : `ADD ${itemTitle.toUpperCase()}`}
           </button>
         </div>
       </form>

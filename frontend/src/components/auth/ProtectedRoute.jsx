@@ -8,8 +8,8 @@ const ProtectedRoute = () => {
   // Tampilkan loading state saat AuthContext masih memeriksa token
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-slate-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+      <div className="flex justify-center items-center min-h-[60vh] bg-brand-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
       </div>
     );
   }

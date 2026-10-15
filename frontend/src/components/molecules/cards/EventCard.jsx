@@ -1,19 +1,30 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FiCalendar, FiMapPin, FiClock, FiDollarSign, FiUsers } from "react-icons/fi";
+import {
+  FiCalendar,
+  FiMapPin,
+  FiClock,
+  FiDollarSign,
+  FiUsers,
+} from "react-icons/fi";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
 import API_BASE from "../../../lib/apiBase";
 
+const FOCUS_RING =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
+
+// Status is signalled with surface tone rather than a separate red, so the card
+// stays inside the brand palette. Open is the only fully solid badge.
 const getStatusBadge = (status) => {
   const badges = {
-    Open: "bg-green-100 text-green-800",
-    "Coming Soon": "bg-blue-100 text-blue-800",
-    Closed: "bg-red-100 text-red-800",
-    Finished: "bg-slate-200 text-slate-700",
+    Open: "bg-brand-600 text-cream",
+    "Coming Soon": "bg-brand-600/70 text-cream",
+    Closed: "bg-brand-800 text-cream/80 border border-border",
+    Finished: "bg-brand-800 text-cream/80 border border-border",
   };
-  return badges[status] || "bg-gray-200 text-gray-700";
+  return badges[status] || "bg-brand-800 text-cream/80 border border-border";
 };
 
 const EventCard = ({ event }) => {
@@ -38,55 +49,80 @@ const EventCard = ({ event }) => {
   const availableQuota = event.quota - (event.registeredCount || 0);
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden group shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-slate-100 flex flex-col h-full">
-      <Link to={`/events/${event.id}`} className="block">
+    <div className="bg-brand-800 rounded-cards overflow-hidden group border border-border flex flex-col h-full">
+      <Link
+        to={`/events/${event.id}`}
+        tabIndex={-1}
+        aria-hidden="true"
+        className="block shrink-0"
+      >
         {/* Image Container */}
-        <div className="w-full h-56 overflow-hidden bg-slate-100 relative">
+        <div className="w-full h-56 shrink-0 overflow-hidden bg-brand-700 relative">
           <LazyLoadImage
-            alt={event.title}
+            alt=""
             src={`${API_BASE}${event.imageBannerUrl}`}
             effect="blur"
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 motion-reduce:transform-none motion-reduce:transition-none"
             wrapperClassName="w-full h-full"
             threshold={100}
           />
-          {event.status && <span className={`absolute top-3 right-3 px-3 py-1.5 text-xs font-semibold rounded-full shadow-sm ${getStatusBadge(event.status)}`}>{translatedStatus}</span>}
+          {event.status && (
+            <span
+              className={`absolute top-3 right-3 px-3 py-1.5 text-xs font-medium rounded-full uppercase ${getStatusBadge(event.status)}`}
+            >
+              {translatedStatus}
+            </span>
+          )}
         </div>
       </Link>
 
       {/* Content */}
       <div className="p-5 flex flex-col flex-grow">
-        <Link to={`/events/${event.id}`}>
-          <h3 className="font-bold text-xl text-slate-800 mb-4 line-clamp-2 leading-snug group-hover:text-emerald-600 transition-colors" title={translatedTitle}>
+        <Link
+          to={`/events/${event.id}`}
+          aria-label={`${translatedTitle}, view event details`}
+          className={`self-start rounded-xs ${FOCUS_RING}`}
+        >
+          <h3
+            className="font-medium text-xl text-cream mb-4 line-clamp-2 leading-snug uppercase transition-colors group-hover:text-brand-400"
+            title={translatedTitle}
+          >
             {translatedTitle}
           </h3>
         </Link>
 
-        <div className="space-y-2.5 text-slate-600 text-sm flex-grow">
+        <div className="space-y-2.5 text-cream/80 text-sm flex-grow">
           <div className="flex items-center gap-2.5">
-            <FiCalendar className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <FiCalendar className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
             <span>{formatDate(event.startDateTime)}</span>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <FiClock className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <FiClock className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
             <span>{formatTime(event.startDateTime)} WIB</span>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <FiMapPin className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <FiMapPin className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
             <span className="line-clamp-1">{event.location}</span>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <FiDollarSign className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-            <span className="font-semibold text-emerald-700">{event.fee > 0 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}` : "Gratis"}</span>
+            <FiDollarSign className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
+            <span className="font-semibold text-cream">
+              {event.fee > 0
+                ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}`
+                : "Gratis"}
+            </span>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <FiUsers className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <FiUsers className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
             <span>
-              Sisa kuota: <strong>{availableQuota > 0 ? availableQuota : "Penuh"}</strong>
+              Sisa kuota:{" "}
+              <strong className="text-cream font-semibold">
+                {availableQuota > 0 ? availableQuota : "Penuh"}
+              </strong>
             </span>
           </div>
         </div>

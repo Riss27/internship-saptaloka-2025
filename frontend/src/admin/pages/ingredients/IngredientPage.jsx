@@ -1,5 +1,5 @@
-import React from 'react';
-import CatalogueListPage from '../CatalogueListPage';
+import React from "react";
+import CatalogueListPage from "../CatalogueListPage";
 
 const IngredientPage = () => {
   return (

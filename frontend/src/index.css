@@ -1,1 +1,143 @@
+@import url("https://rsms.me/inter/inter.css");
+
 @import "tailwindcss";
+
+@theme {
+  /* Brand green */
+  --color-brand-900: #0b1f1d;
+  --color-brand-800: #0f2626;
+  --color-brand-700: #16332e;
+  --color-brand-600: #1f6f52;
+  --color-brand-500: #2e9c74;
+  --color-brand-400: #8fd9be;
+
+  /* Editorial + text */
+  --color-cream: #ffedd7;
+  --color-warm-bg: #fbf3e6;
+  --color-border: #2a443e;
+  --color-border-soft: #2a4a44;
+  --color-cork: #40372e;
+
+  /* Overrides: remap common Tailwind greens/slates to keep classes but shift palette */
+  --color-emerald-50: color-mix(in srgb, var(--color-brand-500) 5%, white);
+  --color-emerald-100: color-mix(in srgb, var(--color-brand-500) 12%, white);
+  --color-emerald-600: var(--color-brand-600);
+  --color-emerald-700: var(--color-brand-500);
+  --color-emerald-800: var(--color-brand-400);
+
+  --color-cyan-400: var(--color-brand-400);
+  --color-cyan-500: var(--color-brand-500);
+  --color-cyan-600: var(--color-brand-600);
+  --color-cyan-700: var(--color-brand-600);
+
+  --color-slate-50: color-mix(in srgb, var(--color-cream) 4%, white);
+  --color-slate-100: color-mix(in srgb, var(--color-cream) 8%, white);
+  --color-slate-200: color-mix(in srgb, var(--color-cream) 16%, white);
+  --color-slate-300: color-mix(in srgb, var(--color-cream) 40%, white);
+  --color-slate-400: color-mix(in srgb, var(--color-cream) 60%, white);
+  --color-slate-500: color-mix(in srgb, var(--color-cream) 72%, white);
+  --color-slate-600: var(--color-border-soft);
+  --color-slate-700: var(--color-border);
+  --color-slate-800: var(--color-brand-700);
+  --color-slate-900: var(--color-brand-800);
+  --color-slate-950: var(--color-brand-900);
+
+  --color-gray-200: color-mix(in srgb, var(--color-cream) 16%, white);
+  --color-gray-300: color-mix(in srgb, var(--color-cream) 40%, white);
+  --color-gray-400: color-mix(in srgb, var(--color-cream) 60%, white);
+  --color-gray-600: color-mix(in srgb, var(--color-cream) 70%, #1a1a1a);
+  --color-gray-700: color-mix(in srgb, var(--color-cream) 40%, #1a1a1a);
+  --color-gray-900: color-mix(in srgb, #000000 60%, var(--color-brand-900));
+
+  /* Font */
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+
+  --radius-full: 9999px;
+
+  /* Radius vocabulary from the design spec, kept on separate token names so
+     they never collide with Tailwind's own rounded-sm/md/lg/xl scale. */
+  --radius-cards: 12px;
+  --radius-buttons-pill: 36px;
+  --radius-buttons-outlined: 22.5px;
+  --radius-inputs: 8px;
+}
+
+@layer base {
+  html {
+    font-feature-settings: "ss01" on;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-brand-900);
+    color: var(--color-cream);
+  }
+  a {
+    color: var(--color-cream);
+  }
+  a:hover {
+    color: var(--color-brand-400);
+  }
+}
+
+/* react-datepicker ships a light-only theme, so its popup stays white on a dark
+   canvas. Remap its surface tokens onto the brand palette. */
+.react-datepicker-popper {
+  z-index: 60;
+}
+.react-datepicker-popper .react-datepicker,
+.react-datepicker-popper[data-placement^="top"] .react-datepicker__triangle,
+.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle {
+  background-color: var(--color-brand-700);
+  border-color: var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+.react-datepicker__month-container,
+.react-datepicker__week-container,
+.react-datepicker__time,
+.react-datepicker__time-box {
+  background-color: transparent;
+}
+.react-datepicker__header {
+  background-color: transparent;
+  border-bottom-color: var(--color-border);
+}
+.react-datepicker__day-name,
+.react-datepicker__current-month,
+.react-datepicker__day,
+.react-datepicker__time-list-item {
+  color: var(--color-cream);
+}
+.react-datepicker__day:hover,
+.react-datepicker__month-text:hover,
+.react-datepicker__quarter-text:hover,
+.react-datepicker__year-text:hover {
+  background-color: var(--color-brand-600);
+  color: var(--color-cream);
+}
+.react-datepicker__day--selected,
+.react-datepicker__day--selected:hover,
+.react-datepicker__day--in-range,
+.react-datepicker__day--keyboard-selected {
+  background-color: var(--color-brand-600);
+  color: var(--color-cream);
+}
+.react-datepicker__day--outside-month,
+.react-datepicker__day--disabled {
+  color: var(--color-cream);
+  opacity: 0.4;
+}
+.react-datepicker__time-list-item--selected,
+.react-datepicker__time-list-item--selected:hover,
+.react-datepicker__time-list-item:focus {
+  background-color: var(--color-brand-600);
+  color: var(--color-cream);
+}
+.react-datepicker__input-container input {
+  color: var(--color-cream);
+}

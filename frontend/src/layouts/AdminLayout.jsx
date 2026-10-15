@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { FiChevronDown, FiChevronUp, FiHome, FiGrid, FiInfo, FiFileText, FiImage, FiLogOut, FiCalendar, FiBriefcase } from "react-icons/fi";
+import {
+  FiChevronDown,
+  FiChevronUp,
+  FiHome,
+  FiGrid,
+  FiInfo,
+  FiFileText,
+  FiImage,
+  FiLogOut,
+  FiCalendar,
+  FiBriefcase,
+} from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
 import apiClient from "../hooks/apiClient";
 import API_BASE from "../lib/apiBase";
@@ -31,14 +42,18 @@ const AdminLayout = () => {
   // Close dropdown when clicking outside (for collapsed sidebar)
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (collapsed && openDropdown && !event.target.closest('.dropdown-container')) {
+      if (
+        collapsed &&
+        openDropdown &&
+        !event.target.closest(".dropdown-container")
+      ) {
         setOpenDropdown(null);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [collapsed, openDropdown]);
 
@@ -55,9 +70,18 @@ const AdminLayout = () => {
       name: "Catalogue",
       icon: <FiGrid />,
       children: [
-        { path: "/admin/catalogue/products", name: "Produk Parfume & Aromaterapi" },
-        { path: "/admin/catalogue/ingredients", name: "Bahan Parfume & Aromaterapi" },
-        { path: "/admin/catalogue/lab-tools", name: "Alat Laboratorium Skala Mikro" },
+        {
+          path: "/admin/catalogue/products",
+          name: "Produk Parfume & Aromaterapi",
+        },
+        {
+          path: "/admin/catalogue/ingredients",
+          name: "Bahan Parfume & Aromaterapi",
+        },
+        {
+          path: "/admin/catalogue/lab-tools",
+          name: "Alat Laboratorium Skala Mikro",
+        },
       ],
     },
     { path: "/admin/about", name: "About", icon: <FiInfo /> },
@@ -70,17 +94,34 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#1A3A3A] transition-all duration-300">
+    <div className="flex h-screen bg-brand-800 text-cream transition-all duration-300">
       {/* Sidebar */}
-      <aside className={`${collapsed ? "w-20" : "w-64"} bg-[#0F2626] text-white flex flex-col transition-all duration-300 ease-in-out`}>
+      <aside
+        className={`${collapsed ? "w-20" : "w-64"} bg-brand-900 text-cream flex flex-col transition-all duration-300 ease-in-out border-r border-border`}
+      >
         {/* Logo */}
-        <div className="h-20 flex items-center justify-center bg-gray-900/50 cursor-pointer transition-all duration-300" onClick={() => setCollapsed(!collapsed)}>
+        <div
+          className="h-20 flex items-center justify-center border-b border-border cursor-pointer transition-all duration-300"
+          onClick={() => setCollapsed(!collapsed)}
+        >
           {logoFooter ? (
-            <img src={logoFooter} alt="Logo" className={`transition-all duration-300 object-contain ${collapsed ? "w-12 h-12" : "w-32 h-16"}`} />
+            <img
+              src={logoFooter}
+              alt="Logo"
+              className={`transition-all duration-300 object-contain ${collapsed ? "w-12 h-12" : "w-32 h-16"}`}
+            />
           ) : (
             <>
-              <h1 className={`font-bold transition-all duration-300 ${collapsed ? "text-3xl scale-110 tracking-wider" : "text-2xl scale-100"}`}>A</h1>
-              {!collapsed && <span className="text-2xl font-bold ml-1 transition-all duration-300">skreative</span>}
+              <h1
+                className={`font-bold transition-all duration-300 ${collapsed ? "text-3xl tracking-wider" : "text-2xl scale-100"}`}
+              >
+                A
+              </h1>
+              {!collapsed && (
+                <span className="text-2xl font-bold ml-1 transition-all duration-300">
+                  skreative
+                </span>
+              )}
             </>
           )}
         </div>
@@ -90,19 +131,37 @@ const AdminLayout = () => {
           {menuItems.map((item) =>
             item.children ? (
               <div key={item.name} className="dropdown-container relative">
-                <button onClick={() => handleDropdownToggle(item.name)} className="w-full flex justify-between items-center px-4 py-2.5 rounded-lg hover:bg-gray-700/50 transition-all duration-200 relative">
+                <button
+                  onClick={() => handleDropdownToggle(item.name)}
+                  className="w-full flex justify-between items-center px-4 py-2.5 rounded-lg text-cream/90 bg-brand-700 text-cream transition-all duration-200 relative"
+                >
                   <div className="flex items-center">
-                    <span className={`mr-3 transition-transform duration-300 ${collapsed ? "scale-125" : "scale-100"}`}>{item.icon}</span>
+                    <span
+                      className={`mr-3 transition-transform duration-300 ${collapsed ? "scale-125" : "scale-100"}`}
+                    >
+                      {item.icon}
+                    </span>
                     {!collapsed && item.name}
                   </div>
-                  {!collapsed && (openDropdown === item.name ? <FiChevronUp /> : <FiChevronDown />)}
+                  {!collapsed &&
+                    (openDropdown === item.name ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
                 </button>
 
                 {/* Dropdown untuk sidebar normal */}
                 {openDropdown === item.name && !collapsed && (
                   <div className="pl-8 pt-2 space-y-2">
                     {item.children.map((sub) => (
-                      <NavLink key={sub.name} to={sub.path} className={({ isActive }) => `flex items-center px-4 py-2 rounded-lg text-sm ${isActive ? "bg-cyan-600/50" : "hover:bg-gray-700/50"}`}>
+                      <NavLink
+                        key={sub.name}
+                        to={sub.path}
+                        className={({ isActive }) =>
+                          `flex items-center px-4 py-2 rounded-lg text-sm border-l-2 transition-colors ${isActive ? "bg-brand-700 text-cream border-brand-400" : "text-cream/80 bg-brand-700/60 text-cream border-transparent"}`
+                        }
+                      >
                         {sub.name}
                       </NavLink>
                     ))}
@@ -111,17 +170,21 @@ const AdminLayout = () => {
 
                 {/* Dropdown untuk sidebar collapsed - muncul di samping */}
                 {openDropdown === item.name && collapsed && (
-                  <div className="absolute left-full top-0 ml-2 bg-[#0F2626] border border-gray-600 rounded-lg shadow-lg z-50 min-w-[250px]">
-                    <div className="p-2 border-b border-gray-600">
-                      <span className="text-sm font-semibold text-gray-300">{item.name}</span>
+                  <div className="absolute left-full top-0 ml-2 bg-brand-900 border border-border rounded-lg z-50 min-w-[250px]">
+                    <div className="p-2 border-b border-border">
+                      <span className="text-sm font-semibold text-cream uppercase">
+                        {item.name}
+                      </span>
                     </div>
                     <div className="p-2 space-y-1">
                       {item.children.map((sub) => (
-                        <NavLink 
-                          key={sub.name} 
-                          to={sub.path} 
+                        <NavLink
+                          key={sub.name}
+                          to={sub.path}
                           onClick={() => setOpenDropdown(null)}
-                          className={({ isActive }) => `block px-3 py-2 rounded text-sm transition-colors ${isActive ? "bg-cyan-600/50 text-white" : "hover:bg-gray-700/50 text-gray-300"}`}
+                          className={({ isActive }) =>
+                            `block px-3 py-2 rounded text-sm transition-colors ${isActive ? "bg-brand-700 text-cream" : "text-cream/80 bg-brand-700/60 text-cream"}`
+                          }
                         >
                           {sub.name}
                         </NavLink>
@@ -135,19 +198,30 @@ const AdminLayout = () => {
                 key={item.name}
                 to={item.path}
                 end={item.path === "/admin/homepage"}
-                className={({ isActive }) => `flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 ${isActive ? "bg-cyan-600/50" : "hover:bg-gray-700/50"}`}
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-2.5 rounded-lg border-l-2 transition-all duration-200 ${isActive ? "bg-brand-700 text-cream border-brand-400" : "text-cream/90 bg-brand-700/60 text-cream border-transparent"}`
+                }
               >
-                <span className={`mr-3 transition-transform duration-300 ${collapsed ? "scale-125" : "scale-100"}`}>{item.icon}</span>
+                <span
+                  className={`mr-3 transition-transform duration-300 ${collapsed ? "scale-125" : "scale-100"}`}
+                >
+                  {item.icon}
+                </span>
                 {!collapsed && item.name}
               </NavLink>
-            )
+            ),
           )}
         </nav>
 
         {/* Logout */}
-        <div className="p-4 border-t border-gray-700">
-          <button onClick={handleLogout} className="flex items-center justify-center w-full px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 transition-all duration-300">
-            <FiLogOut className={`transition-transform duration-300 ${collapsed ? "scale-150" : "scale-100 mr-3"}`} />
+        <div className="p-4 border-t border-border">
+          <button
+            onClick={handleLogout}
+            className="flex items-center justify-center w-full px-4 py-2.5 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-300"
+          >
+            <FiLogOut
+              className={`transition-transform duration-300 ${collapsed ? "scale-150" : "scale-100 mr-3"}`}
+            />
             {!collapsed && "Log Out"}
           </button>
         </div>

@@ -28,37 +28,59 @@ const GalleryPage = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-slate-700 text-lg">{t("gallery_page.loading", "Loading Gallery...")}</p>
-        </div>
+      <div
+        role="status"
+        aria-live="polite"
+        className="bg-brand-900 min-h-[60vh] flex flex-col justify-center items-center gap-4"
+      >
+        <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
+        <p className="text-cream/80 text-lg">
+          {t("gallery_page.loading", "Loading Gallery...")}
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white">
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-emerald-800 mb-2">{t("gallery_page.title")}</h1>
-          <p className="text-slate-600">{t("gallery_page.subtitle")}</p>
+    <div className="bg-brand-900">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-12 lg:py-16">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl font-medium text-brand-400 mb-3 uppercase tracking-wide">
+            {t("gallery_page.title")}
+          </h1>
+          <p className="text-cream/80 text-sm sm:text-base max-w-2xl mx-auto">
+            {t("gallery_page.subtitle")}
+          </p>
         </div>
 
         {images.length === 0 ? (
-          <div className="text-center py-12">
-            <FiImage className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <p className="text-slate-500">{t("gallery_page.no_images", "No images available in the gallery.")}</p>
+          <div className="bg-brand-800 border border-border rounded-cards px-6 py-10 sm:py-12 text-center max-w-lg mx-auto">
+            <span className="inline-grid place-items-center w-20 h-20 rounded-full bg-brand-700 mb-5">
+              <FiImage className="w-10 h-10 text-brand-400" aria-hidden="true" />
+            </span>
+            <p className="text-cream/80 text-lg">
+              {t(
+                "gallery_page.no_images",
+                "No images available in the gallery.",
+              )}
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {images.map((image) => (
-              <div key={image.id} className="bg-white rounded-xl shadow-md hover:shadow-emerald-200 transition-all overflow-hidden">
-                <img src={`${API_BASE}${image.imageUrl}`} alt={image.title} className="w-full h-56 object-cover hover:scale-105 transition-transform duration-300" />
-                <div className="p-3">
-                  <p className="text-emerald-800 font-semibold text-center break-words leading-snug">{image.title}</p>
-                </div>
-              </div>
+              <figure
+                key={image.id}
+                className="flex flex-col bg-brand-800 border border-border rounded-cards overflow-hidden"
+              >
+                <img
+                  src={`${API_BASE}${image.imageUrl}`}
+                  alt=""
+                  className="w-full h-40 sm:h-56 shrink-0 object-cover"
+                />
+                <figcaption className="p-2 sm:p-3 text-brand-400 font-medium text-xs sm:text-sm text-center break-words leading-snug uppercase tracking-wide">
+                  {image.title}
+                </figcaption>
+              </figure>
             ))}
           </div>
         )}

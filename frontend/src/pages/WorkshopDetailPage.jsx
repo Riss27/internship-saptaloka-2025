@@ -33,59 +33,100 @@ const WorkshopDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-b from-emerald-50 to-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+      <div
+        role="status"
+        aria-live="polite"
+        className="bg-brand-900 min-h-[60vh] flex flex-col justify-center items-center gap-4"
+      >
+        <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
+        <p className="text-cream/80 text-lg">Loading...</p>
       </div>
     );
   }
 
   if (!workshop) {
-    return <div className="text-center py-20 text-slate-700">{t("detail_pages.not_found_workshop", "Workshop tidak ditemukan.")}</div>;
+    return (
+      <div className="bg-brand-900 min-h-[60vh] flex items-center justify-center px-4 text-center">
+        <p className="text-cream/80 text-lg">
+          {t("detail_pages.not_found_workshop", "Workshop tidak ditemukan.")}
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
-      <div className="container mx-auto px-4 py-16 max-w-5xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 items-center">
+    <div className="bg-brand-900">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-12 lg:py-16 max-w-5xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-12 mb-10 sm:mb-16 items-center">
           {/* Gambar Workshop */}
           <div className="md:col-span-1">
-            <img src={`${API_BASE}${workshop.imageUrl}`} alt={workshop.title} className="rounded-2xl shadow-2xl w-full object-cover" />
+            <img
+              src={`${API_BASE}${workshop.imageUrl}`}
+              alt=""
+              className="rounded-cards w-full h-56 md:h-auto object-cover bg-brand-800"
+            />
           </div>
 
           {/* Info Workshop */}
           <div className="md:col-span-2">
-            <h1 className="text-4xl font-bold text-emerald-800 mb-4">{translatedTitle}</h1>
-            <RichTextDisplay content={translatedDescription} className="prose-lg text-slate-600" />
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium text-brand-400 mb-4 uppercase tracking-wide leading-tight break-words">
+              {translatedTitle}
+            </h1>
+            <RichTextDisplay
+              content={translatedDescription}
+              className="text-cream/90"
+            />
           </div>
         </div>
 
         {/* Kegiatan Terkait */}
-        <div>
-          <h2 className="text-3xl font-bold text-emerald-800 mb-8 border-b-2 border-emerald-300 pb-3 inline-block">{t("detail_pages.related_events", "Kegiatan Terkait")}</h2>
+        <section>
+          <h2 className="text-2xl sm:text-3xl font-medium text-brand-400 mb-6 sm:mb-8 border-b-2 border-brand-500 pb-3 inline-block uppercase tracking-wide">
+            {t("detail_pages.related_events", "Kegiatan Terkait")}
+          </h2>
           {workshop.Events && workshop.Events.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 lg:gap-8">
               {workshop.Events.map((event) => (
-                <Link to={`/events/${event.id}`} key={event.id} className="group block bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-                  <div className="h-48 overflow-hidden">
-                    <img src={`${API_BASE}${event.imageBannerUrl}`} alt={`Poster ${event.title}`} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" />
+                <Link
+                  to={`/events/${event.id}`}
+                  key={event.id}
+                  aria-label={`${event.title}, view event details`}
+                  className="group flex flex-col h-full block bg-brand-800 rounded-cards overflow-hidden border border-border transition-colors hover:border-brand-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+                >
+                  <div className="h-48 shrink-0 overflow-hidden">
+                    <img
+                      src={`${API_BASE}${event.imageBannerUrl}`}
+                      alt=""
+                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300 motion-reduce:transform-none motion-reduce:transition-none"
+                    />
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg text-slate-800 group-hover:text-emerald-600 transition-colors">{event.title}</h3>
-                    <p className="text-sm text-slate-500 mt-1">
-                      {new Date(event.startDateTime).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
+                  <div className="p-5 flex flex-col flex-grow">
+                    <h3 className="font-medium text-lg text-cream group-hover:text-brand-400 transition-colors uppercase tracking-wide leading-snug line-clamp-2 break-words">
+                      {event.title}
+                    </h3>
+                    <p className="mt-auto pt-2 text-sm text-cream/80">
+                      {new Date(event.startDateTime).toLocaleDateString(
+                        "id-ID",
+                        {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        },
+                      )}
                     </p>
                   </div>
                 </Link>
               ))}
             </div>
           ) : (
-            <p className="text-slate-500">{t("detail_pages.no_related_events", "Belum ada kegiatan yang terdaftar untuk workshop ini.")}</p>
+            <p className="text-cream/80">
+              {t(
+                "detail_pages.no_related_events",
+                "Belum ada kegiatan yang terdaftar untuk workshop ini.",
+              )}
+            </p>
           )}
-        </div>
+        </section>
       </div>
     </div>
   );

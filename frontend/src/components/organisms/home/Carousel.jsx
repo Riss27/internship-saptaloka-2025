@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useReducedMotion } from "framer-motion";
 import apiClient from "../../../hooks/apiClient";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import API_BASE from "../../../lib/apiBase";
 
+const FOCUS_RING =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
+
 const Carousel = () => {
   const [slides, setSlides] = useState([]);
   const [current, setCurrent] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
 
   // Ambil data slide dari backend
   useEffect(() => {
@@ -23,86 +28,124 @@ const Carousel = () => {
     setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   }, [slides.length]);
 
-  // Auto slide tiap 6 detik
+  // Auto slide tiap 6 detik. Bergeser sendiri adalah gerak berulang, jadi
+  // autoslide dimatikan ketika pembaca meminta reduced motion.
   useEffect(() => {
-    if (slides.length > 1) {
+    if (slides.length > 1 && !prefersReducedMotion) {
       const timer = setInterval(nextSlide, 6000);
       return () => clearInterval(timer);
     }
-  }, [slides.length, nextSlide]);
+  }, [slides.length, nextSlide, prefersReducedMotion]);
 
   if (slides.length === 0) {
     return (
-      <div className="flex justify-center items-center h-screen bg-black text-white">
-        Loading Carousel...
+      <div
+        role="status"
+        aria-live="polite"
+        className="flex flex-col justify-center items-center gap-4 min-h-[60vh] bg-brand-900 text-cream/80"
+      >
+        <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
+        <p className="text-lg">Loading Carousel...</p>
       </div>
     );
   }
 
   return (
-    <section className="relative w-full h-screen overflow-hidden">
-      {/* Tombol navigasi */}
-      <button
-        onClick={prevSlide}
-        className="absolute top-1/2 left-10 z-30 p-3 bg-black/30 hover:bg-black/50 rounded-full text-white transform -translate-y-1/2"
-      >
-        <FiChevronLeft size={32} />
-      </button>
-
-      <button
-        onClick={nextSlide}
-        className="absolute top-1/2 right-10 z-30 p-3 bg-black/30 hover:bg-black/50 rounded-full text-white transform -translate-y-1/2"
-      >
-        <FiChevronRight size={32} />
-      </button>
+    <section
+      aria-roledescription="carousel"
+      aria-label="Featured highlights"
+      className="relative w-full min-h-[60vh] h-[calc(100svh-var(--public-header-height,180px))] overflow-hidden"
+    >
+      <div className="absolute top-0 left-0 right-0 z-20 h-16 sm:h-20 bg-gradient-to-b from-brand-900/80 to-transparent flex items-center justify-end px-6 sm:px-12 lg:px-20 gap-3">
+        <span className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.2em] text-cream/80 mr-auto">
+          {String(current + 1).padStart(2, "0")} /{" "}
+          {String(slides.length).padStart(2, "0")}
+        </span>
+        <button
+          type="button"
+          onClick={prevSlide}
+          aria-label="Show the previous slide"
+          className={`h-11 w-11 grid place-items-center text-cream/80 hover:text-cream border border-cream/40 hover:border-cream rounded-full transition-colors ${FOCUS_RING}`}
+        >
+          <FiChevronLeft size={20} aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          onClick={nextSlide}
+          aria-label="Show the next slide"
+          className={`h-11 w-11 grid place-items-center text-cream/80 hover:text-cream border border-cream/40 hover:border-cream rounded-full transition-colors ${FOCUS_RING}`}
+        >
+          <FiChevronRight size={20} aria-hidden="true" />
+        </button>
+      </div>
 
       {/* Container slide */}
       <div
-        className="flex w-full h-full transition-transform duration-700 ease-in-out"
+        className="flex w-full h-full transition-transform duration-700 ease-in-out motion-reduce:transition-none"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            className="min-w-full h-full flex-shrink-0 relative"
-          >
-            <img
-              src={`${API_BASE}${slide.imageUrl}`}
-              alt={slide.heading}
-              className="w-full h-full object-cover"
-            />
+        {slides.map((slide, index) => {
+          // Hanya slide yang sedang tampil boleh dibaca pembaca layar, sehingga
+          // halaman ini tetap punya tepat satu judul tingkat satu.
+          const isActive = index === current;
+          const Heading = isActive ? "h1" : "div";
 
-            {/* Teks */}
-            <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-12 bg-black/20">
-              <h1 className="text-6xl font-bold text-white mb-4 drop-shadow-md">
-                {slide.heading}
-              </h1>
-              <p className="text-2xl text-white/90 max-w-3xl mx-auto drop-shadow-md">
-                {slide.paragraph}
-              </p>
+          return (
+            <div
+              key={index}
+              aria-hidden={!isActive}
+              className="min-w-full h-full flex-shrink-0 relative"
+            >
+              <img
+                src={`${API_BASE}${slide.imageUrl}`}
+                alt=""
+                className="w-full h-full object-cover"
+              />
+
+              {/* Teks */}
+              <div className="absolute inset-0 flex flex-col justify-end items-start text-left px-6 sm:px-12 lg:px-20 pb-20 sm:pb-28">
+                <Heading className="text-3xl sm:text-5xl lg:text-6xl font-medium text-cream mb-4 uppercase leading-[0.9] max-w-4xl">
+                  {slide.heading}
+                </Heading>
+                <div className="w-16 border-t border-dashed border-cream/40 mb-4" />
+                <p className="text-base sm:text-xl lg:text-2xl text-cream/90 max-w-3xl font-normal">
+                  {slide.paragraph}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrent(index)}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              current === index
-                ? "w-10 bg-white"
-                : "w-6 bg-white/40 hover:bg-white/70"
-            }`}
-          />
-        ))}
+      {/* Each dot keeps a 44px touch target, so a long slide list cannot be laid
+          out as one row on a phone. The row scrolls inside its own track instead
+          of widening the page. */}
+      <div className="absolute bottom-6 left-0 right-0 sm:left-12 sm:right-auto lg:left-20 z-20">
+        <div className="flex items-center gap-1 overflow-x-auto px-6 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => setCurrent(index)}
+              aria-label={`Show slide ${index + 1} of ${slides.length}`}
+              aria-current={index === current ? "true" : undefined}
+              className={`h-11 min-w-11 shrink-0 grid place-items-center px-1 ${FOCUS_RING}`}
+            >
+              <span
+                aria-hidden="true"
+                className={`block h-0.5 transition-all duration-300 motion-reduce:transition-none ${
+                  index === current
+                    ? "w-12 bg-cream"
+                    : "w-6 bg-cream/50 hover:bg-cream/80"
+                }`}
+              />
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   );
 };
 
 export default Carousel;
-
-

@@ -11,7 +11,10 @@ export const useTranslateDB = (text, isHTML = false) => {
   const [translatedText, setTranslatedText] = useState(text);
 
   useEffect(() => {
-    if (text !== translatedText && !translationCache.has(`${text}|${targetLanguage}`)) {
+    if (
+      text !== translatedText &&
+      !translationCache.has(`${text}|${targetLanguage}`)
+    ) {
       setTranslatedText(text);
     }
 

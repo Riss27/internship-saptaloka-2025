@@ -31,7 +31,7 @@ const EventPage = () => {
   const deleteEvent = async (id) => {
     if (
       window.confirm(
-        "Apakah Anda yakin ingin menghapus event ini? Semua data pendaftar juga akan terhapus."
+        "Apakah Anda yakin ingin menghapus event ini? Semua data pendaftar juga akan terhapus.",
       )
     ) {
       try {
@@ -48,17 +48,24 @@ const EventPage = () => {
       <header className="mb-8">
         <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Manage Events</h1>
-            <p className="text-slate-400 text-lg">Kelola semua event yang akan diselenggarakan</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-cream mb-2">
+              Manage Events
+            </h1>
+            <p className="text-cream/60 text-lg">
+              Kelola semua event yang akan diselenggarakan
+            </p>
             <div className="flex items-center gap-4 mt-3">
-              <span className="text-sm text-slate-500">
-                Total Events: <span className="font-semibold text-cyan-400">{events.length}</span>
+              <span className="text-sm text-cream/70">
+                Total Events:{" "}
+                <span className="font-semibold text-brand-400">
+                  {events.length}
+                </span>
               </span>
             </div>
           </div>
           <Link
             to="/admin/events/add"
-            className="bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold text-white no-underline whitespace-nowrap flex items-center justify-center transition-all duration-300"
+            className="bg-brand-600 hover:bg-brand-500 px-6 py-3 rounded-lg font-semibold text-cream no-underline whitespace-nowrap flex items-center justify-center transition-all duration-300"
           >
             <FiPlus className="mr-2" size={18} /> New Event
           </Link>
@@ -68,7 +75,7 @@ const EventPage = () => {
       {/* Search bar */}
       <div className="mb-6">
         <div className="relative">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
             <FiSearch />
           </span>
           <input
@@ -76,7 +83,7 @@ const EventPage = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Cari event berdasarkan judul..."
-            className="w-full md:w-1/3 p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white"
+            className="w-full md:w-1/3 p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400 text-cream"
           />
         </div>
       </div>

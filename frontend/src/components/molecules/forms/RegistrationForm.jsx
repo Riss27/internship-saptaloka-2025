@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import apiClient from "../../../hooks/apiClient";
-import { FiUser, FiMail, FiPhone, FiChevronDown, FiUsers } from "react-icons/fi";
+import {
+  FiAlertCircle,
+  FiUser,
+  FiMail,
+  FiPhone,
+  FiChevronDown,
+  FiUsers,
+} from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 
 const RegistrationForm = ({ eventId, participantRoles }) => {
@@ -14,7 +21,8 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,87 +31,142 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
 
     try {
       await apiClient.post(`/api/events/${eventId}/register`, formData);
-      setMessage({ type: "success", text: t("detail_pages.registration_success_message") });
-      setFormData({ name: "", email: "", phone: "", role: participantRoles[0] || "Umum" });
+      setMessage({
+        type: "success",
+        text: t("detail_pages.registration_success_message"),
+      });
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        role: participantRoles[0] || "Umum",
+      });
     } catch (error) {
-      const errorMessage = error.response?.data?.message || t("detail_pages.registration_error");
+      const errorMessage =
+        error.response?.data?.message || t("detail_pages.registration_error");
       setMessage({ type: "error", text: errorMessage });
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Input fields reuse the existing translation strings as accessible names,
+  // because a placeholder alone is not a label for a screen reader. The leading
+  // icon sits 16px in and the text starts at 48px, which is the same inset the
+  // search fields use across the public pages.
+  const fieldClass = [
+    "w-full bg-brand-800 border border-border rounded-inputs p-3 pl-12 text-cream",
+    "placeholder:text-cream/60",
+    "focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-brand-400 focus:border-brand-400",
+  ].join(" ");
+
+  const fieldIconClass =
+    "absolute top-1/2 left-4 -translate-y-1/2 w-5 h-5 text-cream/70 pointer-events-none";
+
+  const fieldTrailingIconClass =
+    "absolute top-1/2 right-4 -translate-y-1/2 w-5 h-5 text-cream/70 pointer-events-none";
+
   if (message.type === "success") {
     return (
-      <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-lg text-center">
-        <p className="font-semibold">{t("detail_pages.registration_success")}</p>
-        <p className="text-sm">{message.text}</p>
+      <div
+        role="status"
+        className="bg-brand-700 border border-brand-400 text-cream p-4 rounded-cards text-center"
+      >
+        <p className="font-medium uppercase tracking-wide text-sm">
+          {t("detail_pages.registration_success")}
+        </p>
+        <p className="text-sm text-cream/80 mt-1">{message.text}</p>
       </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {message.type === "error" && <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded-lg text-sm">{message.text}</div>}
+      {message.type === "error" && (
+        <div
+          role="alert"
+          className="flex items-start gap-2.5 bg-brand-700 border border-brand-400 text-cream p-3 rounded-cards text-sm"
+        >
+          <FiAlertCircle
+            className="w-4 h-4 mt-0.5 shrink-0"
+            aria-hidden="true"
+          />
+          <span>{message.text}</span>
+        </div>
+      )}
 
       <div className="relative">
-        <FiUser className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
+        <FiUser className={fieldIconClass} aria-hidden="true" />
         <input
           type="text"
           name="name"
+          aria-label={t("detail_pages.full_name_placeholder")}
           placeholder={t("detail_pages.full_name_placeholder")}
           value={formData.name}
           onChange={handleChange}
           required
-          className="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800"
+          className={fieldClass}
         />
       </div>
 
       <div className="relative">
-        <FiMail className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
+        <FiMail className={fieldIconClass} aria-hidden="true" />
         <input
           type="email"
           name="email"
+          aria-label={t("detail_pages.email_placeholder")}
           placeholder={t("detail_pages.email_placeholder")}
           value={formData.email}
           onChange={handleChange}
           required
-          className="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800"
+          className={fieldClass}
         />
       </div>
 
       <div className="relative">
-        <FiPhone className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
+        <FiPhone className={fieldIconClass} aria-hidden="true" />
         <input
           type="tel"
           name="phone"
+          aria-label={t("detail_pages.phone_placeholder")}
           placeholder={t("detail_pages.phone_placeholder")}
           value={formData.phone}
           onChange={handleChange}
           required
-          className="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800"
+          className={fieldClass}
         />
       </div>
 
       <div className="relative">
-        <FiUsers className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
-        <select name="role" value={formData.role} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 pl-10 appearance-none focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800">
+        <FiUsers className={fieldIconClass} aria-hidden="true" />
+        <select
+          name="role"
+          aria-label={t("detail_pages.participants")}
+          value={formData.role}
+          onChange={handleChange}
+          required
+          className={`${fieldClass} pr-12 appearance-none cursor-pointer`}
+        >
           {participantRoles.map((role) => (
             <option key={role} value={role}>
               {role}
             </option>
           ))}
         </select>
-        <FiChevronDown className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 pointer-events-none" />
+        <FiChevronDown className={fieldTrailingIconClass} aria-hidden="true" />
       </div>
 
-      <button type="submit" disabled={isLoading} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition-colors disabled:bg-slate-400 disabled:cursor-not-allowed">
-        {isLoading ? t("detail_pages.sending") : t("detail_pages.register_button")}
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="w-full min-h-11 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide py-3 rounded-buttons-pill transition-colors disabled:bg-brand-800 disabled:text-cream/60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+      >
+        {isLoading
+          ? t("detail_pages.sending")
+          : t("detail_pages.register_button")}
       </button>
     </form>
   );
 };
 
 export default RegistrationForm;
-
-

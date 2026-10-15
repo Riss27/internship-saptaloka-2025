@@ -1,14 +1,34 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../../../hooks/apiClient";
-import { FiInfo, FiMapPin, FiPhone, FiMail, FiInstagram, FiMessageCircle, FiImage, FiSave, FiUploadCloud } from "react-icons/fi";
+import {
+  FiInfo,
+  FiMapPin,
+  FiPhone,
+  FiMail,
+  FiInstagram,
+  FiMessageCircle,
+  FiImage,
+  FiSave,
+  FiUploadCloud,
+} from "react-icons/fi";
 import API_BASE from "../../../lib/apiBase";
 
 // Komponen InputField dengan tambahan ikon
-const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon }) => (
+const InputField = ({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  placeholder,
+  icon,
+}) => (
   <div className="mb-6">
-    <label className="block mb-2 font-medium text-slate-300">{label}</label>
+    <label className="block mb-2 font-medium text-cream/80">{label}</label>
     <div className="relative">
-      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">{icon}</span>
+      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
+        {icon}
+      </span>
       {type === "textarea" ? (
         <textarea
           name={name}
@@ -16,7 +36,7 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder, 
           onChange={onChange}
           rows="8"
           placeholder={placeholder}
-          className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400"
         ></textarea>
       ) : (
         <input
@@ -25,7 +45,7 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder, 
           value={value || ""}
           onChange={onChange}
           placeholder={placeholder}
-          className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400"
         />
       )}
     </div>
@@ -97,51 +117,120 @@ const AboutPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto text-white">
+    <div className="max-w-7xl mx-auto text-cream">
       <h1 className="text-3xl font-bold mb-8">About</h1>
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 bg-white/10 p-8 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Company Information</h2>
-            <InputField label="About Section" name="about" type="textarea" value={formData.about} onChange={handleChange} placeholder="Tulis deskripsi tentang perusahaan..." icon={<FiInfo />} />
-            <InputField label="Address" name="address" value={formData.address} onChange={handleChange} placeholder="Jalan, Kota, Kode Pos" icon={<FiMapPin />} />
-            <InputField label="Phone" name="phone" value={formData.phone} onChange={handleChange} placeholder="0812-3456-7890" icon={<FiPhone />} />
-            <InputField label="Email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="kontak@perusahaan.com" icon={<FiMail />} />
+          <div className="lg:col-span-2 bg-brand-700 p-8 rounded-lg ">
+            <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
+              Company Information
+            </h2>
+            <InputField
+              label="About Section"
+              name="about"
+              type="textarea"
+              value={formData.about}
+              onChange={handleChange}
+              placeholder="Tulis deskripsi tentang perusahaan..."
+              icon={<FiInfo />}
+            />
+            <InputField
+              label="Address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              placeholder="Jalan, Kota, Kode Pos"
+              icon={<FiMapPin />}
+            />
+            <InputField
+              label="Phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="0812-3456-7890"
+              icon={<FiPhone />}
+            />
+            <InputField
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="kontak@perusahaan.com"
+              icon={<FiMail />}
+            />
           </div>
 
-          <div className="bg-white/10 p-8 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Social & Branding</h2>
-            <InputField label="Instagram URL" name="instagram" value={formData.instagram} onChange={handleChange} placeholder="https://instagram.com/username" icon={<FiInstagram />} />
-            <InputField label="WhatsApp URL (API Link)" name="whatsapp" value={formData.whatsapp} onChange={handleChange} placeholder="https://wa.me/6281234567890" icon={<FiMessageCircle />} />
+          <div className="bg-brand-700 p-8 rounded-lg ">
+            <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
+              Social & Branding
+            </h2>
+            <InputField
+              label="Instagram URL"
+              name="instagram"
+              value={formData.instagram}
+              onChange={handleChange}
+              placeholder="https://instagram.com/username"
+              icon={<FiInstagram />}
+            />
+            <InputField
+              label="WhatsApp URL (API Link)"
+              name="whatsapp"
+              value={formData.whatsapp}
+              onChange={handleChange}
+              placeholder="https://wa.me/6281234567890"
+              icon={<FiMessageCircle />}
+            />
             <div className="mb-6">
-              <label className="mb-2 font-medium text-slate-300 flex items-center gap-2">
-                <FiImage className="text-cyan-400" />
+              <label className="mb-2 font-medium text-cream/80 flex items-center gap-2">
+                <FiImage className="text-brand-400" />
                 Logo Footer
               </label>
               <div className="relative group">
-                <input type="file" id="logo-upload" name="logoFooter" onChange={handleLogoChange} className="hidden" accept="image/*" />
+                <input
+                  type="file"
+                  id="logo-upload"
+                  name="logoFooter"
+                  onChange={handleLogoChange}
+                  className="hidden"
+                  accept="image/*"
+                />
                 <label
                   htmlFor="logo-upload"
-                  className="flex flex-col justify-center items-center w-full h-48 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900/50 cursor-pointer hover:border-cyan-500 hover:bg-slate-800/70 transition-all duration-300 overflow-hidden"
+                  className="flex flex-col justify-center items-center w-full h-48 border-2 border-dashed border-border rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden"
                 >
                   {previewLogo ? (
                     <div className="relative w-full h-full">
-                      <img src={previewLogo} alt="Logo Preview" className="w-full h-full object-contain p-4 bg-white/10" />
+                      <img
+                        src={previewLogo}
+                        alt="Logo Preview"
+                        className="w-full h-full object-contain p-4 bg-brand-700"
+                      />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-                        <FiUploadCloud className="h-12 w-12 text-white mb-2" />
-                        <span className="text-white font-semibold">Click to change logo</span>
-                        <span className="text-slate-300 text-sm mt-1">PNG, JPG up to 10MB</span>
+                        <FiUploadCloud className="h-12 w-12 text-cream mb-2" />
+                        <span className="text-cream font-semibold">
+                          Click to change logo
+                        </span>
+                        <span className="text-cream/80 text-sm mt-1">
+                          PNG, JPG up to 10MB
+                        </span>
                       </div>
                     </div>
                   ) : (
                     <div className="text-center p-6">
-                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
-                        <FiUploadCloud className="h-10 w-10 text-cyan-400" />
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-brand-800 flex items-center justify-center">
+                        <FiUploadCloud className="h-10 w-10 text-brand-400" />
                       </div>
-                      <span className="block text-slate-200 font-semibold mb-1">Click to upload logo</span>
-                      <span className="text-slate-400 text-sm">or drag and drop</span>
-                      <p className="text-slate-500 text-xs mt-2">PNG, JPG up to 10MB</p>
+                      <span className="block text-cream/80 font-semibold mb-1">
+                        Click to upload logo
+                      </span>
+                      <span className="text-cream/60 text-sm">
+                        or drag and drop
+                      </span>
+                      <p className="text-cream/70 text-xs mt-2">
+                        PNG, JPG up to 10MB
+                      </p>
                     </div>
                   )}
                 </label>
@@ -151,7 +240,11 @@ const AboutPage = () => {
         </div>
 
         <div className="mt-8">
-          <button type="submit" disabled={isLoading} className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed py-3 rounded-md font-bold text-lg flex items-center justify-center">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-brand-600 hover:bg-brand-500 disabled:bg-brand-800 disabled:cursor-not-allowed py-3 rounded-md font-bold text-lg flex items-center justify-center"
+          >
             <FiSave className="mr-2" />
             {isLoading ? "Saving..." : "SAVE CHANGES"}
           </button>

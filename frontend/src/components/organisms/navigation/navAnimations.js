@@ -27,8 +27,16 @@ export const dropdownVariants = {
 };
 
 export const mobileMenuVariants = {
-  hidden: { height: 0, opacity: 0, transition: { duration: 0.3, ease: "easeInOut" } },
-  visible: { height: "auto", opacity: 1, transition: { duration: 0.3, ease: "easeInOut" } },
+  hidden: {
+    height: 0,
+    opacity: 0,
+    transition: { duration: 0.3, ease: "easeInOut" },
+  },
+  visible: {
+    height: "auto",
+    opacity: 1,
+    transition: { duration: 0.3, ease: "easeInOut" },
+  },
 };
 
 export const mobileItemVariants = {
@@ -36,12 +44,20 @@ export const mobileItemVariants = {
   visible: (i) => ({
     x: 0,
     opacity: 1,
-    transition: { delay: i * 0.05, type: "spring", stiffness: 300, damping: 25 },
+    transition: {
+      delay: i * 0.05,
+      type: "spring",
+      stiffness: 300,
+      damping: 25,
+    },
   }),
 };
 
 export const languageButtonVariants = {
   initial: { scale: 1 },
-  hover: { scale: 1.1, transition: { type: "spring", stiffness: 400, damping: 10 } },
+  hover: {
+    scale: 1.1,
+    transition: { type: "spring", stiffness: 400, damping: 10 },
+  },
   tap: { scale: 0.95 },
 };

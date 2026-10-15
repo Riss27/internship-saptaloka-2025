@@ -7,15 +7,39 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 // TAMBAHKAN FiCalendar untuk ikon
-import { FiType, FiUser, FiFileText, FiImage, FiSave, FiPlus, FiTrash2, FiX, FiUploadCloud, FiCalendar } from "react-icons/fi";
+import {
+  FiType,
+  FiUser,
+  FiFileText,
+  FiImage,
+  FiSave,
+  FiPlus,
+  FiTrash2,
+  FiX,
+  FiUploadCloud,
+  FiCalendar,
+} from "react-icons/fi";
 import RichTextEditor from "../../components/RichTextEditor";
 import API_BASE from "../../../lib/apiBase";
 
-const InputField = ({ label, name, value, onChange, type = "text", placeholder, icon, required = false }) => (
+const InputField = ({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  placeholder,
+  icon,
+  required = false,
+}) => (
   <div className="mb-6">
-    <label className="block mb-2 font-medium text-slate-300 transition-colors duration-300 focus-within:text-cyan-400">{label}</label>
+    <label className="block mb-2 font-medium text-cream/80 transition-colors duration-300 focus-within:text-brand-400">
+      {label}
+    </label>
     <div className="relative">
-      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">{icon}</span>
+      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
+        {icon}
+      </span>
       {type === "textarea" ? (
         <textarea
           name={name}
@@ -24,7 +48,7 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder, 
           rows="8"
           placeholder={placeholder}
           required={required}
-          className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+          className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400"
         />
       ) : (
         <input
@@ -34,7 +58,7 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder, 
           onChange={onChange}
           placeholder={placeholder}
           required={required}
-          className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+          className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400"
         />
       )}
     </div>
@@ -46,9 +70,16 @@ const AddArticlePage = () => {
   const { id } = useParams();
 
   // UBAH: Tambahkan `publishedAt` ke state awal
-  const [article, setArticle] = useState({ title: "", author: "", mainDescription: "", publishedAt: new Date() });
+  const [article, setArticle] = useState({
+    title: "",
+    author: "",
+    mainDescription: "",
+    publishedAt: new Date(),
+  });
 
-  const [contents, setContents] = useState([{ topic: "", description: "", images: [], previews: [] }]);
+  const [contents, setContents] = useState([
+    { topic: "", description: "", images: [], previews: [] },
+  ]);
   const [featuredImage, setFeaturedImage] = useState(null);
   const [previewFeaturedImage, setPreviewFeaturedImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -66,34 +97,43 @@ const AddArticlePage = () => {
             author: fetchedArticle.author,
             mainDescription: fetchedArticle.mainDescription,
             // UBAH: Tambahkan `publishedAt` dari data fetch
-            publishedAt: fetchedArticle.publishedAt ? new Date(fetchedArticle.publishedAt) : new Date(),
+            publishedAt: fetchedArticle.publishedAt
+              ? new Date(fetchedArticle.publishedAt)
+              : new Date(),
           });
           if (fetchedArticle.featuredImageUrl) {
-            setPreviewFeaturedImage(`${API_BASE}${fetchedArticle.featuredImageUrl}`);
+            setPreviewFeaturedImage(
+              `${API_BASE}${fetchedArticle.featuredImageUrl}`,
+            );
           }
-          if (fetchedArticle.ArticleContents && fetchedArticle.ArticleContents.length > 0) {
-            const fetchedContents = fetchedArticle.ArticleContents.map((content) => {
-              const parseImageUrls = (data) => {
-                if (!data) return [];
-                let parsed = data;
-                while (typeof parsed === "string") {
-                  try {
-                    parsed = JSON.parse(parsed);
-                  } catch (e) {
-                    console.error("Gagal parse imageUrls:", e);
-                    return [];
+          if (
+            fetchedArticle.ArticleContents &&
+            fetchedArticle.ArticleContents.length > 0
+          ) {
+            const fetchedContents = fetchedArticle.ArticleContents.map(
+              (content) => {
+                const parseImageUrls = (data) => {
+                  if (!data) return [];
+                  let parsed = data;
+                  while (typeof parsed === "string") {
+                    try {
+                      parsed = JSON.parse(parsed);
+                    } catch (e) {
+                      console.error("Gagal parse imageUrls:", e);
+                      return [];
+                    }
                   }
-                }
-                return Array.isArray(parsed) ? parsed : [];
-              };
-              const imageUrls = parseImageUrls(content.imageUrls);
-              return {
-                topic: content.topic,
-                description: content.description,
-                images: imageUrls,
-                previews: imageUrls.map((url) => `${API_BASE}${url}`),
-              };
-            });
+                  return Array.isArray(parsed) ? parsed : [];
+                };
+                const imageUrls = parseImageUrls(content.imageUrls);
+                return {
+                  topic: content.topic,
+                  description: content.description,
+                  images: imageUrls,
+                  previews: imageUrls.map((url) => `${API_BASE}${url}`),
+                };
+              },
+            );
             setContents(fetchedContents);
           }
         })
@@ -104,7 +144,8 @@ const AddArticlePage = () => {
     }
   }, [id, isEditMode]);
 
-  const handleArticleChange = (e) => setArticle((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleArticleChange = (e) =>
+    setArticle((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleContentChange = (index, e) => {
     const newContents = [...contents];
@@ -117,7 +158,11 @@ const AddArticlePage = () => {
     if (files.length > 0) {
       const newContents = [...contents];
       const newImages = [...newContents[index].images, ...files];
-      const newPreviews = newImages.map((img) => (typeof img === "string" ? `${API_BASE}${img}` : URL.createObjectURL(img)));
+      const newPreviews = newImages.map((img) =>
+        typeof img === "string"
+          ? `${API_BASE}${img}`
+          : URL.createObjectURL(img),
+      );
 
       newContents[index].images = newImages;
       newContents[index].previews = newPreviews;
@@ -140,8 +185,13 @@ const AddArticlePage = () => {
     }
   };
 
-  const addContentSection = () => setContents([...contents, { topic: "", description: "", images: [], previews: [] }]);
-  const removeContentSection = (index) => setContents(contents.filter((_, i) => i !== index));
+  const addContentSection = () =>
+    setContents([
+      ...contents,
+      { topic: "", description: "", images: [], previews: [] },
+    ]);
+  const removeContentSection = (index) =>
+    setContents(contents.filter((_, i) => i !== index));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -149,7 +199,9 @@ const AddArticlePage = () => {
 
     const submissionData = new FormData();
     // Semua state di `article` otomatis ter-append, termasuk `publishedAt`
-    Object.keys(article).forEach((key) => submissionData.append(key, article[key]));
+    Object.keys(article).forEach((key) =>
+      submissionData.append(key, article[key]),
+    );
 
     if (featuredImage) {
       submissionData.append("featuredImage", featuredImage);
@@ -157,7 +209,9 @@ const AddArticlePage = () => {
 
     const contentData = contents.map((c) => {
       const newImageFiles = c.images.filter((img) => typeof img !== "string");
-      const existingImageUrls = c.images.filter((img) => typeof img === "string");
+      const existingImageUrls = c.images.filter(
+        (img) => typeof img === "string",
+      );
       return {
         topic: c.topic,
         description: c.description,
@@ -184,7 +238,10 @@ const AddArticlePage = () => {
       }
       navigate("/admin/articles");
     } catch (error) {
-      console.error("Gagal menyimpan artikel:", error.response?.data || error.message);
+      console.error(
+        "Gagal menyimpan artikel:",
+        error.response?.data || error.message,
+      );
       alert("Gagal menyimpan. Pastikan semua kolom wajib diisi.");
     } finally {
       setIsLoading(false);
@@ -192,77 +249,134 @@ const AddArticlePage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto text-white">
+    <div className="max-w-7xl mx-auto text-cream">
       <header className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">{isEditMode ? "Edit Article" : "Add New Article"}</h1>
-        <Link to="/admin/articles" className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold text-white no-underline">
+        <h1 className="text-3xl font-bold">
+          {isEditMode ? "Edit Article" : "Add New Article"}
+        </h1>
+        <Link
+          to="/admin/articles"
+          className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold text-cream no-underline"
+        >
           BACK
         </Link>
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Main Article Details</h2>
+        <div className="bg-brand-800/50 p-8 rounded-lg ">
+          <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
+            Main Article Details
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <InputField label="Article Title" name="title" value={article.title} onChange={handleArticleChange} required={true} placeholder="Judul utama artikel..." icon={<FiType />} />
-              <InputField label="Author" name="author" value={article.author} onChange={handleArticleChange} required={true} placeholder="Nama penulis..." icon={<FiUser />} />
+              <InputField
+                label="Article Title"
+                name="title"
+                value={article.title}
+                onChange={handleArticleChange}
+                required={true}
+                placeholder="Judul utama artikel..."
+                icon={<FiType />}
+              />
+              <InputField
+                label="Author"
+                name="author"
+                value={article.author}
+                onChange={handleArticleChange}
+                required={true}
+                placeholder="Nama penulis..."
+                icon={<FiUser />}
+              />
 
               {/* TAMBAHKAN: Komponen DatePicker */}
               <div className="mb-6">
-                <label className="block mb-2 font-medium text-slate-300 transition-colors duration-300 focus-within:text-cyan-400">Publication Date</label>
+                <label className="block mb-2 font-medium text-cream/80 transition-colors duration-300 focus-within:text-brand-400">
+                  Publication Date
+                </label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
                     <FiCalendar />
                   </span>
                   <DatePicker
-                    selected={article.publishedAt ? new Date(article.publishedAt) : new Date()}
-                    onChange={(date) => setArticle((prev) => ({ ...prev, publishedAt: date }))}
+                    selected={
+                      article.publishedAt
+                        ? new Date(article.publishedAt)
+                        : new Date()
+                    }
+                    onChange={(date) =>
+                      setArticle((prev) => ({ ...prev, publishedAt: date }))
+                    }
                     dateFormat="MMMM d, yyyy h:mm aa"
                     showTimeSelect
-                    className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                    className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400"
                   />
                 </div>
               </div>
 
               <div className="mb-6">
-                <label className="block mb-2 font-medium text-slate-300 transition-colors duration-300 focus-within:text-cyan-400">Main Description</label>
-                <RichTextEditor 
-                  content={article.mainDescription} 
-                  onUpdate={(value) => setArticle((prev) => ({ ...prev, mainDescription: value }))}
+                <label className="block mb-2 font-medium text-cream/80 transition-colors duration-300 focus-within:text-brand-400">
+                  Main Description
+                </label>
+                <RichTextEditor
+                  content={article.mainDescription}
+                  onUpdate={(value) =>
+                    setArticle((prev) => ({ ...prev, mainDescription: value }))
+                  }
                   placeholder="Deskripsi pembuka artikel..."
                   maxLength={5000}
                 />
               </div>
             </div>
             <div>
-              <label className="mb-2 font-medium text-slate-300 flex items-center gap-2">
-                <FiImage className="text-cyan-400" />
+              <label className="mb-2 font-medium text-cream/80 flex items-center gap-2">
+                <FiImage className="text-brand-400" />
                 Featured Image
               </label>
               <div className="relative group">
-                <input type="file" id="featured-upload" name="featuredImage" onChange={handleFeaturedImageChange} className="hidden" accept="image/*" required={!isEditMode} />
+                <input
+                  type="file"
+                  id="featured-upload"
+                  name="featuredImage"
+                  onChange={handleFeaturedImageChange}
+                  className="hidden"
+                  accept="image/*"
+                  required={!isEditMode}
+                />
                 <label
                   htmlFor="featured-upload"
-                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900/50 cursor-pointer hover:border-cyan-500 hover:bg-slate-800/70 transition-all duration-300 overflow-hidden"
+                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-border rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden"
                 >
                   {previewFeaturedImage ? (
                     <div className="relative w-full h-full">
-                      <img src={previewFeaturedImage} alt="Featured Preview" className="w-full h-full object-cover" />
+                      <img
+                        src={previewFeaturedImage}
+                        alt="Featured Preview"
+                        className="w-full h-full object-cover"
+                      />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-                        <FiUploadCloud className="h-12 w-12 text-white mb-2" />
-                        <span className="text-white font-semibold">Click to change image</span>
-                        <span className="text-slate-300 text-sm mt-1">PNG, JPG up to 10MB</span>
+                        <FiUploadCloud className="h-12 w-12 text-cream mb-2" />
+                        <span className="text-cream font-semibold">
+                          Click to change image
+                        </span>
+                        <span className="text-cream/80 text-sm mt-1">
+                          PNG, JPG up to 10MB
+                        </span>
                       </div>
                     </div>
                   ) : (
                     <div className="text-center p-6">
-                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
-                        <FiUploadCloud className="h-10 w-10 text-cyan-400" />
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-brand-800 flex items-center justify-center">
+                        <FiUploadCloud className="h-10 w-10 text-brand-400" />
                       </div>
-                      <span className="block text-slate-200 font-semibold mb-1">Click to upload featured image</span>
-                      <span className="text-slate-400 text-sm">or drag and drop</span>
-                      <p className="text-slate-500 text-xs mt-2">PNG, JPG up to 10MB</p>
+                      <span className="block text-cream/80 font-semibold mb-1">
+                        Click to upload featured image
+                      </span>
+                      <span className="text-cream/60 text-sm">
+                        or drag and drop
+                      </span>
+                      <p className="text-cream/70 text-xs mt-2">
+                        PNG, JPG up to 10MB
+                      </p>
                     </div>
                   )}
                 </label>
@@ -271,22 +385,43 @@ const AddArticlePage = () => {
           </div>
         </div>
 
-        <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Content Sections</h2>
+        <div className="bg-brand-800/50 p-8 rounded-lg ">
+          <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
+            Content Sections
+          </h2>
           <div className="space-y-6">
             {contents.map((content, index) => (
-              <div key={index} className="bg-slate-900/50 border border-slate-700 rounded-lg p-6 relative">
+              <div
+                key={index}
+                className="bg-brand-800 border border-border rounded-lg p-6 relative"
+              >
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-bold text-cyan-400 text-lg">Section {index + 1}</h3>
-                  <button type="button" onClick={() => removeContentSection(index)} className="p-1 text-red-500 hover:text-red-400 hover:bg-red-500/10 rounded-full">
+                  <h3 className="font-bold text-brand-400 text-lg">
+                    Section {index + 1}
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => removeContentSection(index)}
+                    className="p-1 text-red-500 text-red-400 bg-red-500/10 rounded-full"
+                  >
                     <FiTrash2 size={18} />
                   </button>
                 </div>
-                <InputField label="Topic" name="topic" value={content.topic} onChange={(e) => handleContentChange(index, e)} required={true} placeholder="Judul sub-konten..." icon={<FiType />} />
+                <InputField
+                  label="Topic"
+                  name="topic"
+                  value={content.topic}
+                  onChange={(e) => handleContentChange(index, e)}
+                  required={true}
+                  placeholder="Judul sub-konten..."
+                  icon={<FiType />}
+                />
                 <div className="mb-6">
-                  <label className="block mb-2 font-medium text-slate-300">Description</label>
-                  <RichTextEditor 
-                    content={content.description} 
+                  <label className="block mb-2 font-medium text-cream/80">
+                    Description
+                  </label>
+                  <RichTextEditor
+                    content={content.description}
                     onUpdate={(value) => {
                       const newContents = [...contents];
                       newContents[index].description = value;
@@ -297,20 +432,38 @@ const AddArticlePage = () => {
                   />
                 </div>
                 <div className="mb-2">
-                  <label className="block mb-2 font-medium text-slate-300">Images</label>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 min-h-[7rem] bg-slate-800/70 p-4 rounded-md">
+                  <label className="block mb-2 font-medium text-cream/80">
+                    Images
+                  </label>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 min-h-[7rem] bg-brand-800/70 p-4 rounded-md">
                     {content.previews.map((previewUrl, i) => (
                       <div key={i} className="relative group aspect-square">
-                        <img src={previewUrl} alt={`Preview ${i}`} className="h-full w-full object-cover rounded-md border-2 border-slate-600" />
-                        <button type="button" onClick={() => removeContentImage(index, i)} className="absolute -top-2 -right-2 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                        <img
+                          src={previewUrl}
+                          alt={`Preview ${i}`}
+                          className="h-full w-full object-cover rounded-md border-2 border-border"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeContentImage(index, i)}
+                          className="absolute -top-2 -right-2 p-1 bg-red-600 text-cream rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
                           <FiX size={14} />
                         </button>
                       </div>
                     ))}
-                    <label className="flex flex-col justify-center items-center w-full h-full border-2 border-dashed border-slate-600 rounded-md cursor-pointer hover:border-cyan-500 hover:bg-slate-700/50 transition-colors">
-                      <FiUploadCloud className="h-8 w-8 text-slate-400" />
-                      <span className="text-xs text-slate-400 mt-1">Add more</span>
-                      <input type="file" name="contentImages" onChange={(e) => handleContentImageChange(index, e)} multiple className="opacity-0 w-0 h-0" />
+                    <label className="flex flex-col justify-center items-center w-full h-full border-2 border-dashed border-border rounded-md cursor-pointer hover:border-brand-400 bg-brand-700/50 transition-colors">
+                      <FiUploadCloud className="h-8 w-8 text-cream/60" />
+                      <span className="text-xs text-cream/60 mt-1">
+                        Add more
+                      </span>
+                      <input
+                        type="file"
+                        name="contentImages"
+                        onChange={(e) => handleContentImageChange(index, e)}
+                        multiple
+                        className="opacity-0 w-0 h-0"
+                      />
                     </label>
                   </div>
                 </div>
@@ -320,7 +473,7 @@ const AddArticlePage = () => {
           <button
             type="button"
             onClick={addContentSection}
-            className="w-full mt-6 border-2 border-dashed border-slate-600 hover:border-cyan-500 text-slate-300 hover:text-cyan-400 py-3 rounded-md font-semibold flex items-center justify-center transition-colors"
+            className="w-full mt-6 border-2 border-dashed border-border border-brand-500 text-cream/80 text-brand-400 py-3 rounded-md font-semibold flex items-center justify-center transition-colors"
           >
             <FiPlus className="mr-2" /> Add Content Section
           </button>
@@ -330,9 +483,13 @@ const AddArticlePage = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-800 disabled:cursor-not-allowed py-3 rounded-md font-bold text-lg flex items-center justify-center transition-colors duration-300"
+            className="w-full bg-brand-600 hover:bg-brand-500 disabled:bg-brand-800 disabled:cursor-not-allowed py-3 rounded-md font-bold text-lg flex items-center justify-center transition-colors duration-300"
           >
-            {isLoading ? "Saving..." : isEditMode ? "SAVE CHANGES" : "PUBLISH ARTICLE"}
+            {isLoading
+              ? "Saving..."
+              : isEditMode
+                ? "SAVE CHANGES"
+                : "PUBLISH ARTICLE"}
           </button>
         </div>
       </form>

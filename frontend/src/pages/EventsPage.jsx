@@ -5,6 +5,9 @@ import Pagination from "../components/molecules/Pagination";
 import { Search, X, Calendar } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+const FOCUS_RING =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
+
 const EventsPage = () => {
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,7 +27,11 @@ const EventsPage = () => {
     let active = true;
     apiClient
       .get("/api/events", {
-        params: { page, limit: 12, ...(deferredSearch.trim() && { search: deferredSearch.trim() }) },
+        params: {
+          page,
+          limit: 12,
+          ...(deferredSearch.trim() && { search: deferredSearch.trim() }),
+        },
       })
       .then((response) => {
         if (!active) return;
@@ -50,44 +57,62 @@ const EventsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-emerald-700 font-medium">Loading...</p>
-        </div>
+      <div
+        role="status"
+        aria-live="polite"
+        className="bg-brand-900 min-h-[60vh] flex flex-col justify-center items-center gap-4"
+      >
+        <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
+        <p className="text-cream/80 text-lg">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
-      <div className="container mx-auto px-4 py-16">
+    <div className="bg-brand-900">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-12 lg:py-16">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-emerald-800 mb-2">{t("events_page.title")}</h1>
-          <p className="text-slate-600 mb-8">{t("events_page.subtitle")}</p>
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl font-medium text-brand-400 mb-3 uppercase tracking-wide">
+            {t("events_page.title")}
+          </h1>
+          <p className="text-cream/80 text-sm sm:text-base mb-8 max-w-2xl mx-auto">
+            {t("events_page.subtitle")}
+          </p>
 
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+              <Search
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/70 w-5 h-5"
+                aria-hidden="true"
+              />
               <input
                 type="text"
+                aria-label={t("events_page.search_placeholder")}
                 placeholder={t("events_page.search_placeholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-12 py-3 bg-white text-slate-800 rounded-lg border border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className={`w-full pl-12 pr-12 py-3 bg-brand-800 text-cream rounded-inputs border border-border placeholder:text-cream/60 focus:border-brand-400 transition-colors ${FOCUS_RING}`}
               />
               {searchQuery && (
-                <button onClick={handleClearSearch} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-slate-800 transition-colors">
-                  <X className="w-5 h-5" />
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  aria-label={t("static.clear_search", "Clear search")}
+                  className={`absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 grid place-items-center text-cream/70 hover:text-cream transition-colors ${FOCUS_RING}`}
+                >
+                  <X className="w-5 h-5" aria-hidden="true" />
                 </button>
               )}
             </div>
 
             {searchQuery && (
-              <p className="text-slate-500 text-sm mt-3">
-                {t("static.showing", "Showing")} <span className="text-emerald-600 font-semibold">{meta?.total ?? filteredEvents.length}</span>{" "}
+              <p className="text-cream/70 text-sm mt-3">
+                {t("static.showing", "Showing")}{" "}
+                <span className="text-brand-400 font-medium">
+                  {meta?.total ?? filteredEvents.length}
+                </span>{" "}
                 {t("static.items", "events")}
               </p>
             )}
@@ -96,26 +121,27 @@ const EventsPage = () => {
 
         {/* Grid Events */}
         {filteredEvents.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
             {filteredEvents.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            {searchQuery ? (
-              <div>
-                <Calendar className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                <p className="text-slate-600 text-lg mb-2">
-                  {t("events_page.no_events_found", "No events found matching")} "{searchQuery}"
-                </p>
-                <button onClick={handleClearSearch} className="text-emerald-600 hover:text-emerald-800 underline">
-                  {t("static.clear_search", "Clear search")}
-                </button>
-              </div>
-            ) : (
-              <p className="text-slate-500">{t("events_page.no_events", "No events available at the moment.")}</p>
-            )}
+          <div className="bg-brand-800 border border-border rounded-cards px-6 py-10 sm:py-12 text-center max-w-lg mx-auto">
+            <span className="inline-grid place-items-center w-20 h-20 rounded-full bg-brand-700 mb-5">
+              <Calendar className="w-10 h-10 text-brand-400" aria-hidden="true" />
+            </span>
+            <p className="text-cream/80 text-lg mb-6">
+              {t("events_page.no_events_found", "No events found matching")}{" "}
+              "{searchQuery}"
+            </p>
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              className={`min-h-11 px-6 py-2.5 rounded-buttons-pill bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide text-sm transition-colors ${FOCUS_RING}`}
+            >
+              {t("static.clear_search", "Clear search")}
+            </button>
           </div>
         )}
 

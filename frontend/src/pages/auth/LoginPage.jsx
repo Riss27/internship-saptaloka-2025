@@ -36,7 +36,8 @@ const LoginPage = () => {
       login(token);
       // Navigasi akan otomatis dilakukan oleh useEffect setelah login berhasil
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "Login gagal. Silakan coba lagi.";
+      const errorMessage =
+        err.response?.data?.message || "Login gagal. Silakan coba lagi.";
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -44,38 +45,44 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-900">
-      <div className="w-full max-w-md p-8 space-y-8 bg-slate-800 rounded-lg shadow-lg">
+    <div className="flex items-center justify-center min-h-screen bg-brand-900 text-cream">
+      <div className="w-full max-w-md p-8 space-y-8 bg-brand-700 border border-border rounded-lg">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-white">Admin Login</h2>
-          <p className="mt-2 text-slate-400">Selamat datang kembali!</p>
+          <h2 className="text-3xl font-bold text-cream uppercase">
+            Admin Login
+          </h2>
+          <p className="mt-2 text-cream/70">Selamat datang kembali!</p>
         </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          {error && <div className="p-3 text-sm text-red-300 bg-red-800/50 border border-red-600 rounded-lg">{error}</div>}
+          {error && (
+            <div className="p-3 text-sm text-red-300 bg-red-900/40 border border-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
 
           <div className="relative">
-            <FiMail className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
+            <FiMail className="absolute top-1/2 left-3 -translate-y-1/2 text-cream/50" />
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full p-3 pl-10 text-white bg-slate-700/50 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full p-3 pl-10 text-cream bg-brand-800 border border-border rounded-lg focus:outline-none focus:border-brand-400"
               placeholder="Email"
             />
           </div>
 
           <div className="relative">
-            <FiLock className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
+            <FiLock className="absolute top-1/2 left-3 -translate-y-1/2 text-cream/50" />
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full p-3 pl-10 text-white bg-slate-700/50 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full p-3 pl-10 text-cream bg-brand-800 border border-border rounded-lg focus:outline-none focus:border-brand-400"
               placeholder="Password"
             />
           </div>
@@ -84,7 +91,7 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:bg-slate-600"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-cream bg-brand-600 hover:bg-brand-500 focus:outline-none focus:border-brand-400 disabled:bg-brand-800"
             >
               {isLoading ? (
                 "Loading..."

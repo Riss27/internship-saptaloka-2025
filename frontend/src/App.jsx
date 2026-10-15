@@ -29,26 +29,46 @@ const ComingSoonPage = lazy(() => import("./pages/ComingSoonPage"));
 
 // Halaman Admin
 const Homepage = lazy(() => import("./admin/pages/homepage/Homepage"));
-const AddLandingHeadingPage = lazy(() => import("./admin/pages/homepage/AddLandingHeadingPage"));
+const AddLandingHeadingPage = lazy(
+  () => import("./admin/pages/homepage/AddLandingHeadingPage"),
+);
 const ArticlePage = lazy(() => import("./admin/pages/articles/ArticlePage"));
-const AddArticlePage = lazy(() => import("./admin/pages/articles/AddArticlePage"));
+const AddArticlePage = lazy(
+  () => import("./admin/pages/articles/AddArticlePage"),
+);
 const ProductPage = lazy(() => import("./admin/pages/products/ProductPage"));
-const AddProductPage = lazy(() => import("./admin/pages/products/AddProductPage"));
-const IngredientPage = lazy(() => import("./admin/pages/ingredients/IngredientPage"));
-const AddIngredientPage = lazy(() => import("./admin/pages/ingredients/AddIngredientPage"));
+const AddProductPage = lazy(
+  () => import("./admin/pages/products/AddProductPage"),
+);
+const IngredientPage = lazy(
+  () => import("./admin/pages/ingredients/IngredientPage"),
+);
+const AddIngredientPage = lazy(
+  () => import("./admin/pages/ingredients/AddIngredientPage"),
+);
 const LabToolPage = lazy(() => import("./admin/pages/lab_tools/LabToolPage"));
-const AddLabToolPage = lazy(() => import("./admin/pages/lab_tools/AddLabToolPage"));
-const AdminGalleryPage = lazy(() => import("./admin/pages/gallery/GalleryPage"));
-const GalleryFormPage = lazy(() => import("./admin/pages/gallery/GalleryFormPage"));
+const AddLabToolPage = lazy(
+  () => import("./admin/pages/lab_tools/AddLabToolPage"),
+);
+const AdminGalleryPage = lazy(
+  () => import("./admin/pages/gallery/GalleryPage"),
+);
+const GalleryFormPage = lazy(
+  () => import("./admin/pages/gallery/GalleryFormPage"),
+);
 const AboutPageAdmin = lazy(() => import("./admin/pages/about/AboutPage"));
 const EventPage = lazy(() => import("./admin/pages/events/EventPage"));
 const AddEventPage = lazy(() => import("./admin/pages/events/AddEventPage"));
-const RegisteredPeoplePage = lazy(() => import("./admin/pages/events/RegisteredPeoplePage"));
+const RegisteredPeoplePage = lazy(
+  () => import("./admin/pages/events/RegisteredPeoplePage"),
+);
 const WorkshopPage = lazy(() => import("./admin/pages/workshop/WorkshopPage"));
-const AddWorkshopPage = lazy(() => import("./admin/pages/workshop/AddWorkshopPage"));
+const AddWorkshopPage = lazy(
+  () => import("./admin/pages/workshop/AddWorkshopPage"),
+);
 
 const PageFallback = (
-  <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400">
+  <div className="min-h-[60vh] flex items-center justify-center bg-brand-900 text-cream/60">
     Memuat...
   </div>
 );
@@ -86,28 +106,55 @@ function App() {
               <Route index element={<Homepage />} />
               <Route path="homepage" element={<Homepage />} />
               <Route path="homepage/add" element={<AddLandingHeadingPage />} />
-              <Route path="homepage/edit/:id" element={<AddLandingHeadingPage />} />
+              <Route
+                path="homepage/edit/:id"
+                element={<AddLandingHeadingPage />}
+              />
 
               <Route path="events" element={<EventPage />} />
               <Route path="events/add" element={<AddEventPage />} />
               <Route path="events/edit/:id" element={<AddEventPage />} />
-              <Route path="events/registrations/:eventId" element={<RegisteredPeoplePage />} />
+              <Route
+                path="events/registrations/:eventId"
+                element={<RegisteredPeoplePage />}
+              />
 
               <Route path="workshop" element={<WorkshopPage />} />
               <Route path="workshop/add" element={<AddWorkshopPage />} />
               <Route path="workshop/edit/:id" element={<AddWorkshopPage />} />
 
               <Route path="catalogue/products" element={<ProductPage />} />
-              <Route path="catalogue/products/add" element={<AddProductPage />} />
-              <Route path="catalogue/products/edit/:id" element={<AddProductPage />} />
+              <Route
+                path="catalogue/products/add"
+                element={<AddProductPage />}
+              />
+              <Route
+                path="catalogue/products/edit/:id"
+                element={<AddProductPage />}
+              />
 
-              <Route path="catalogue/ingredients" element={<IngredientPage />} />
-              <Route path="catalogue/ingredients/add" element={<AddIngredientPage />} />
-              <Route path="catalogue/ingredients/edit/:id" element={<AddIngredientPage />} />
+              <Route
+                path="catalogue/ingredients"
+                element={<IngredientPage />}
+              />
+              <Route
+                path="catalogue/ingredients/add"
+                element={<AddIngredientPage />}
+              />
+              <Route
+                path="catalogue/ingredients/edit/:id"
+                element={<AddIngredientPage />}
+              />
 
               <Route path="catalogue/lab-tools" element={<LabToolPage />} />
-              <Route path="catalogue/lab-tools/add" element={<AddLabToolPage />} />
-              <Route path="catalogue/lab-tools/edit/:id" element={<AddLabToolPage />} />
+              <Route
+                path="catalogue/lab-tools/add"
+                element={<AddLabToolPage />}
+              />
+              <Route
+                path="catalogue/lab-tools/edit/:id"
+                element={<AddLabToolPage />}
+              />
 
               <Route path="about" element={<AboutPageAdmin />} />
               <Route path="articles" element={<ArticlePage />} />

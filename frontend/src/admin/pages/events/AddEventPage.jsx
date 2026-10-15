@@ -3,29 +3,67 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FiPlus, FiTrash2, FiSave, FiType, FiUsers, FiMapPin, FiDollarSign, FiCalendar, FiImage, FiX, FiUploadCloud, FiTag, FiChevronDown, FiToggleLeft } from "react-icons/fi";
+import {
+  FiPlus,
+  FiTrash2,
+  FiSave,
+  FiType,
+  FiUsers,
+  FiMapPin,
+  FiDollarSign,
+  FiCalendar,
+  FiImage,
+  FiX,
+  FiUploadCloud,
+  FiTag,
+  FiChevronDown,
+  FiToggleLeft,
+} from "react-icons/fi";
 import RichTextEditor from "../../components/RichTextEditor";
 import API_BASE from "../../../lib/apiBase";
 
-const InputField = ({ label, name, value, onChange, icon, as = "input", options = [], ...props }) => (
+const InputField = ({
+  label,
+  name,
+  value,
+  onChange,
+  icon,
+  as = "input",
+  options = [],
+  ...props
+}) => (
   <div className="mb-6">
-    <label className="block mb-2 font-medium text-slate-300">{label}</label>
+    <label className="block mb-2 font-medium text-cream/80">{label}</label>
     <div className="relative">
-      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">{icon}</span>
+      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
+        {icon}
+      </span>
 
       {as === "select" ? (
         <>
-          <select name={name} value={value} onChange={onChange} {...props} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 appearance-none">
+          <select
+            name={name}
+            value={value}
+            onChange={onChange}
+            {...props}
+            className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400  appearance-none"
+          >
             {options.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>
             ))}
           </select>
-          <FiChevronDown className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <FiChevronDown className="absolute top-1/2 right-3 -translate-y-1/2 text-cream/60 pointer-events-none" />
         </>
       ) : (
-        <input {...props} name={name} value={value || ""} onChange={onChange} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+        <input
+          {...props}
+          name={name}
+          value={value || ""}
+          onChange={onChange}
+          className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+        />
       )}
     </div>
   </div>
@@ -37,7 +75,17 @@ const AddEventPage = () => {
   const isEditMode = Boolean(id);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [event, setEvent] = useState({ title: "", quota: 1, location: "", fee: 0, description: "", startDateTime: new Date(), endDateTime: new Date(), category: "", status: "Coming Soon" });
+  const [event, setEvent] = useState({
+    title: "",
+    quota: 1,
+    location: "",
+    fee: 0,
+    description: "",
+    startDateTime: new Date(),
+    endDateTime: new Date(),
+    category: "",
+    status: "Coming Soon",
+  });
   const [imageBanner, setImageBanner] = useState(null);
   const [previewBanner, setPreviewBanner] = useState("");
   const [roles, setRoles] = useState(["Umum"]);
@@ -71,15 +119,22 @@ const AddEventPage = () => {
           location: fetched.location || "",
           fee: fetched.fee || 0,
           description: fetched.description || "",
-          startDateTime: fetched.startDateTime ? new Date(fetched.startDateTime) : new Date(),
-          endDateTime: fetched.endDateTime ? new Date(fetched.endDateTime) : new Date(),
+          startDateTime: fetched.startDateTime
+            ? new Date(fetched.startDateTime)
+            : new Date(),
+          endDateTime: fetched.endDateTime
+            ? new Date(fetched.endDateTime)
+            : new Date(),
           category: fetched.category || "",
           status: fetched.status || "Coming Soon",
         });
-        if (fetched.imageBannerUrl) setPreviewBanner(`${API_BASE}${fetched.imageBannerUrl}`);
+        if (fetched.imageBannerUrl)
+          setPreviewBanner(`${API_BASE}${fetched.imageBannerUrl}`);
         if (fetched.participantRoles) {
           try {
-            const parsedRoles = Array.isArray(fetched.participantRoles) ? fetched.participantRoles : JSON.parse(fetched.participantRoles);
+            const parsedRoles = Array.isArray(fetched.participantRoles)
+              ? fetched.participantRoles
+              : JSON.parse(fetched.participantRoles);
             setRoles(parsedRoles);
           } catch {
             setRoles(["Umum"]);
@@ -115,8 +170,10 @@ const AddEventPage = () => {
       .finally(() => setIsLoading(false));
   }, [id, isEditMode]);
 
-  const handleEventChange = (e) => setEvent((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  const handleDescriptionChange = (value) => setEvent((prev) => ({ ...prev, description: value }));
+  const handleEventChange = (e) =>
+    setEvent((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleDescriptionChange = (value) =>
+    setEvent((prev) => ({ ...prev, description: value }));
   const handleBannerChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -131,8 +188,13 @@ const AddEventPage = () => {
     }
   };
   const removeRole = (index) => setRoles(roles.filter((_, i) => i !== index));
-  const addContentSection = () => setContents([...contents, { header: "", content: "", images: [], previews: [] }]);
-  const removeContentSection = (index) => setContents(contents.filter((_, i) => i !== index));
+  const addContentSection = () =>
+    setContents([
+      ...contents,
+      { header: "", content: "", images: [], previews: [] },
+    ]);
+  const removeContentSection = (index) =>
+    setContents(contents.filter((_, i) => i !== index));
   const handleContentTextChange = (index, field, value) => {
     const newContents = [...contents];
     newContents[index][field] = value;
@@ -143,7 +205,9 @@ const AddEventPage = () => {
     if (!files.length) return;
     const newContents = [...contents];
     newContents[index].images.push(...files);
-    newContents[index].previews = newContents[index].images.map((f) => (typeof f === "string" ? f : URL.createObjectURL(f)));
+    newContents[index].previews = newContents[index].images.map((f) =>
+      typeof f === "string" ? f : URL.createObjectURL(f),
+    );
     setContents(newContents);
   };
   const removeContentImage = (cIndex, iIndex) => {
@@ -162,21 +226,32 @@ const AddEventPage = () => {
     formData.append("participantRoles", JSON.stringify(roles));
     const contentData = contents.map((c) => {
       const newFiles = c.images.filter((img) => typeof img !== "string");
-      const existingUrls = c.images.filter((img) => typeof img === "string").map((url) => url.replace(API_BASE, ""));
-      return { header: c.header, content: c.content, imageCount: newFiles.length, existingImageUrls: existingUrls };
+      const existingUrls = c.images
+        .filter((img) => typeof img === "string")
+        .map((url) => url.replace(API_BASE, ""));
+      return {
+        header: c.header,
+        content: c.content,
+        imageCount: newFiles.length,
+        existingImageUrls: existingUrls,
+      };
     });
     formData.append("contents", JSON.stringify(contentData));
     contents.forEach((c) =>
       c.images.forEach((img) => {
         if (typeof img !== "string") formData.append("contentImages", img);
-      })
+      }),
     );
 
     try {
       if (isEditMode) {
-        await apiClient.put(`/api/events/${id}`, formData, { headers: { "Content-Type": "multipart/form-data" } });
+        await apiClient.put(`/api/events/${id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       } else {
-        await apiClient.post("/api/events", formData, { headers: { "Content-Type": "multipart/form-data" } });
+        await apiClient.post("/api/events", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       }
       navigate("/admin/events");
     } catch (err) {
@@ -188,20 +263,35 @@ const AddEventPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto text-white">
+    <div className="max-w-7xl mx-auto text-cream">
       <header className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">{isEditMode ? "Edit Event" : "Create New Event"}</h1>
-        <Link to="/admin/events" className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold no-underline">
+        <h1 className="text-3xl font-bold">
+          {isEditMode ? "Edit Event" : "Create New Event"}
+        </h1>
+        <Link
+          to="/admin/events"
+          className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold no-underline"
+        >
           BACK
         </Link>
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Event Details</h2>
+        <div className="bg-brand-800/50 p-8 rounded-lg ">
+          <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
+            Event Details
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <InputField label="Event Title" name="title" value={event.title} onChange={handleEventChange} icon={<FiType />} required placeholder="Judul event..." />
+              <InputField
+                label="Event Title"
+                name="title"
+                value={event.title}
+                onChange={handleEventChange}
+                icon={<FiType />}
+                required
+                placeholder="Judul event..."
+              />
               <InputField
                 as="select"
                 label="Category"
@@ -217,14 +307,29 @@ const AddEventPage = () => {
                   })),
                 ]}
               />
-              <InputField label="Location" name="location" value={event.location} onChange={handleEventChange} icon={<FiMapPin />} required placeholder="Lokasi event..." />
+              <InputField
+                label="Location"
+                name="location"
+                value={event.location}
+                onChange={handleEventChange}
+                icon={<FiMapPin />}
+                required
+                placeholder="Lokasi event..."
+              />
               <div className="mb-6">
-                <label className="block mb-2 font-medium text-slate-300">Status</label>
+                <label className="block mb-2 font-medium text-cream/80">
+                  Status
+                </label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
                     <FiToggleLeft />
                   </span>
-                  <select name="status" value={event.status} onChange={handleEventChange} className="w-full p-2 pl-10 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                  <select
+                    name="status"
+                    value={event.status}
+                    onChange={handleEventChange}
+                    className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+                  >
                     <option value="Coming Soon">Coming Soon</option>
                     <option value="Open">Open for Registration</option>
                     <option value="Closed">Closed</option>
@@ -233,40 +338,80 @@ const AddEventPage = () => {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <InputField label="Quota" name="quota" type="number" min="1" value={event.quota} onChange={handleEventChange} icon={<FiUsers />} required />
-                <InputField label="Fee" name="fee" type="number" min="0" value={event.fee} onChange={handleEventChange} icon={<FiDollarSign />} required />
+                <InputField
+                  label="Quota"
+                  name="quota"
+                  type="number"
+                  min="1"
+                  value={event.quota}
+                  onChange={handleEventChange}
+                  icon={<FiUsers />}
+                  required
+                />
+                <InputField
+                  label="Fee"
+                  name="fee"
+                  type="number"
+                  min="0"
+                  value={event.fee}
+                  onChange={handleEventChange}
+                  icon={<FiDollarSign />}
+                  required
+                />
               </div>
             </div>
 
             {/* IMPROVED BANNER UPLOAD */}
             <div>
-              <label className="mb-2 font-medium text-slate-300 flex items-center gap-2">
-                <FiImage className="text-cyan-400" />
+              <label className="mb-2 font-medium text-cream/80 flex items-center gap-2">
+                <FiImage className="text-brand-400" />
                 Event Banner
               </label>
               <div className="relative group">
-                <input type="file" id="banner-upload" name="imageBanner" onChange={handleBannerChange} className="hidden" accept="image/*" required={!isEditMode} />
+                <input
+                  type="file"
+                  id="banner-upload"
+                  name="imageBanner"
+                  onChange={handleBannerChange}
+                  className="hidden"
+                  accept="image/*"
+                  required={!isEditMode}
+                />
                 <label
                   htmlFor="banner-upload"
-                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900/50 cursor-pointer hover:border-cyan-500 hover:bg-slate-800/70 transition-all duration-300 overflow-hidden"
+                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-border rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden"
                 >
                   {previewBanner ? (
                     <div className="relative w-full h-full">
-                      <img src={previewBanner} alt="Banner Preview" className="w-full h-full object-cover" />
+                      <img
+                        src={previewBanner}
+                        alt="Banner Preview"
+                        className="w-full h-full object-cover"
+                      />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-                        <FiUploadCloud className="h-12 w-12 text-white mb-2" />
-                        <span className="text-white font-semibold">Click to change banner</span>
-                        <span className="text-slate-300 text-sm mt-1">PNG, JPG up to 10MB</span>
+                        <FiUploadCloud className="h-12 w-12 text-cream mb-2" />
+                        <span className="text-cream font-semibold">
+                          Click to change banner
+                        </span>
+                        <span className="text-cream/80 text-sm mt-1">
+                          PNG, JPG up to 10MB
+                        </span>
                       </div>
                     </div>
                   ) : (
                     <div className="text-center p-6">
-                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
-                        <FiUploadCloud className="h-10 w-10 text-cyan-400" />
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-brand-800 flex items-center justify-center">
+                        <FiUploadCloud className="h-10 w-10 text-brand-400" />
                       </div>
-                      <span className="block text-slate-200 font-semibold mb-1">Click to upload banner</span>
-                      <span className="text-slate-400 text-sm">or drag and drop</span>
-                      <p className="text-slate-500 text-xs mt-2">PNG, JPG up to 10MB</p>
+                      <span className="block text-cream/80 font-semibold mb-1">
+                        Click to upload banner
+                      </span>
+                      <span className="text-cream/60 text-sm">
+                        or drag and drop
+                      </span>
+                      <p className="text-cream/70 text-xs mt-2">
+                        PNG, JPG up to 10MB
+                      </p>
                     </div>
                   )}
                 </label>
@@ -278,7 +423,7 @@ const AddEventPage = () => {
                     setPreviewBanner("");
                     setImageBanner(null);
                   }}
-                  className="mt-3 w-full py-2 px-4 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                  className="mt-3 w-full py-2 px-4 bg-red-600/20 hover:bg-red-600/40 text-red-400 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                 >
                   <FiTrash2 size={16} />
                   Remove Banner
@@ -288,56 +433,79 @@ const AddEventPage = () => {
           </div>
 
           <div className="mt-6">
-            <label className="block mb-2 font-medium text-slate-300">Description</label>
-            <RichTextEditor content={event.description} onUpdate={handleDescriptionChange} maxLength={5000} />
+            <label className="block mb-2 font-medium text-cream/80">
+              Description
+            </label>
+            <RichTextEditor
+              content={event.description}
+              onUpdate={handleDescriptionChange}
+              maxLength={5000}
+            />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
             <div>
-              <label className="flex mb-2 font-medium text-slate-300 items-center">
+              <label className="flex mb-2 font-medium text-cream/80 items-center">
                 <FiCalendar className="mr-2" /> Start Date & Time
               </label>
               <DatePicker
                 selected={event.startDateTime}
-                onChange={(date) => setEvent((prev) => ({ ...prev, startDateTime: date }))}
+                onChange={(date) =>
+                  setEvent((prev) => ({ ...prev, startDateTime: date }))
+                }
                 showTimeSelect
                 dateFormat="MMMM d, yyyy h:mm aa"
-                className="w-full p-2 bg-slate-800 border border-slate-600 rounded-md"
+                className="w-full p-2 bg-brand-800 border border-border rounded-md"
               />
             </div>
             <div>
-              <label className="block mb-2 font-medium text-slate-300 items-center">
+              <label className="block mb-2 font-medium text-cream/80 items-center">
                 <FiCalendar className="mr-2" /> End Date & Time
               </label>
               <DatePicker
                 selected={event.endDateTime}
-                onChange={(date) => setEvent((prev) => ({ ...prev, endDateTime: date }))}
+                onChange={(date) =>
+                  setEvent((prev) => ({ ...prev, endDateTime: date }))
+                }
                 showTimeSelect
                 dateFormat="MMMM d, yyyy h:mm aa"
-                className="w-full p-2 bg-slate-800 border border-slate-600 rounded-md"
+                className="w-full p-2 bg-brand-800 border border-border rounded-md"
               />
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Participant Roles</h2>
+        <div className="bg-brand-800/50 p-8 rounded-lg ">
+          <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
+            Participant Roles
+          </h2>
           <div className="flex items-center gap-4 mb-4">
             <input
               type="text"
               value={newRole}
               onChange={(e) => setNewRole(e.target.value)}
               placeholder="Contoh: Mahasiswa"
-              className="flex-grow p-2 bg-slate-800 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="flex-grow p-2 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
             />
-            <button type="button" onClick={addRole} className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-md font-semibold transition-colors">
+            <button
+              type="button"
+              onClick={addRole}
+              className="bg-brand-600 hover:bg-brand-500 px-4 py-2 rounded-md font-semibold transition-colors"
+            >
               Add Role
             </button>
           </div>
           <div className="flex flex-wrap gap-2 min-h-[2.5rem]">
             {roles.map((role, index) => (
-              <span key={index} className="flex items-center bg-slate-700 px-3 py-1 rounded-full text-sm">
+              <span
+                key={index}
+                className="flex items-center bg-brand-700 px-3 py-1 rounded-full text-sm"
+              >
                 {role}{" "}
-                <button type="button" onClick={() => removeRole(index)} className="ml-2 text-red-400 hover:text-white">
+                <button
+                  type="button"
+                  onClick={() => removeRole(index)}
+                  className="ml-2 text-cream"
+                >
                   <FiX size={16} />
                 </button>
               </span>
@@ -345,36 +513,75 @@ const AddEventPage = () => {
           </div>
         </div>
 
-        <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-6 border-b border-slate-700 pb-4">Content Sections</h2>
+        <div className="bg-brand-800/50 p-8 rounded-lg ">
+          <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
+            Content Sections
+          </h2>
           <div className="space-y-6">
             {contents.map((content, index) => (
-              <div key={index} className="bg-slate-900/50 border border-slate-700 rounded-lg p-6 relative">
+              <div
+                key={index}
+                className="bg-brand-800 border border-border rounded-lg p-6 relative"
+              >
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-bold text-cyan-400 text-lg">Section {index + 1}</h3>
-                  <button type="button" onClick={() => removeContentSection(index)} className="p-1 text-red-500 hover:text-red-400 hover:bg-red-500/10 rounded-full">
+                  <h3 className="font-bold text-brand-400 text-lg">
+                    Section {index + 1}
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => removeContentSection(index)}
+                    className="p-1 text-red-500 text-red-400 bg-red-500/10 rounded-full"
+                  >
                     <FiTrash2 size={18} />
                   </button>
                 </div>
-                <InputField label="Header" name="header" value={content.header} onChange={(e) => handleContentTextChange(index, "header", e.target.value)} icon={<FiType />} placeholder="Judul section..." />
+                <InputField
+                  label="Header"
+                  name="header"
+                  value={content.header}
+                  onChange={(e) =>
+                    handleContentTextChange(index, "header", e.target.value)
+                  }
+                  icon={<FiType />}
+                  placeholder="Judul section..."
+                />
                 <div>
-                  <label className="block mb-2 font-medium text-slate-300">Content</label>
-                  <RichTextEditor content={content.content} onUpdate={(value) => handleContentTextChange(index, "content", value)} maxLength={10000} />
+                  <label className="block mb-2 font-medium text-cream/80">
+                    Content
+                  </label>
+                  <RichTextEditor
+                    content={content.content}
+                    onUpdate={(value) =>
+                      handleContentTextChange(index, "content", value)
+                    }
+                    maxLength={10000}
+                  />
                 </div>
 
                 {/* IMPROVED CONTENT IMAGES */}
                 <div className="mt-6">
-                  <label className="mb-3 font-medium text-slate-300 flex items-center gap-2">
-                    <FiImage className="text-cyan-400" />
+                  <label className="mb-3 font-medium text-cream/80 flex items-center gap-2">
+                    <FiImage className="text-brand-400" />
                     Section Images
                   </label>
-                  <div className="bg-slate-800/70 p-4 rounded-lg border border-slate-700">
+                  <div className="bg-brand-800/70 p-4 rounded-lg border border-border">
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                       {content.previews.map((p, i) => (
-                        <div key={i} className="relative group aspect-square rounded-lg overflow-hidden border-2 border-slate-600 hover:border-cyan-500 transition-all">
-                          <img src={p} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
+                        <div
+                          key={i}
+                          className="relative group aspect-square rounded-lg overflow-hidden border-2 border-border border-brand-500 transition-all"
+                        >
+                          <img
+                            src={p}
+                            alt={`Preview ${i + 1}`}
+                            className="w-full h-full object-cover"
+                          />
                           <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <button type="button" onClick={() => removeContentImage(index, i)} className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors">
+                            <button
+                              type="button"
+                              onClick={() => removeContentImage(index, i)}
+                              className="p-2 bg-red-600 hover:bg-red-700 text-cream rounded-full transition-colors"
+                            >
                               <FiTrash2 size={18} />
                             </button>
                           </div>
@@ -382,14 +589,26 @@ const AddEventPage = () => {
                       ))}
 
                       {/* Upload Button */}
-                      <label className="aspect-square flex flex-col justify-center items-center border-2 border-dashed border-slate-600 rounded-lg cursor-pointer hover:border-cyan-500 hover:bg-slate-700/50 transition-all group">
-                        <FiUploadCloud className="h-8 w-8 text-slate-400 group-hover:text-cyan-400 transition-colors mb-2" />
-                        <span className="text-xs text-slate-400 group-hover:text-cyan-400 transition-colors text-center px-2">Add Images</span>
-                        <input type="file" multiple accept="image/*" onChange={(e) => handleContentImageChange(index, e)} className="hidden" />
+                      <label className="aspect-square flex flex-col justify-center items-center border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-brand-400 bg-brand-700/50 transition-all group">
+                        <FiUploadCloud className="h-8 w-8 text-cream/60 group-hover:text-brand-400 transition-colors mb-2" />
+                        <span className="text-xs text-cream/60 group-hover:text-brand-400 transition-colors text-center px-2">
+                          Add Images
+                        </span>
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={(e) => handleContentImageChange(index, e)}
+                          className="hidden"
+                        />
                       </label>
                     </div>
 
-                    {content.previews.length === 0 && <p className="text-center text-slate-500 text-sm mt-2">No images uploaded yet</p>}
+                    {content.previews.length === 0 && (
+                      <p className="text-center text-cream/70 text-sm mt-2">
+                        No images uploaded yet
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -398,7 +617,7 @@ const AddEventPage = () => {
           <button
             type="button"
             onClick={addContentSection}
-            className="w-full mt-6 border-2 border-dashed border-slate-600 hover:border-cyan-500 text-slate-300 hover:text-cyan-400 py-3 rounded-md font-semibold flex items-center justify-center transition-colors"
+            className="w-full mt-6 border-2 border-dashed border-border border-brand-500 text-cream/80 text-brand-400 py-3 rounded-md font-semibold flex items-center justify-center transition-colors"
           >
             <FiPlus className="mr-2" /> Add Content Section
           </button>
@@ -408,17 +627,37 @@ const AddEventPage = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-800 disabled:cursor-not-allowed py-3 rounded-md font-bold text-lg flex items-center justify-center transition-colors duration-300"
+            className="w-full bg-brand-600 hover:bg-brand-500 disabled:bg-brand-800 disabled:cursor-not-allowed py-3 rounded-md font-bold text-lg flex items-center justify-center transition-colors duration-300"
           >
             {isLoading ? (
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-cream"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
             ) : (
               <FiSave className="mr-2" />
             )}
-            {isLoading ? "Saving..." : isEditMode ? "SAVE CHANGES" : "CREATE EVENT"}
+            {isLoading
+              ? "Saving..."
+              : isEditMode
+                ? "SAVE CHANGES"
+                : "CREATE EVENT"}
           </button>
         </div>
       </form>

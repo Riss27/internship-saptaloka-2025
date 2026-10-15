@@ -33,17 +33,23 @@ const ArticleDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-emerald-700 font-medium">Loading...</p>
-        </div>
+      <div
+        role="status"
+        aria-live="polite"
+        className="bg-brand-900 min-h-[60vh] flex flex-col justify-center items-center gap-4"
+      >
+        <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
+        <p className="text-cream/80 text-lg">Loading...</p>
       </div>
     );
   }
 
   if (!article) {
-    return <div className="text-center py-20 text-slate-700">{t("detail_pages.not_found")}</div>;
+    return (
+      <div className="bg-brand-900 min-h-[60vh] flex items-center justify-center px-4 text-center">
+        <p className="text-cream/80 text-lg">{t("detail_pages.not_found")}</p>
+      </div>
+    );
   }
 
   const formatDate = (dateString) => {
@@ -69,50 +75,73 @@ const ArticleDetailPage = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-emerald-50 to-white text-slate-700 min-h-screen pt-10 pb-20">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <div className="bg-brand-900 text-cream pt-6 sm:pt-8 pb-16 sm:pb-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 max-w-4xl">
         {/* Header */}
-        <header className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-emerald-900 mb-4 leading-tight">{translatedTitle}</h1>
-          <div className="flex items-center gap-6 text-slate-500 text-sm">
+        <header className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-cream mb-4 leading-tight uppercase tracking-wide break-words">
+            {translatedTitle}
+          </h1>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-cream/80 text-sm">
             <div className="flex items-center gap-2">
-              <FiUser />
+              <FiUser className="w-4 h-4 shrink-0 text-brand-400" aria-hidden="true" />
               <span>
                 {t("detail_pages.by")}: {article.author}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <FiCalendar />
+              <FiCalendar
+                className="w-4 h-4 shrink-0 text-brand-400"
+                aria-hidden="true"
+              />
               <span>
-                {t("detail_pages.published_on")}: {formatDate(article.publishedAt)}
+                {t("detail_pages.published_on")}:{" "}
+                {formatDate(article.publishedAt)}
               </span>
             </div>
           </div>
         </header>
 
         {/* Gambar utama */}
-        <div className="mb-8 rounded-2xl overflow-hidden shadow-xl">
-          <img src={`${API_BASE}${article.featuredImageUrl}`} alt={article.title} className="w-full h-auto object-cover" />
+        <div className="mb-8 rounded-cards overflow-hidden bg-brand-800">
+          <img
+            src={`${API_BASE}${article.featuredImageUrl}`}
+            alt=""
+            className="w-full h-auto object-cover"
+          />
         </div>
 
         {/* Deskripsi utama */}
-        <div className="mb-12">
-          <RichTextDisplay content={translatedMainDescription} className="text-slate-600 text-lg" />
+        <div className="mb-8 sm:mb-12">
+          <RichTextDisplay
+            content={translatedMainDescription}
+            className="text-cream/90 text-base sm:text-lg"
+          />
         </div>
 
         {/* Konten artikel */}
-        <article className="space-y-12">
+        <article className="space-y-8 sm:space-y-12">
           {article.ArticleContents &&
             article.ArticleContents.map((content, index) => {
               const images = parseImageUrls(content.imageUrls);
               return (
                 <section key={index}>
-                  <h2 className="text-2xl font-bold text-emerald-700 mb-4 border-l-4 border-emerald-500 pl-4">{content.topic}</h2>
-                  <RichTextDisplay content={content.description} className="text-slate-600" />
+                  <h2 className="text-xl sm:text-2xl font-medium text-brand-400 mb-4 border-l-4 border-brand-400 pl-4 uppercase tracking-wide break-words">
+                    {content.topic}
+                  </h2>
+                  <RichTextDisplay
+                    content={content.description}
+                    className="text-cream/90"
+                  />
                   {images.length > 0 && (
                     <div className="grid grid-cols-2 gap-4 mt-6">
                       {images.map((url, i) => (
-                        <img key={i} src={`${API_BASE}${url}`} alt={`${content.topic} ${i + 1}`} className="rounded-lg object-cover w-full shadow-md" />
+                        <img
+                          key={i}
+                          src={`${API_BASE}${url}`}
+                          alt={`${content.topic} ${i + 1}`}
+                          className="rounded-cards object-cover w-full h-40 sm:h-auto"
+                        />
                       ))}
                     </div>
                   )}

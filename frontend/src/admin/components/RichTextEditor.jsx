@@ -31,7 +31,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: "text-cyan-400 underline",
+          class: "text-brand-400 underline",
         },
       }),
       Subscript,
@@ -45,17 +45,17 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
       const html = editor.getHTML();
       const text = editor.getText();
       setCharCount(text.length);
-      
+
       // Jika ada maxLength dan melebihi batas, jangan update
       if (maxLength && text.length > maxLength) {
         return;
       }
-      
+
       onUpdate(html);
     },
     editorProps: {
       attributes: {
-        class: "prose prose-invert max-w-none p-4 min-h-[150px] focus:outline-none prose-ul:list-disc prose-ol:list-decimal prose-li:ml-4",
+        class: "max-w-none p-4 min-h-[150px] focus:outline-none ",
       },
     },
   });
@@ -78,15 +78,17 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
   };
 
   return (
-    <div className="bg-slate-800 border border-slate-600 rounded-md">
+    <div className="bg-brand-800 border border-border rounded-md">
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-1 p-3 bg-slate-700/50 rounded-t-md border-b border-slate-600">
+      <div className="flex flex-wrap gap-1 p-3 bg-brand-700 rounded-t-md border-b border-border">
         {/* Basic Formatting */}
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive("bold") ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive("bold")
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Bold"
         >
@@ -96,8 +98,10 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive("italic") ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive("italic")
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Italic"
         >
@@ -107,8 +111,10 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive("underline") ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive("underline")
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Underline"
         >
@@ -118,8 +124,10 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive("strike") ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive("strike")
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Strikethrough"
         >
@@ -129,36 +137,42 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleCode().run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive("code") ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive("code")
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Code"
         >
           <FiCode size={16} />
         </button>
 
-        <div className="w-px h-8 bg-slate-600 mx-1"></div>
+        <div className="w-px h-8 bg-brand-700 mx-1"></div>
 
         {/* Link */}
         <button
           type="button"
           onClick={addLink}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive("link") ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive("link")
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Add Link"
         >
           <FiLink size={16} />
         </button>
 
-        <div className="w-px h-8 bg-slate-600 mx-1"></div>
+        <div className="w-px h-8 bg-brand-700 mx-1"></div>
 
         {/* Lists */}
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive("bulletList") ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive("bulletList")
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Bullet List"
         >
@@ -168,22 +182,26 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive("orderedList") ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive("orderedList")
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Numbered List"
         >
           <MdFormatListNumbered size={16} />
         </button>
 
-        <div className="w-px h-8 bg-slate-600 mx-1"></div>
+        <div className="w-px h-8 bg-brand-700 mx-1"></div>
 
         {/* Subscript & Superscript */}
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleSubscript().run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors text-xs ${
-            editor.isActive("subscript") ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors text-xs ${
+            editor.isActive("subscript")
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Subscript"
         >
@@ -193,22 +211,26 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleSuperscript().run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors text-xs ${
-            editor.isActive("superscript") ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors text-xs ${
+            editor.isActive("superscript")
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Superscript"
         >
           x²
         </button>
 
-        <div className="w-px h-8 bg-slate-600 mx-1"></div>
+        <div className="w-px h-8 bg-brand-700 mx-1"></div>
 
         {/* Text Alignment */}
         <button
           type="button"
           onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive({ textAlign: "left" }) ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive({ textAlign: "left" })
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Align Left"
         >
@@ -218,8 +240,10 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive({ textAlign: "center" }) ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive({ textAlign: "center" })
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Align Center"
         >
@@ -229,8 +253,10 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive({ textAlign: "right" }) ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive({ textAlign: "right" })
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Align Right"
         >
@@ -240,21 +266,25 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-          className={`p-2 rounded hover:bg-slate-600 transition-colors ${
-            editor.isActive({ textAlign: "justify" }) ? "bg-cyan-600 text-white" : "text-slate-300"
+          className={`p-2 rounded bg-brand-700 transition-colors ${
+            editor.isActive({ textAlign: "justify" })
+              ? "bg-brand-600 text-cream"
+              : "text-cream/80"
           }`}
           title="Justify"
         >
           <FiAlignJustify size={16} />
         </button>
 
-        <div className="w-px h-8 bg-slate-600 mx-1"></div>
+        <div className="w-px h-8 bg-brand-700 mx-1"></div>
 
         {/* Clear Formatting */}
         <button
           type="button"
-          onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()}
-          className="p-2 rounded hover:bg-slate-600 transition-colors text-slate-300"
+          onClick={() =>
+            editor.chain().focus().clearNodes().unsetAllMarks().run()
+          }
+          className="p-2 rounded bg-brand-700 transition-colors text-cream/80"
           title="Clear Formatting"
         >
           <FiRefreshCw size={16} />
@@ -265,77 +295,81 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
       <div className="rich-text-editor-content">
         <EditorContent editor={editor} />
       </div>
-      
+
       {/* Character Counter */}
       {maxLength && (
-        <div className={`text-sm px-4 py-2 border-t border-slate-600 ${
-          charCount >= maxLength ? "text-red-400" : "text-slate-400"
-        }`}>
+        <div
+          className={`text-sm px-4 py-2 border-t border-border ${
+            charCount >= maxLength ? "text-red-400" : "text-cream/60"
+          }`}
+        >
           {charCount}/{maxLength} karakter
         </div>
       )}
-      
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          .rich-text-editor-content .ProseMirror ul {
-            list-style-type: disc;
-            padding-left: 1.5rem;
-            margin: 0.5rem 0;
-          }
-          .rich-text-editor-content .ProseMirror ol {
-            list-style-type: decimal;
-            padding-left: 1.5rem;
-            margin: 0.5rem 0;
-          }
-          .rich-text-editor-content .ProseMirror li {
-            margin: 0.25rem 0;
-            display: list-item;
-          }
-          .rich-text-editor-content .ProseMirror p {
-            margin: 0.5rem 0;
-          }
-          .rich-text-editor-content .ProseMirror strong {
-            font-weight: bold;
-          }
-          .rich-text-editor-content .ProseMirror em {
-            font-style: italic;
-          }
-          .rich-text-editor-content .ProseMirror u {
-            text-decoration: underline;
-          }
-          .rich-text-editor-content .ProseMirror s {
-            text-decoration: line-through;
-          }
-          .rich-text-editor-content .ProseMirror code {
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 0.125rem 0.25rem;
-            border-radius: 0.25rem;
-            font-family: monospace;
-            font-size: 0.875rem;
-          }
-          .rich-text-editor-content .ProseMirror a {
-            color: #06b6d4;
-            text-decoration: underline;
-          }
-          .rich-text-editor-content .ProseMirror sub {
-            vertical-align: sub;
-            font-size: 0.75rem;
-          }
-          .rich-text-editor-content .ProseMirror sup {
-            vertical-align: super;
-            font-size: 0.75rem;
-          }
-          .rich-text-editor-content .ProseMirror[style*="text-align: center"] {
-            text-align: center;
-          }
-          .rich-text-editor-content .ProseMirror[style*="text-align: right"] {
-            text-align: right;
-          }
-          .rich-text-editor-content .ProseMirror[style*="text-align: justify"] {
-            text-align: justify;
-          }
-        `
-      }} />
+
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+ .rich-text-editor-content .ProseMirror ul {
+ list-style-type: disc;
+ padding-left: 1.5rem;
+ margin: 0.5rem 0;
+ }
+ .rich-text-editor-content .ProseMirror ol {
+ list-style-type: decimal;
+ padding-left: 1.5rem;
+ margin: 0.5rem 0;
+ }
+ .rich-text-editor-content .ProseMirror li {
+ margin: 0.25rem 0;
+ display: list-item;
+ }
+ .rich-text-editor-content .ProseMirror p {
+ margin: 0.5rem 0;
+ }
+ .rich-text-editor-content .ProseMirror strong {
+ font-weight: bold;
+ }
+ .rich-text-editor-content .ProseMirror em {
+ font-style: italic;
+ }
+ .rich-text-editor-content .ProseMirror u {
+ text-decoration: underline;
+ }
+ .rich-text-editor-content .ProseMirror s {
+ text-decoration: line-through;
+ }
+ .rich-text-editor-content .ProseMirror code {
+ background-color: rgba(255, 255, 255, 0.1);
+ padding: 0.125rem 0.25rem;
+ border-radius: 0.25rem;
+ font-family: monospace;
+ font-size: 0.875rem;
+ }
+ .rich-text-editor-content .ProseMirror a {
+ color: #06b6d4;
+ text-decoration: underline;
+ }
+ .rich-text-editor-content .ProseMirror sub {
+ vertical-align: sub;
+ font-size: 0.75rem;
+ }
+ .rich-text-editor-content .ProseMirror sup {
+ vertical-align: super;
+ font-size: 0.75rem;
+ }
+ .rich-text-editor-content .ProseMirror[style*="text-align: center"] {
+ text-align: center;
+ }
+ .rich-text-editor-content .ProseMirror[style*="text-align: right"] {
+ text-align: right;
+ }
+ .rich-text-editor-content .ProseMirror[style*="text-align: justify"] {
+ text-align: justify;
+ }
+ `,
+        }}
+      />
     </div>
   );
 };

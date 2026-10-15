@@ -5,6 +5,9 @@ import Pagination from "../components/molecules/Pagination";
 import { Search, X, Package } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+const FOCUS_RING =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
+
 const ProductsPage = () => {
   const { t } = useTranslation();
 
@@ -59,86 +62,130 @@ const ProductsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
-          <p className="text-white text-lg">{t("products_page.loading", "Loading Product...")}</p>
-        </div>
+      <div
+        role="status"
+        aria-live="polite"
+        className="bg-brand-900 min-h-[60vh] flex flex-col justify-center items-center gap-4"
+      >
+        <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
+        <p className="text-cream/80 text-lg">
+          {t("products_page.loading", "Loading Product...")}
+        </p>
       </div>
     );
   }
 
+  const categories = [
+    { id: "All", label: t("products_page.all") },
+    { id: "Parfum", label: t("products_page.perfume") },
+    { id: "Aromaterapi", label: t("products_page.aromatherapy") },
+  ];
+
+  const filterClass = (isActive) =>
+    [
+      "min-h-11 px-6 py-2.5 rounded-buttons-pill text-sm font-medium uppercase tracking-wide transition-colors",
+      FOCUS_RING,
+      isActive
+        ? "bg-brand-600 text-cream"
+        : "bg-brand-800 border border-border text-cream/80 hover:bg-brand-700 hover:text-cream",
+    ].join(" ");
+
   return (
-    <div className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-emerald-800 mb-2">{t("products_page.our_collection")}</h1>
-          <p className="text-slate-600 mb-8">{t("products_page.collection_subtitle")}</p>
+    <div className="bg-brand-900">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-12 lg:py-16">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl font-medium text-brand-400 mb-3 uppercase tracking-wide">
+            {t("products_page.our_collection")}
+          </h1>
+          <p className="text-cream/80 text-sm sm:text-base mb-8 max-w-2xl mx-auto">
+            {t("products_page.collection_subtitle")}
+          </p>
 
           {/* Search bar */}
-          <div className="max-w-2xl mx-auto mb-8">
+          <div className="max-w-2xl mx-auto">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+              <Search
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/70 w-5 h-5"
+                aria-hidden="true"
+              />
               <input
                 type="text"
+                aria-label={t("products_page.search_placeholder")}
                 placeholder={t("products_page.search_placeholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-12 py-3 bg-white text-slate-800 rounded-lg border border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className={`w-full pl-12 pr-12 py-3 bg-brand-800 text-cream rounded-inputs border border-border placeholder:text-cream/60 focus:border-brand-400 transition-colors ${FOCUS_RING}`}
               />
               {searchQuery && (
-                <button onClick={handleClearSearch} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors">
-                  <X className="w-5 h-5" />
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  aria-label={t("products_page.clear_search")}
+                  className={`absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 grid place-items-center text-cream/70 hover:text-cream transition-colors ${FOCUS_RING}`}
+                >
+                  <X className="w-5 h-5" aria-hidden="true" />
                 </button>
               )}
             </div>
 
             {(searchQuery || selectedCategory !== "All") && (
-              <p className="text-slate-400 text-sm mt-3">
-                {t("Menampilkan")} <span className="text-emerald-700 font-semibold">{meta?.total ?? filteredProducts.length}</span> {t("produk")}
+              <p className="text-cream/70 text-sm mt-3">
+                {t("Menampilkan")}{" "}
+                <span className="text-brand-400 font-medium">
+                  {meta?.total ?? filteredProducts.length}
+                </span>{" "}
+                {t("produk")}
               </p>
             )}
           </div>
         </div>
 
         {/* Filter Kategori */}
-        <div className="flex justify-center gap-4 mb-12 flex-wrap">
-          <button onClick={() => setSelectedCategory("All")} className={`px-6 py-2 rounded-full font-semibold transition-colors ${selectedCategory === "All" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-emerald-50"}`}>
-            {t("products_page.all")}
-          </button>
-          <button
-            onClick={() => setSelectedCategory("Parfum")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${selectedCategory === "Parfum" ? "bg-cyan-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"}`}
-          >
-            {t("products_page.perfume")}
-          </button>
-          <button
-            onClick={() => setSelectedCategory("Aromaterapi")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${selectedCategory === "Aromaterapi" ? "bg-cyan-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"}`}
-          >
-            {t("products_page.aromatherapy")}
-          </button>
+        <div className="flex justify-center gap-3 sm:gap-4 mb-8 sm:mb-12 flex-wrap">
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              type="button"
+              onClick={() => setSelectedCategory(category.id)}
+              aria-pressed={selectedCategory === category.id}
+              className={filterClass(selectedCategory === category.id)}
+            >
+              {category.label}
+            </button>
+          ))}
         </div>
 
         {/* Galeri Produk */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-8">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <Package className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <p className="text-slate-400 text-lg mb-2">{t("products_page.no_products_found")}</p>
-            <div className="flex gap-3 justify-center mt-4">
+          <div className="bg-brand-800 border border-border rounded-cards px-6 py-10 sm:py-12 text-center max-w-lg mx-auto">
+            <span className="inline-grid place-items-center w-20 h-20 rounded-full bg-brand-700 mb-5">
+              <Package className="w-10 h-10 text-brand-400" aria-hidden="true" />
+            </span>
+            <p className="text-cream/80 text-lg mb-6">
+              {t("products_page.no_products_found")}
+            </p>
+            <div className="flex gap-3 justify-center flex-wrap">
               {searchQuery && (
-                <button onClick={handleClearSearch} className="text-cyan-400 hover:text-cyan-300 underline">
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className={`min-h-11 px-6 py-2.5 rounded-buttons-pill bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide text-sm transition-colors ${FOCUS_RING}`}
+                >
                   {t("products_page.clear_search")}
                 </button>
               )}
               {selectedCategory !== "All" && (
-                <button onClick={() => setSelectedCategory("All")} className="text-cyan-400 hover:text-cyan-300 underline">
+                <button
+                  type="button"
+                  onClick={() => setSelectedCategory("All")}
+                  className={`min-h-11 px-6 py-2.5 rounded-buttons-pill bg-brand-800 border border-border text-cream/90 hover:bg-brand-700 hover:text-cream font-medium uppercase tracking-wide text-sm transition-colors ${FOCUS_RING}`}
+                >
                   {t("products_page.view_all_categories")}
                 </button>
               )}
