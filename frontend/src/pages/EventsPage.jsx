@@ -6,22 +6,28 @@ import { Search, X, Calendar } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const EventsPage = () => {
-  const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [deferredSearch, setDeferredSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
 
+  // Tunda query 400ms biar tidak request tiap ketikan
   useEffect(() => {
-    const hasFilter = Boolean(searchQuery.trim());
+    const handler = setTimeout(() => setDeferredSearch(searchQuery), 400);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  useEffect(() => {
     let active = true;
     apiClient
-      .get(hasFilter ? "/api/events" : `/api/events?page=${page}&limit=12`)
+      .get("/api/events", {
+        params: { page, limit: 12, ...(deferredSearch.trim() && { search: deferredSearch.trim() }) },
+      })
       .then((response) => {
         if (!active) return;
-        setEvents(response.data.data);
         setFilteredEvents(response.data.data);
         setMeta(response.data.meta || null);
         setIsLoading(false);
@@ -34,29 +40,11 @@ const EventsPage = () => {
     return () => {
       active = false;
     };
-  }, [page, searchQuery]);
+  }, [page, deferredSearch]);
 
   useEffect(() => {
     setPage(1);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredEvents(events);
-      return;
-    }
-
-    const filtered = events.filter((event) => {
-      return (
-        event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.category?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    });
-
-    setFilteredEvents(filtered);
-  }, [searchQuery, events]);
+  }, [deferredSearch]);
 
   const handleClearSearch = () => setSearchQuery("");
 
@@ -99,7 +87,7 @@ const EventsPage = () => {
 
             {searchQuery && (
               <p className="text-slate-500 text-sm mt-3">
-                {t("static.showing", "Showing")} <span className="text-emerald-600 font-semibold">{filteredEvents.length}</span> {t("static.of", "of")} <span className="text-slate-800 font-semibold">{events.length}</span>{" "}
+                {t("static.showing", "Showing")} <span className="text-emerald-600 font-semibold">{meta?.total ?? filteredEvents.length}</span>{" "}
                 {t("static.items", "events")}
               </p>
             )}

@@ -6,22 +6,28 @@ import { Search, X, Wrench } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const LabToolsPage = () => {
-  const [labTools, setLabTools] = useState([]);
   const [filteredTools, setFilteredTools] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [deferredSearch, setDeferredSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
 
+  // Tunda query 400ms biar tidak request tiap ketikan
   useEffect(() => {
-    const hasFilter = Boolean(searchQuery.trim());
+    const handler = setTimeout(() => setDeferredSearch(searchQuery), 400);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  useEffect(() => {
     let active = true;
     apiClient
-      .get(hasFilter ? "/api/lab-tools" : `/api/lab-tools?page=${page}&limit=12`)
+      .get("/api/lab-tools", {
+        params: { page, limit: 12, ...(deferredSearch.trim() && { search: deferredSearch.trim() }) },
+      })
       .then((response) => {
         if (!active) return;
-        setLabTools(response.data.data);
         setFilteredTools(response.data.data);
         setMeta(response.data.meta || null);
         setIsLoading(false);
@@ -34,22 +40,11 @@ const LabToolsPage = () => {
     return () => {
       active = false;
     };
-  }, [page, searchQuery]);
+  }, [page, deferredSearch]);
 
   useEffect(() => {
     setPage(1);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredTools(labTools);
-      return;
-    }
-
-    const filtered = labTools.filter((tool) => tool.name.toLowerCase().includes(searchQuery.toLowerCase()));
-
-    setFilteredTools(filtered);
-  }, [searchQuery, labTools]);
+  }, [deferredSearch]);
 
   const handleClearSearch = () => setSearchQuery("");
 
@@ -93,7 +88,7 @@ const LabToolsPage = () => {
 
           {searchQuery && (
             <p className="text-slate-400 text-sm mt-3">
-              {t("static.showing", "Menampilkan")} <span className="text-emerald-700 font-semibold">{filteredTools.length}</span> {t("static.of", "dari")} <span className="text-black font-semibold">{labTools.length}</span>{" "}
+              {t("static.showing", "Menampilkan")} <span className="text-emerald-700 font-semibold">{meta?.total ?? filteredTools.length}</span>{" "}
               {t("static.items", "alat")}
             </p>
           )}

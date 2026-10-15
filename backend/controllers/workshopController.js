@@ -4,12 +4,13 @@ const upload = require("../middlewares/upload");
 const sequelize = require("../config/database");
 const { deleteFile } = require("../utils/fileHelper");
 const { getPagination } = require("../utils/pagination");
+const { searchWhere } = require("../utils/search");
 
 // Controller Workshop
 // Ambil semua workshop + daftar event terkait (sudah ada filter kategori)
 exports.getAllWorkshops = async (req, res) => {
   try {
-    const { category, source } = req.query;
+    const { category, source, search } = req.query;
 
     const filterOptions = {
       include: {
@@ -21,8 +22,12 @@ exports.getAllWorkshops = async (req, res) => {
       order: [["createdAt", "DESC"]],
     };
 
-    if (category) {
-      filterOptions.where = { category: category };
+    const where = {
+      ...(category && { category }),
+      ...searchWhere(search, ["title", "description", "category"]),
+    };
+    if (Object.keys(where).length > 0) {
+      filterOptions.where = where;
     }
 
     if (source !== "admin") {

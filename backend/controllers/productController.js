@@ -3,16 +3,19 @@ const upload = require("../middlewares/upload");
 const fs = require("fs");
 const path = require("path");
 const { getPagination } = require("../utils/pagination");
+const { searchWhere } = require("../utils/search");
 
 // Controller untuk (READ) - Mendapatkan semua produk DENGAN FILTER
 exports.getAllProducts = async (req, res) => {
   try {
-    const { category } = req.query;
-    const filterOptions = {};
+    const { category, search } = req.query;
 
-    if (category) {
-      filterOptions.where = { category: category };
-    }
+    const filterOptions = {
+      where: {
+        ...(category && { category }),
+        ...searchWhere(search, ["name", "description", "category"]),
+      },
+    };
 
     const pagination = getPagination(req.query);
     let data;

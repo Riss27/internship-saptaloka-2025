@@ -8,26 +8,37 @@ import { useTranslation } from "react-i18next";
 
 const WorkshopsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [workshops, setWorkshops] = useState([]);
   const [filteredWorkshops, setFilteredWorkshops] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [deferredSearch, setDeferredSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
 
+  // Tunda query 400ms biar tidak request tiap ketikan
   useEffect(() => {
-    const hasFilter = Boolean(searchQuery.trim() || selectedCategory);
+    const handler = setTimeout(() => setDeferredSearch(searchQuery), 400);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  useEffect(() => {
     let active = true;
     const fetchWorkshops = async () => {
       try {
-        const response = await apiClient.get(hasFilter ? "/api/workshops?source=admin" : `/api/workshops?source=admin&page=${page}&limit=12`);
+        const response = await apiClient.get("/api/workshops", {
+          params: {
+            source: "admin",
+            page,
+            limit: 12,
+            ...(deferredSearch.trim() && { search: deferredSearch.trim() }),
+            ...(selectedCategory && { category: selectedCategory }),
+          },
+        });
         if (!active) return;
-        const workshopsData = response.data.data;
-        setWorkshops(workshopsData);
-        setFilteredWorkshops(workshopsData);
+        setFilteredWorkshops(response.data.data);
         setMeta(response.data.meta || null);
       } catch (error) {
         if (!active) return;
@@ -41,7 +52,7 @@ const WorkshopsPage = () => {
     return () => {
       active = false;
     };
-  }, [page, searchQuery, selectedCategory]);
+  }, [page, deferredSearch, selectedCategory]);
 
   // Kategori dropdown diambil dari daftar lengkap (bukan halaman yang sedang ditampilkan)
   useEffect(() => {
@@ -56,32 +67,12 @@ const WorkshopsPage = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, deferredSearch]);
 
+  // Sinkronkan filter kategori ke URL
   useEffect(() => {
-    let filtered = workshops;
-
-    // Filter by category
-    if (selectedCategory) {
-      filtered = filtered.filter((workshop) => workshop.category === selectedCategory);
-      setSearchParams({ category: selectedCategory });
-    } else {
-      setSearchParams({});
-    }
-
-    // Filter by search query
-    if (searchQuery.trim()) {
-      filtered = filtered.filter((workshop) => {
-        return (
-          workshop.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          workshop.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          workshop.category?.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      });
-    }
-
-    setFilteredWorkshops(filtered);
-  }, [selectedCategory, searchQuery, workshops, setSearchParams]);
+    setSearchParams(selectedCategory ? { category: selectedCategory } : {});
+  }, [selectedCategory, setSearchParams]);
 
   const handleClearSearch = () => setSearchQuery("");
   const handleClearCategory = () => {
@@ -156,8 +147,8 @@ const WorkshopsPage = () => {
 
             {(searchQuery || selectedCategory) && (
               <p className="text-slate-500 text-sm">
-                {t("static.showing", "Showing")} <span className="text-emerald-600 font-semibold">{filteredWorkshops.length}</span> {t("static.of", "of")}{" "}
-                <span className="text-slate-800 font-semibold">{workshops.length}</span> {t("static.items", "workshops")}
+                {t("static.showing", "Showing")} <span className="text-emerald-600 font-semibold">{meta?.total ?? filteredWorkshops.length}</span>{" "}
+                {t("static.items", "workshops")}
               </p>
             )}
           </div>

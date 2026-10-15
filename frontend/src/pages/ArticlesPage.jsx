@@ -6,24 +6,29 @@ import { Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const ArticlesPage = () => {
-  const [articles, setArticles] = useState([]);
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [deferredSearch, setDeferredSearch] = useState("");
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
 
+  // Tunda query 400ms biar tidak request tiap ketikan
   useEffect(() => {
-    const hasFilter = Boolean(searchQuery.trim());
+    const handler = setTimeout(() => setDeferredSearch(searchQuery), 400);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  useEffect(() => {
     let active = true;
     apiClient
-      .get(hasFilter ? "/api/articles" : `/api/articles?page=${page}&limit=12`)
+      .get("/api/articles", {
+        params: { page, limit: 12, ...(deferredSearch.trim() && { search: deferredSearch.trim() }) },
+      })
       .then((response) => {
         if (!active) return;
-        const sortedArticles = response.data.data.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
-        setArticles(sortedArticles);
-        setFilteredArticles(sortedArticles);
+        setFilteredArticles(response.data.data);
         setMeta(response.data.meta || null);
         setIsLoading(false);
       })
@@ -35,22 +40,11 @@ const ArticlesPage = () => {
     return () => {
       active = false;
     };
-  }, [page, searchQuery]);
+  }, [page, deferredSearch]);
 
   useEffect(() => {
     setPage(1);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredArticles(articles);
-      return;
-    }
-    const filtered = articles.filter(
-      (article) => article.title?.toLowerCase().includes(searchQuery.toLowerCase()) || article.mainDescription?.toLowerCase().includes(searchQuery.toLowerCase()) || article.author?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredArticles(filtered);
-  }, [searchQuery, articles]);
+  }, [deferredSearch]);
 
   const handleClearSearch = () => setSearchQuery("");
 

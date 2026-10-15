@@ -4,11 +4,16 @@ const upload = require("../middlewares/upload");
 const sequelize = require("../config/database");
 const { deleteFile } = require("../utils/fileHelper");
 const { getPagination } = require("../utils/pagination");
+const { searchWhere } = require("../utils/search");
 
 // --- Controller Functions ---
 exports.getAllArticles = async (req, res) => {
   try {
     const options = { order: [["publishedAt", "DESC"]] };
+    const where = searchWhere(req.query.search, ["title", "mainDescription", "author"]);
+    if (where) {
+      options.where = where;
+    }
     const pagination = getPagination(req.query);
     let data;
     let meta;

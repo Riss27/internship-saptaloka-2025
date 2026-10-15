@@ -8,22 +8,33 @@ import { useTranslation } from "react-i18next";
 const ProductsPage = () => {
   const { t } = useTranslation();
 
-  const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [deferredSearch, setDeferredSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState(null);
 
+  // Tunda query 400ms biar tidak request tiap ketikan
   useEffect(() => {
-    const hasFilter = Boolean(searchQuery.trim()) || selectedCategory !== "All";
+    const handler = setTimeout(() => setDeferredSearch(searchQuery), 400);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  useEffect(() => {
     let active = true;
     apiClient
-      .get(hasFilter ? "/api/products" : `/api/products?page=${page}&limit=12`)
+      .get("/api/products", {
+        params: {
+          page,
+          limit: 12,
+          ...(deferredSearch.trim() && { search: deferredSearch.trim() }),
+          ...(selectedCategory !== "All" && { category: selectedCategory }),
+        },
+      })
       .then((response) => {
         if (!active) return;
-        setProducts(response.data.data);
         setFilteredProducts(response.data.data);
         setMeta(response.data.meta || null);
         setIsLoading(false);
@@ -36,30 +47,11 @@ const ProductsPage = () => {
     return () => {
       active = false;
     };
-  }, [page, searchQuery, selectedCategory]);
+  }, [page, deferredSearch, selectedCategory]);
 
   useEffect(() => {
     setPage(1);
-  }, [selectedCategory, searchQuery]);
-
-  useEffect(() => {
-    let filtered = products;
-
-    if (selectedCategory !== "All") {
-      filtered = filtered.filter((product) => product.category === selectedCategory);
-    }
-
-    if (searchQuery.trim() !== "") {
-      filtered = filtered.filter((product) => {
-        const nameMatch = product.name?.toLowerCase().includes(searchQuery.toLowerCase());
-        const descriptionMatch = product.description?.toLowerCase().includes(searchQuery.toLowerCase());
-        const categoryMatch = product.category?.toLowerCase().includes(searchQuery.toLowerCase());
-        return nameMatch || descriptionMatch || categoryMatch;
-      });
-    }
-
-    setFilteredProducts(filtered);
-  }, [selectedCategory, searchQuery, products]);
+  }, [selectedCategory, deferredSearch]);
 
   const handleClearSearch = () => {
     setSearchQuery("");
@@ -103,7 +95,7 @@ const ProductsPage = () => {
 
             {(searchQuery || selectedCategory !== "All") && (
               <p className="text-slate-400 text-sm mt-3">
-                {t("Menampilkan")} <span className="text-emerald-700 font-semibold">{filteredProducts.length}</span> {t("dari")} <span className="text-emerald-900 font-semibold">{products.length}</span> {t("produk")}
+                {t("Menampilkan")} <span className="text-emerald-700 font-semibold">{meta?.total ?? filteredProducts.length}</span> {t("produk")}
               </p>
             )}
           </div>

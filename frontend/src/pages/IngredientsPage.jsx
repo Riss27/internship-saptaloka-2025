@@ -6,23 +6,34 @@ import { Search, X, FlaskConical } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const IngredientsPage = () => {
-  const [ingredients, setIngredients] = useState([]);
   const [filteredIngredients, setFilteredIngredients] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [deferredSearch, setDeferredSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
 
+  // Tunda query 400ms biar tidak request tiap ketikan
   useEffect(() => {
-    const hasFilter = Boolean(searchQuery.trim()) || selectedCategory !== "All";
+    const handler = setTimeout(() => setDeferredSearch(searchQuery), 400);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  useEffect(() => {
     let active = true;
     apiClient
-      .get(hasFilter ? "/api/ingredients" : `/api/ingredients?page=${page}&limit=12`)
+      .get("/api/ingredients", {
+        params: {
+          page,
+          limit: 12,
+          ...(deferredSearch.trim() && { search: deferredSearch.trim() }),
+          ...(selectedCategory !== "All" && { category: selectedCategory }),
+        },
+      })
       .then((response) => {
         if (!active) return;
-        setIngredients(response.data.data);
         setFilteredIngredients(response.data.data);
         setMeta(response.data.meta || null);
         setIsLoading(false);
@@ -35,30 +46,11 @@ const IngredientsPage = () => {
     return () => {
       active = false;
     };
-  }, [page, searchQuery, selectedCategory]);
+  }, [page, deferredSearch, selectedCategory]);
 
   useEffect(() => {
     setPage(1);
-  }, [selectedCategory, searchQuery]);
-
-  useEffect(() => {
-    let filtered = ingredients;
-
-    if (selectedCategory !== "All") {
-      filtered = filtered.filter((ing) => ing.category === selectedCategory);
-    }
-
-    if (searchQuery.trim() !== "") {
-      filtered = filtered.filter((ing) => {
-        const nameMatch = ing.name?.toLowerCase().includes(searchQuery.toLowerCase());
-        const categoryMatch = ing.category?.toLowerCase().includes(searchQuery.toLowerCase());
-        const descriptionMatch = ing.description?.toLowerCase().includes(searchQuery.toLowerCase());
-        return nameMatch || categoryMatch || descriptionMatch;
-      });
-    }
-
-    setFilteredIngredients(filtered);
-  }, [selectedCategory, searchQuery, ingredients]);
+  }, [selectedCategory, deferredSearch]);
 
   const handleClearSearch = () => {
     setSearchQuery("");
@@ -103,7 +95,7 @@ const IngredientsPage = () => {
 
             {(searchQuery || selectedCategory !== "All") && (
               <p className="text-slate-400 text-sm mt-3">
-                {t("static.showing", "Menampilkan")} <span className="text-emerald-700 font-semibold">{filteredIngredients.length}</span> {t("static.of", "dari")} <span className="text-emerald-900 font-semibold">{ingredients.length}</span>{" "}
+                {t("static.showing", "Menampilkan")} <span className="text-emerald-700 font-semibold">{meta?.total ?? filteredIngredients.length}</span>{" "}
                 {t("static.items", "bahan")}
               </p>
             )}

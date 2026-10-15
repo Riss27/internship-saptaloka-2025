@@ -3,6 +3,7 @@ const upload = require("../middlewares/upload");
 const fs = require("fs");
 const path = require("path");
 const { getPagination } = require("../utils/pagination");
+const { searchWhere } = require("../utils/search");
 
 // Controller untuk (CREATE) - Membuat ingredient baru
 exports.createIngredient = async (req, res) => {
@@ -35,14 +36,15 @@ exports.createIngredient = async (req, res) => {
 // Controller untuk (READ) - Mendapatkan semua ingredient
 exports.getAllIngredients = async (req, res) => {
   try {
-    // Ambil query 'category' dari URL
-    const { category } = req.query;
-    const filterOptions = {};
+    // Ambil query 'category' dan 'search' dari URL
+    const { category, search } = req.query;
 
-    // Jika ada query 'category', tambahkan kondisi 'where'
-    if (category) {
-      filterOptions.where = { category: category };
-    }
+    const filterOptions = {
+      where: {
+        ...(category && { category }),
+        ...searchWhere(search, ["name", "description", "category"]),
+      },
+    };
 
     // Lakukan pencarian dengan opsi filter
     const pagination = getPagination(req.query);

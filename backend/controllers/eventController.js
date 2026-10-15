@@ -4,7 +4,7 @@ const EventRegistration = require("../models/EventRegistration");
 const { deleteFile } = require("../utils/fileHelper");
 const { getPagination } = require("../utils/pagination");
 const sequelize = require("../config/database");
-const { Op } = require("sequelize");
+const { searchWhere } = require("../utils/search");
 
 // Buang origin dari URL gambar yang dikirim client, simpan sebagai path relatif
 // (mis. "http://localhost:3000/uploads/x.png" -> "/uploads/x.png")
@@ -30,12 +30,9 @@ exports.getAllEvents = async (req, res) => {
       },
     };
 
-    if (search) {
-      options.where = {
-        title: {
-          [Op.like]: `%${search}%`,
-        },
-      };
+    const where = searchWhere(search, ["title", "description", "location", "category"]);
+    if (where) {
+      options.where = where;
     }
 
     const pagination = getPagination(req.query);

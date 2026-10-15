@@ -31,6 +31,22 @@ test("GET /api/products?page=1&limit=5 -> terpaginasi dengan meta", async () => 
   assert.ok(res.body.meta.totalPages >= 1);
 });
 
+test("GET /api/products?search=parfum -> hanya yang cocok, ada meta", async () => {
+  const res = await request(app).get("/api/products?search=parfum&page=1&limit=5").expect(200);
+  assert.equal(res.body.status, "success");
+  assert.ok(res.body.meta.total >= 1);
+  for (const item of res.body.data) {
+    const haystack = `${item.name} ${item.description} ${item.category}`.toLowerCase();
+    assert.ok(haystack.includes("parfum"), "hasil search harus mengandung query");
+  }
+});
+
+test("GET /api/products?search=nihil -> hasil kosong", async () => {
+  const res = await request(app).get("/api/products?search=zzz-nihil-tidak-mungkin-ada&page=1&limit=5").expect(200);
+  assert.equal(res.body.data.length, 0);
+  assert.equal(res.body.meta.total, 0);
+});
+
 test("GET /api/events -> punya registeredCount, tidak membocorkan data pendaftar", async () => {
   const res = await request(app).get("/api/events").expect(200);
   assert.equal(res.body.status, "success");
