@@ -98,12 +98,16 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
             onClick={handleNavClick}
             className={({ isActive }) =>
               [
-                "flex items-center min-h-11 relative py-2 px-3 rounded-buttons-outlined uppercase text-xs font-medium tracking-wide transition-colors",
-                isMobile ? "w-full px-4 justify-between" : "",
+                // Navigation is text, not buttons. A container on every item
+                // turned the header into a row of pills; the active state is a
+                // hairline rule instead, which is what the system calls for.
+                "relative flex items-center min-h-11 py-2 transition-colors",
+                "uppercase text-xs font-medium tracking-[0.14em]",
+                isMobile ? "w-full px-2 justify-between" : "px-1",
                 FOCUS_RING,
                 isActive
-                  ? "bg-brand-600 text-cream"
-                  : "text-cream/80 hover:bg-brand-700 hover:text-cream",
+                  ? "text-cream after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:bg-brand-400"
+                  : "text-cream/70 hover:text-cream",
               ].join(" ")
             }
           >
@@ -114,6 +118,7 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
     }
 
     const panelId = `nav-dropdown-${idx}`;
+    const open = dropdownOpen === idx;
 
     return (
       <motion.div
@@ -125,42 +130,28 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
         animate={isMobile ? "visible" : "initial"}
         custom={idx}
       >
-        <motion.button
+        <button
           type="button"
-          onClick={() => setDropdownOpen(dropdownOpen === idx ? null : idx)}
-          aria-expanded={dropdownOpen === idx}
+          onClick={() => setDropdownOpen(open ? null : idx)}
+          aria-expanded={open}
           aria-haspopup="true"
           aria-controls={panelId}
           className={[
-            "flex items-center justify-between gap-2 min-h-11 py-2 px-3 rounded-buttons-outlined uppercase text-xs font-medium tracking-wide transition-colors",
-            isMobile ? "w-full px-4" : "",
+            "relative flex items-center gap-1.5 min-h-11 py-2 transition-colors",
+            "uppercase text-xs font-medium tracking-[0.14em]",
+            isMobile ? "w-full px-2" : "px-1",
             FOCUS_RING,
-            dropdownOpen === idx
-              ? "bg-brand-600 text-cream"
-              : "text-cream/80 hover:bg-brand-700 hover:text-cream",
+            open
+              ? "text-cream after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:bg-brand-400"
+              : "text-cream/70 hover:text-cream",
           ].join(" ")}
-          whileHover={!isMobile && !prefersReducedMotion ? { scale: 1.02 } : {}}
-          whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
         >
           {item.name}
-          <motion.svg
-            className="w-3.5 h-3.5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <ChevronDown
             aria-hidden="true"
-            focusable="false"
-            animate={{ rotate: dropdownOpen === idx ? 180 : 0 }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </motion.svg>
-        </motion.button>
+            className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 motion-reduce:transition-none ${open ? "rotate-180" : ""}`}
+          />
+        </button>
 
         <AnimatePresence>
           {dropdownOpen === idx && (
@@ -176,25 +167,24 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
               animate="visible"
               exit="exit"
             >
-              {item.dropdown.map((sub, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                    transition: { delay: prefersReducedMotion ? 0 : i * 0.05 },
-                  }}
-                  whileHover={prefersReducedMotion ? {} : { x: 5 }}
+              {item.dropdown.map((sub) => (
+                <NavLink
+                  key={sub.to}
+                  to={sub.to}
+                  onClick={handleNavClick}
+                  className={({ isActive }) =>
+                    [
+                      "flex items-center min-h-11 px-3 transition-colors",
+                      "uppercase text-xs font-medium tracking-[0.14em]",
+                      FOCUS_RING,
+                      isActive
+                        ? "text-cream border-l border-brand-400 pl-2.5"
+                        : "text-cream/70 hover:text-cream border-l border-transparent pl-2.5",
+                    ].join(" ")
+                  }
                 >
-                  <NavLink
-                    to={sub.to}
-                    onClick={handleNavClick}
-                    className={`flex items-center min-h-11 px-4 rounded-buttons-outlined text-cream/80 transition-colors hover:bg-brand-800 hover:text-cream ${FOCUS_RING}`}
-                  >
-                    {sub.name}
-                  </NavLink>
-                </motion.div>
+                  {sub.name}
+                </NavLink>
               ))}
             </motion.div>
           )}
@@ -233,7 +223,7 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
           </motion.span>
         </NavLink>
 
-        <div className="hidden lg:flex items-center gap-6">
+        <div className="hidden lg:flex items-center gap-7 xl:gap-9">
           {menuItems.map((item, idx) => renderMenuItem(item, idx))}
         </div>
 
