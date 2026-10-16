@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FiTag, FiCalendar } from "react-icons/fi";
+import { Tag, Calendar } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
@@ -59,14 +59,20 @@ const WorkshopCard = ({ workshop }) => {
         <div className="space-y-2.5 text-cream/80 text-sm flex-grow mb-4">
           {workshop.category && (
             <div className="flex items-center gap-2.5">
-              <FiTag className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
+              <Tag
+                className="w-4 h-4 text-brand-400 flex-shrink-0"
+                aria-hidden="true"
+              />
               <span>{workshop.category}</span>
             </div>
           )}
 
           {workshop.Events && workshop.Events.length > 0 && (
             <div className="flex items-center gap-2.5">
-              <FiCalendar className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
+              <Calendar
+                className="w-4 h-4 text-brand-400 flex-shrink-0"
+                aria-hidden="true"
+              />
               <span>
                 {workshop.Events.length}{" "}
                 {workshop.Events.length === 1 ? "Event" : "Events"}

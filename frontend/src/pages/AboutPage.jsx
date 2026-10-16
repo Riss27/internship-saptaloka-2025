@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
-import { FiMapPin, FiPhone, FiMail, FiInstagram } from "react-icons/fi";
+import { MapPin, Phone, Mail, Instagram } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const FOCUS_RING =
@@ -109,7 +109,7 @@ const AboutPage = () => {
               <div className="space-y-5">
                 <div className="flex items-center gap-3">
                   <div className="shrink-0 w-11 h-11 bg-brand-600 rounded-inputs grid place-items-center">
-                    <FiMapPin className="w-5 h-5 text-cream" aria-hidden="true" />
+                    <MapPin className="w-5 h-5 text-cream" aria-hidden="true" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-cream/70 mb-1 font-medium uppercase tracking-wide">
@@ -123,7 +123,7 @@ const AboutPage = () => {
 
                 <div className="flex items-center gap-3">
                   <div className="shrink-0 w-11 h-11 bg-brand-600 rounded-inputs grid place-items-center">
-                    <FiPhone className="w-5 h-5 text-cream" aria-hidden="true" />
+                    <Phone className="w-5 h-5 text-cream" aria-hidden="true" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-cream/70 mb-1 font-medium uppercase tracking-wide">
@@ -140,7 +140,7 @@ const AboutPage = () => {
 
                 <div className="flex items-center gap-3">
                   <div className="shrink-0 w-11 h-11 bg-brand-600 rounded-inputs grid place-items-center">
-                    <FiMail className="w-5 h-5 text-cream" aria-hidden="true" />
+                    <Mail className="w-5 h-5 text-cream" aria-hidden="true" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-cream/70 mb-1 font-medium uppercase tracking-wide">
@@ -158,7 +158,10 @@ const AboutPage = () => {
                 {aboutInfo.instagram && (
                   <div className="flex items-center gap-3">
                     <div className="shrink-0 w-11 h-11 bg-brand-600 rounded-inputs grid place-items-center">
-                      <FiInstagram className="w-5 h-5 text-cream" aria-hidden="true" />
+                      <Instagram
+                        className="w-5 h-5 text-cream"
+                        aria-hidden="true"
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-cream/70 mb-1 font-medium uppercase tracking-wide">

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import {
-  FiShoppingCart,
-  FiTag,
-  FiFileText,
-  FiArrowLeft,
-  FiAlertCircle,
-} from "react-icons/fi";
+  ShoppingCart,
+  Tag,
+  FileText,
+  ArrowLeft,
+  CircleAlert,
+} from "lucide-react";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
 import { useTranslation } from "react-i18next";
 import RichTextDisplay from "../../common/RichTextDisplay";
@@ -82,7 +82,10 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
       <div className="bg-brand-900 min-h-[60vh] flex items-center justify-center px-4 py-10 sm:py-12">
         <div className="bg-brand-800 border border-border rounded-cards p-6 sm:p-8 max-w-md w-full text-center">
           <span className="inline-grid place-items-center w-20 h-20 rounded-full bg-brand-700 border border-brand-400 mb-5">
-            <FiAlertCircle className="w-10 h-10 text-brand-400" aria-hidden="true" />
+            <CircleAlert
+              className="w-10 h-10 text-brand-400"
+              aria-hidden="true"
+            />
           </span>
           <h1 className="text-xl font-medium text-cream mb-2 uppercase tracking-wide">
             {t("static.error_title")}
@@ -140,7 +143,7 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
           onClick={() => navigate(-1)}
           className={`inline-flex items-center gap-2 min-h-11 text-cream/80 hover:text-cream transition-colors mb-4 sm:mb-6 ${FOCUS_RING}`}
         >
-          <FiArrowLeft className="w-4 h-4 shrink-0" aria-hidden="true" />
+          <ArrowLeft className="w-4 h-4 shrink-0" aria-hidden="true" />
           <span className="font-medium uppercase tracking-wide text-sm">
             {t("back")}
           </span>
@@ -205,7 +208,10 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
                     rel="noopener noreferrer"
                     className={`inline-flex items-center justify-center gap-2 min-h-11 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide py-3 px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
                   >
-                    <FiShoppingCart className="w-5 h-5 shrink-0" aria-hidden="true" />
+                    <ShoppingCart
+                      className="w-5 h-5 shrink-0"
+                      aria-hidden="true"
+                    />
                     <span>{t("shopee")}</span>
                   </a>
                 )}
@@ -216,7 +222,10 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
                     rel="noopener noreferrer"
                     className={`inline-flex items-center justify-center gap-2 min-h-11 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide py-3 px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
                   >
-                    <FiShoppingCart className="w-5 h-5 shrink-0" aria-hidden="true" />
+                    <ShoppingCart
+                      className="w-5 h-5 shrink-0"
+                      aria-hidden="true"
+                    />
                     <span>{t("tokopedia")}</span>
                   </a>
                 )}
@@ -226,7 +235,10 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
             {/* Kategori */}
             {item.category && (
               <div className="flex items-center gap-3 bg-brand-700 rounded-inputs p-4 border border-border flex-wrap">
-                <FiTag className="w-4 h-4 shrink-0 text-cream/80" aria-hidden="true" />
+                <Tag
+                  className="w-4 h-4 shrink-0 text-cream/80"
+                  aria-hidden="true"
+                />
                 <span className="text-cream/80 text-sm font-medium uppercase tracking-wide">
                   {t("static.category")}:
                 </span>
@@ -239,7 +251,10 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
             {/* Deskripsi */}
             <div className="bg-brand-700 rounded-inputs p-5 border border-border">
               <h2 className="flex items-center gap-2.5 text-lg font-medium text-cream mb-3 uppercase tracking-wide">
-                <FiFileText className="w-5 h-5 shrink-0 text-brand-400" aria-hidden="true" />
+                <FileText
+                  className="w-5 h-5 shrink-0 text-brand-400"
+                  aria-hidden="true"
+                />
                 <span>{t("static.description")}</span>
               </h2>
               <div className="text-cream/90 leading-relaxed bg-brand-900 rounded-inputs p-4 border border-border">

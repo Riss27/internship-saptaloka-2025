@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
-import {
-  FiType,
-  FiFileText,
-  FiImage,
-  FiSave,
-  FiUploadCloud,
-} from "react-icons/fi";
+import { Type, FileText, Image as ImageIcon, Save, Upload } from "lucide-react";
 import API_BASE from "../../../lib/apiBase";
 
 // Komponen InputField dengan Ikon
@@ -184,7 +178,7 @@ const AddLandingHeadingPage = () => {
               onChange={handleChange}
               required={true}
               placeholder="Contoh: 'Welcome to Our Platform'"
-              icon={<FiType />}
+              icon={<Type aria-hidden="true" className="w-5 h-5" />}
               maxLength={100}
             />
 
@@ -196,7 +190,7 @@ const AddLandingHeadingPage = () => {
               onChange={handleChange}
               required={true}
               placeholder="Deskripsi singkat untuk slide..."
-              icon={<FiFileText />}
+              icon={<FileText aria-hidden="true" className="w-5 h-5" />}
               maxLength={500}
             />
 
@@ -232,7 +226,10 @@ const AddLandingHeadingPage = () => {
             {/* Image Upload */}
             <div className="mb-6">
               <label className="mb-2 font-medium text-cream/80 flex items-center gap-2">
-                <FiImage className="text-brand-400" />
+                <ImageIcon
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-400"
+                />
                 Slide Image
                 <span className="text-red-400 ml-1">*</span>
               </label>
@@ -257,7 +254,10 @@ const AddLandingHeadingPage = () => {
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-                        <FiUploadCloud className="h-12 w-12 text-cream mb-2" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-cream mb-2"
+                        />
                         <span className="text-cream font-semibold">
                           Click to change image
                         </span>
@@ -269,7 +269,10 @@ const AddLandingHeadingPage = () => {
                   ) : (
                     <div className="text-center p-6">
                       <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-brand-800 flex items-center justify-center">
-                        <FiUploadCloud className="h-10 w-10 text-brand-400" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-brand-400"
+                        />
                       </div>
                       <span className="block text-cream/80 font-semibold mb-1">
                         Click to upload slide image
@@ -317,7 +320,7 @@ const AddLandingHeadingPage = () => {
                 ></path>
               </svg>
             ) : (
-              <FiSave className="mr-2" />
+              <Save aria-hidden="true" className="w-5 h-5 mr-2" />
             )}
             {isLoading
               ? "Saving..."

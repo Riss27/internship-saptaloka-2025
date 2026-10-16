@@ -1,5 +1,5 @@
 import React from "react";
-import { FiTool } from "react-icons/fi";
+import { Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const FOCUS_RING =
@@ -11,7 +11,7 @@ const ComingSoonPage = () => {
       <div className="max-w-xl w-full text-center">
         {/* Icon */}
         <span className="inline-grid place-items-center w-24 h-24 bg-brand-700 rounded-full mb-6">
-          <FiTool className="w-11 h-11 text-brand-400" aria-hidden="true" />
+          <Wrench className="w-11 h-11 text-brand-400" aria-hidden="true" />
         </span>
 
         {/* Title */}

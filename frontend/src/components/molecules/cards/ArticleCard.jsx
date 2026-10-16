@@ -46,7 +46,10 @@ const ArticleCard = ({ article }) => {
           </h3>
 
           <div className="mt-auto flex items-center gap-2 text-cream/80 text-sm">
-            <Calendar className="w-4 h-4 shrink-0 text-brand-400" aria-hidden="true" />
+            <Calendar
+              className="w-4 h-4 shrink-0 text-brand-400"
+              aria-hidden="true"
+            />
             <span>{formattedDate}</span>
           </div>
         </div>

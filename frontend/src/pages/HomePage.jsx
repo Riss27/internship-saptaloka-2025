@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 // The lint config does not track JSX usage, so the motion import looks unused.
 // eslint-disable-next-line no-unused-vars
 import { motion, useReducedMotion } from "framer-motion";
+import { reveal, cardHover } from "../lib/motion";
 import Carousel from "../components/organisms/home/Carousel";
 import ProductCard from "../components/molecules/cards/ProductCard";
 import ArticleCard from "../components/molecules/cards/ArticleCard";
@@ -48,22 +49,10 @@ const HomePage = () => {
     })();
   }, []);
 
-  // Reveal sections as the reader scrolls. When reduced motion is requested the
-  // content simply appears in place instead of fading and sliding up.
-  const fadeUp = (delay = 0) => {
-    if (prefersReducedMotion) {
-      return { initial: false, animate: {} };
-    }
-    return {
-      initial: { opacity: 0, y: 30 },
-      whileInView: { opacity: 1, y: 0 },
-      transition: { duration: 0.6, delay },
-      viewport: { once: true },
-    };
-  };
-
-  const hoverLift = (transforms) =>
-    prefersReducedMotion ? {} : { whileHover: transforms };
+  // Reveal timing and hover behaviour come from the shared motion vocabulary in
+  // lib/motion.js, so every section on this page moves on the same curve.
+  const fadeUp = (index) => reveal(prefersReducedMotion, index);
+  const hoverLift = () => cardHover(prefersReducedMotion);
 
   if (loading) {
     return (
@@ -171,7 +160,7 @@ const HomePage = () => {
                 <motion.div
                   key={i}
                   {...fadeUp(i * 0.1)}
-                  {...hoverLift({ scale: 1.02 })}
+                  {...hoverLift()}
                   className="h-full"
                 >
                   <ServiceCard
@@ -189,7 +178,7 @@ const HomePage = () => {
                 <motion.div
                   key={i + 3}
                   {...fadeUp((i + 3) * 0.1)}
-                  {...hoverLift({ scale: 1.02 })}
+                  {...hoverLift()}
                   className="h-full w-full sm:w-[calc(50%-10px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-20px)] lg:max-w-none"
                 >
                   <ServiceCard
@@ -215,7 +204,7 @@ const HomePage = () => {
                 <motion.div
                   key={e.id}
                   {...fadeUp(i * 0.1)}
-                  {...hoverLift({ y: -4 })}
+                  {...hoverLift()}
                   className="h-full"
                 >
                   <Link
@@ -268,7 +257,7 @@ const HomePage = () => {
                 <motion.div
                   key={p.id}
                   {...fadeUp(i * 0.1)}
-                  {...hoverLift({ y: -4 })}
+                  {...hoverLift()}
                   className="h-full"
                 >
                   <ProductCard product={p} />
@@ -294,7 +283,7 @@ const HomePage = () => {
                 <motion.div
                   key={a.id}
                   {...fadeUp(i * 0.1)}
-                  {...hoverLift({ y: -4 })}
+                  {...hoverLift()}
                   className="h-full"
                 >
                   <ArticleCard article={a} />
@@ -325,7 +314,7 @@ const HomePage = () => {
               <motion.figure
                 key={g.id}
                 {...fadeUp(i * 0.05)}
-                {...hoverLift({ scale: 1.02 })}
+                {...hoverLift()}
                 className="relative group flex-shrink-0 w-[280px] sm:w-[350px] h-[220px] rounded-cards overflow-hidden snap-center bg-brand-700"
               >
                 <img

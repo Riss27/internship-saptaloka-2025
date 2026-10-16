@@ -7,19 +7,20 @@ import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
 import TextAlign from "@tiptap/extension-text-align";
 import {
-  FiBold,
-  FiItalic,
-  FiUnderline,
-  FiCode,
-  FiLink,
-  FiList,
-  FiAlignLeft,
-  FiAlignCenter,
-  FiAlignRight,
-  FiAlignJustify,
-  FiRefreshCw,
-} from "react-icons/fi";
-import { MdFormatStrikethrough, MdFormatListNumbered } from "react-icons/md";
+  Bold,
+  Italic,
+  Underline as UnderlineIcon,
+  Code,
+  Link as LinkIcon,
+  List,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  RefreshCw,
+  Strikethrough,
+  ListOrdered,
+} from "lucide-react";
 
 const RichTextEditor = ({ content, onUpdate, maxLength }) => {
   const [charCount, setCharCount] = React.useState(0);
@@ -91,8 +92,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Bold"
+          aria-label="Bold"
         >
-          <FiBold size={16} />
+          <Bold aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <button
@@ -104,8 +106,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Italic"
+          aria-label="Italic"
         >
-          <FiItalic size={16} />
+          <Italic aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <button
@@ -117,8 +120,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Underline"
+          aria-label="Underline"
         >
-          <FiUnderline size={16} />
+          <UnderlineIcon aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <button
@@ -130,8 +134,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Strikethrough"
+          aria-label="Strikethrough"
         >
-          <MdFormatStrikethrough size={16} />
+          <Strikethrough aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <button
@@ -143,8 +148,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Code"
+          aria-label="Code"
         >
-          <FiCode size={16} />
+          <Code aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <div className="w-px h-8 bg-brand-700 mx-1"></div>
@@ -159,8 +165,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Add Link"
+          aria-label="Add Link"
         >
-          <FiLink size={16} />
+          <LinkIcon aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <div className="w-px h-8 bg-brand-700 mx-1"></div>
@@ -175,8 +182,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Bullet List"
+          aria-label="Bullet List"
         >
-          <FiList size={16} />
+          <List aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <button
@@ -188,8 +196,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Numbered List"
+          aria-label="Numbered List"
         >
-          <MdFormatListNumbered size={16} />
+          <ListOrdered aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <div className="w-px h-8 bg-brand-700 mx-1"></div>
@@ -233,8 +242,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Align Left"
+          aria-label="Align Left"
         >
-          <FiAlignLeft size={16} />
+          <AlignLeft aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <button
@@ -246,8 +256,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Align Center"
+          aria-label="Align Center"
         >
-          <FiAlignCenter size={16} />
+          <AlignCenter aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <button
@@ -259,8 +270,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Align Right"
+          aria-label="Align Right"
         >
-          <FiAlignRight size={16} />
+          <AlignRight aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <button
@@ -272,8 +284,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               : "text-cream/80"
           }`}
           title="Justify"
+          aria-label="Justify"
         >
-          <FiAlignJustify size={16} />
+          <AlignJustify aria-hidden="true" className="w-4 h-4" />
         </button>
 
         <div className="w-px h-8 bg-brand-700 mx-1"></div>
@@ -286,8 +299,9 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
           }
           className="p-2 rounded bg-brand-700 transition-colors text-cream/80"
           title="Clear Formatting"
+          aria-label="Clear Formatting"
         >
-          <FiRefreshCw size={16} />
+          <RefreshCw aria-hidden="true" className="w-4 h-4" />
         </button>
       </div>
 

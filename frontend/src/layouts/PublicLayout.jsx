@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+// The lint config does not track JSX usage, so the motion imports look unused.
+// eslint-disable-next-line no-unused-vars
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Navbar, Footer, TopNavbar } from "../components/organisms/navigation";
+import { pageTransition } from "../lib/motion";
 
 // The header is two bars stacked together: the branding TopNavbar and the main
 // Navbar. We measure both and publish the result as CSS custom properties so any
@@ -15,6 +19,17 @@ const PublicLayout = () => {
   const [paddingTop, setPaddingTop] = useState(0);
   const [topNavHeight, setTopNavHeight] = useState(0);
   const [mainNavHeight, setMainNavHeight] = useState(0);
+
+  // The route pathname keys the page transition, so navigating fades the old
+  // page out before the new one arrives instead of swapping them instantly.
+  const location = useLocation();
+  const prefersReducedMotion = useReducedMotion();
+
+  // Every navigation starts at the top. Without this the browser restores the
+  // previous scroll position and a route change looks like a glitch.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [location.pathname]);
 
   useEffect(() => {
     const updateHeights = () => {
@@ -68,8 +83,19 @@ const PublicLayout = () => {
         isTopNavbarVisible={isTopVisible}
         topNavbarHeight={topNavHeight}
       />
-      <main id="main-content" style={{ paddingTop: `${paddingTop}px` }} className="flex-grow">
-        <Outlet />
+      <main
+        id="main-content"
+        style={{ paddingTop: `${paddingTop}px` }}
+        className="flex-grow"
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={location.pathname}
+            {...pageTransition(prefersReducedMotion)}
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
       <Footer />
     </div>

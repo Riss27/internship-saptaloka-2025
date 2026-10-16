@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { FiX } from "react-icons/fi";
+import { X } from "lucide-react";
 
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
@@ -62,7 +62,7 @@ const Popup = ({ isOpen, onClose, title, children }) => {
             aria-label="Close the dialog"
             className={`flex-shrink-0 h-11 w-11 grid place-items-center rounded-full text-cream bg-brand-800 hover:bg-brand-600 transition-colors ${FOCUS_RING}`}
           >
-            <FiX size={20} aria-hidden="true" />
+            <X aria-hidden="true" className="w-5 h-5" />
           </button>
         </div>
 

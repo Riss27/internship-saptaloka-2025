@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
-import { FiPlus, FiEdit, FiTrash2 } from "react-icons/fi";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import API_BASE from "../../../lib/apiBase";
 
 const ArticlePage = () => {
@@ -47,7 +47,7 @@ const ArticlePage = () => {
           to="/admin/articles/add"
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-500  rounded-lg font-semibold text-cream transition-all duration-200 "
         >
-          <FiPlus className="text-lg" />
+          <Plus aria-hidden="true" className="w-5 h-5" />
           Add New Article
         </Link>
       </header>
@@ -90,15 +90,17 @@ const ArticlePage = () => {
                           to={`/admin/articles/edit/${article.id}`}
                           className="p-2.5 rounded-full bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 transition-all duration-200"
                           title="Edit"
+                          aria-label="Edit"
                         >
-                          <FiEdit size={18} />
+                          <Pencil aria-hidden="true" className="w-5 h-5" />
                         </Link>
                         <button
                           onClick={() => deleteArticle(article.id)}
                           className="p-2.5 rounded-full bg-red-500/10 text-red-500 bg-red-500/20 text-red-400 transition-all duration-200"
                           title="Delete"
+                          aria-label="Delete"
                         >
-                          <FiTrash2 size={18} />
+                          <Trash2 aria-hidden="true" className="w-5 h-5" />
                         </button>
                       </div>
                     </td>

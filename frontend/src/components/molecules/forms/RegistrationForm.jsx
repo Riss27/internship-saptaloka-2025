@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import apiClient from "../../../hooks/apiClient";
 import {
-  FiAlertCircle,
-  FiUser,
-  FiMail,
-  FiPhone,
-  FiChevronDown,
-  FiUsers,
-} from "react-icons/fi";
+  CircleAlert,
+  User,
+  Mail,
+  Phone,
+  ChevronDown,
+  Users,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const RegistrationForm = ({ eventId, participantRoles }) => {
@@ -87,16 +87,13 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
           role="alert"
           className="flex items-start gap-2.5 bg-brand-700 border border-brand-400 text-cream p-3 rounded-cards text-sm"
         >
-          <FiAlertCircle
-            className="w-4 h-4 mt-0.5 shrink-0"
-            aria-hidden="true"
-          />
+          <CircleAlert className="w-4 h-4 mt-0.5 shrink-0" aria-hidden="true" />
           <span>{message.text}</span>
         </div>
       )}
 
       <div className="relative">
-        <FiUser className={fieldIconClass} aria-hidden="true" />
+        <User className={fieldIconClass} aria-hidden="true" />
         <input
           type="text"
           name="name"
@@ -110,7 +107,7 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
       </div>
 
       <div className="relative">
-        <FiMail className={fieldIconClass} aria-hidden="true" />
+        <Mail className={fieldIconClass} aria-hidden="true" />
         <input
           type="email"
           name="email"
@@ -124,7 +121,7 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
       </div>
 
       <div className="relative">
-        <FiPhone className={fieldIconClass} aria-hidden="true" />
+        <Phone className={fieldIconClass} aria-hidden="true" />
         <input
           type="tel"
           name="phone"
@@ -138,7 +135,7 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
       </div>
 
       <div className="relative">
-        <FiUsers className={fieldIconClass} aria-hidden="true" />
+        <Users className={fieldIconClass} aria-hidden="true" />
         <select
           name="role"
           aria-label={t("detail_pages.participants")}
@@ -153,7 +150,7 @@ const RegistrationForm = ({ eventId, participantRoles }) => {
             </option>
           ))}
         </select>
-        <FiChevronDown className={fieldTrailingIconClass} aria-hidden="true" />
+        <ChevronDown className={fieldTrailingIconClass} aria-hidden="true" />
       </div>
 
       <button

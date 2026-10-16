@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useReducedMotion } from "framer-motion";
 import apiClient from "../../../hooks/apiClient";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import API_BASE from "../../../lib/apiBase";
 
 const FOCUS_RING =
@@ -67,7 +67,7 @@ const Carousel = () => {
           aria-label="Show the previous slide"
           className={`h-11 w-11 grid place-items-center text-cream/80 hover:text-cream border border-cream/40 hover:border-cream rounded-full transition-colors ${FOCUS_RING}`}
         >
-          <FiChevronLeft size={20} aria-hidden="true" />
+          <ChevronLeft size={20} aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -75,7 +75,7 @@ const Carousel = () => {
           aria-label="Show the next slide"
           className={`h-11 w-11 grid place-items-center text-cream/80 hover:text-cream border border-cream/40 hover:border-cream rounded-full transition-colors ${FOCUS_RING}`}
         >
-          <FiChevronRight size={20} aria-hidden="true" />
+          <ChevronRight size={20} aria-hidden="true" />
         </button>
       </div>
 

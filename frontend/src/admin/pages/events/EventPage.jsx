@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
-import { FiPlus, FiSearch } from "react-icons/fi";
+import { Plus, Search } from "lucide-react";
 import EventList from "../../components/EventList";
 
 const EventPage = () => {
@@ -67,7 +67,7 @@ const EventPage = () => {
             to="/admin/events/add"
             className="bg-brand-600 hover:bg-brand-500 px-6 py-3 rounded-lg font-semibold text-cream no-underline whitespace-nowrap flex items-center justify-center transition-all duration-300"
           >
-            <FiPlus className="mr-2" size={18} /> New Event
+            <Plus aria-hidden="true" className="w-5 h-5 mr-2" /> New Event
           </Link>
         </div>
       </header>
@@ -76,7 +76,7 @@ const EventPage = () => {
       <div className="mb-6">
         <div className="relative">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
-            <FiSearch />
+            <Search aria-hidden="true" className="w-5 h-5" />
           </span>
           <input
             type="text"

@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import {
-  FiPlus,
-  FiTrash2,
-  FiEdit,
-  FiImage,
-  FiType,
-  FiFileText,
-  FiAlertCircle,
-} from "react-icons/fi";
+  Plus,
+  Trash2,
+  Pencil,
+  Image as ImageIcon,
+  Type,
+  FileText,
+  CircleAlert,
+} from "lucide-react";
 import API_BASE from "../../../lib/apiBase";
 
 const Homepage = () => {
@@ -89,7 +89,7 @@ const Homepage = () => {
             to="/admin/homepage/add"
             className="bg-brand-600 hover:bg-brand-500 px-6 py-3 rounded-lg font-semibold text-cream no-underline whitespace-nowrap flex items-center justify-center transition-all duration-300 hover:scale-105 transform"
           >
-            <FiPlus className="mr-2" size={18} />
+            <Plus aria-hidden="true" className="w-5 h-5 mr-2" />
             Tambah Slide Baru
           </Link>
         </div>
@@ -98,7 +98,10 @@ const Homepage = () => {
       {/* Error State */}
       {error && (
         <div className="mb-6 bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-center gap-3">
-          <FiAlertCircle className="text-red-400 flex-shrink-0" size={20} />
+          <CircleAlert
+            aria-hidden="true"
+            className="text-red-400 flex-shrink-0 w-5 h-5"
+          />
           <div>
             <p className="text-red-400 font-medium">Terjadi Kesalahan</p>
             <p className="text-red-300 text-sm">{error}</p>
@@ -118,7 +121,10 @@ const Homepage = () => {
           <div className="bg-gradient-to-br from-brand-700/60 to-brand-800/60 border border-border rounded-xl p-12 text-center">
             <div className="max-w-md mx-auto">
               <div className="w-20 h-20 bg-brand-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                <FiImage size={32} className="text-cream/60" />
+                <ImageIcon
+                  aria-hidden="true"
+                  className="text-cream/60 w-10 h-10"
+                />
               </div>
               <h3 className="text-xl font-semibold text-cream mb-3">
                 Belum Ada Slide Homepage
@@ -131,7 +137,7 @@ const Homepage = () => {
                 to="/admin/homepage/add"
                 className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-500 px-6 py-3 rounded-lg font-medium text-cream transition-colors duration-200"
               >
-                <FiPlus size={18} />
+                <Plus aria-hidden="true" className="w-5 h-5" />
                 Buat Slide Pertama
               </Link>
             </div>
@@ -162,20 +168,22 @@ const Homepage = () => {
                         to={`/admin/homepage/edit/${slide.id}`}
                         className="p-2.5 text-yellow-400 text-yellow-300 bg-yellow-500/10 rounded-lg transition-all duration-200 group/edit"
                         title="Edit slide"
+                        aria-label="Edit slide"
                       >
-                        <FiEdit
-                          size={18}
-                          className="group-hover/edit:scale-110 transition-transform duration-200"
+                        <Pencil
+                          aria-hidden="true"
+                          className="w-5 h-5 group-hover/edit:scale-110 transition-transform duration-200"
                         />
                       </Link>
                       <button
                         onClick={() => deleteSlide(slide.id)}
                         className="p-2.5 text-red-400 text-red-300 bg-red-500/10 rounded-lg transition-all duration-200 group/delete"
                         title="Hapus slide"
+                        aria-label="Hapus slide"
                       >
-                        <FiTrash2
-                          size={18}
-                          className="group-hover/delete:scale-110 transition-transform duration-200"
+                        <Trash2
+                          aria-hidden="true"
+                          className="w-5 h-5 group-hover/delete:scale-110 transition-transform duration-200"
                         />
                       </button>
                     </div>
@@ -190,7 +198,10 @@ const Homepage = () => {
                       {/* Heading */}
                       <div className="group/content">
                         <div className="flex items-center gap-2 mb-3">
-                          <FiType className="text-brand-400" size={18} />
+                          <Type
+                            aria-hidden="true"
+                            className="text-brand-400 w-5 h-5"
+                          />
                           <h3 className="font-semibold text-cream">Judul</h3>
                         </div>
                         <div className="bg-brand-700/30 rounded-lg p-4 border border-border/30">
@@ -207,7 +218,10 @@ const Homepage = () => {
                       {/* Paragraph */}
                       <div className="group/content">
                         <div className="flex items-center gap-2 mb-3">
-                          <FiFileText className="text-brand-400" size={18} />
+                          <FileText
+                            aria-hidden="true"
+                            className="text-brand-400 w-5 h-5"
+                          />
                           <h3 className="font-semibold text-cream">
                             Deskripsi
                           </h3>
@@ -227,7 +241,10 @@ const Homepage = () => {
                     {/* Image Content */}
                     <div>
                       <div className="flex items-center gap-2 mb-3">
-                        <FiImage className="text-brand-400" size={18} />
+                        <ImageIcon
+                          aria-hidden="true"
+                          className="text-brand-400 w-5 h-5"
+                        />
                         <h3 className="font-semibold text-cream">Gambar</h3>
                       </div>
                       <div className="bg-brand-700/30 rounded-lg p-4 border border-border/30 h-fit">
@@ -243,7 +260,10 @@ const Homepage = () => {
                         ) : (
                           <div className="w-full h-48 bg-brand-700/30 rounded-lg flex items-center justify-center">
                             <div className="text-center text-cream/70">
-                              <FiImage size={32} className="mx-auto mb-2" />
+                              <ImageIcon
+                                aria-hidden="true"
+                                className="mx-auto mb-2 w-10 h-10"
+                              />
                               <p className="text-sm">Tidak ada gambar</p>
                             </div>
                           </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FiEdit, FiTrash2, FiCalendar } from "react-icons/fi";
+import { Pencil, Trash2, Calendar } from "lucide-react";
 import RichTextDisplay from "../../components/common/RichTextDisplay";
 import API_BASE from "../../lib/apiBase";
 
@@ -46,7 +46,7 @@ const WorkshopList = ({ workshops, deleteWorkshop }) => {
                     key={event.id}
                     className="bg-brand-700 text-cream/80 text-sm px-3 py-1 rounded-full flex items-center"
                   >
-                    <FiCalendar className="mr-2" />
+                    <Calendar aria-hidden="true" className="w-4 h-4 mr-2" />
                     {event.title}
                   </span>
                 ))}
@@ -58,15 +58,17 @@ const WorkshopList = ({ workshops, deleteWorkshop }) => {
                 to={`/admin/workshop/edit/${workshop.id}`}
                 className="inline-flex items-center justify-center p-2 bg-yellow-500/20 text-yellow-300 rounded-full hover:bg-yellow-500/40 transition-colors"
                 title="Edit Workshop"
+                aria-label="Edit Workshop"
               >
-                <FiEdit />
+                <Pencil aria-hidden="true" className="w-4 h-4" />
               </Link>
               <button
                 onClick={() => deleteWorkshop(workshop.id)}
                 className="p-2 bg-red-500/20 text-red-400 rounded-full bg-red-500/40 transition-colors"
                 title="Delete Workshop"
+                aria-label="Delete Workshop"
               >
-                <FiTrash2 />
+                <Trash2 aria-hidden="true" className="w-4 h-4" />
               </button>
             </div>
           </div>

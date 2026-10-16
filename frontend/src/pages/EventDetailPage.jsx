@@ -5,13 +5,7 @@ import RegistrationForm from "../components/molecules/forms/RegistrationForm";
 import Popup from "../components/atoms/feedback/Popup";
 import RichTextDisplay from "../components/common/RichTextDisplay";
 import { useTranslation } from "react-i18next";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCalendar,
-  faMapPin,
-  faUsers,
-  faRupiahSign,
-} from "@fortawesome/free-solid-svg-icons";
+import { Calendar, MapPin, Users, CircleDollarSign } from "lucide-react";
 import API_BASE from "../lib/apiBase";
 
 const FOCUS_RING =
@@ -172,7 +166,9 @@ const EventDetailPage = () => {
 
             {/* Sidebar Info & Registrasi */}
             <aside className="order-1 lg:col-span-1">
-              <div className={`${STICKY_OFFSET} bg-brand-800 rounded-cards p-5 sm:p-6 border border-border space-y-4`}>
+              <div
+                className={`${STICKY_OFFSET} bg-brand-800 rounded-cards p-5 sm:p-6 border border-border space-y-4`}
+              >
                 <div className="flex flex-wrap justify-between items-center gap-3 border-b border-border pb-3">
                   <h2 className="text-lg sm:text-xl font-medium text-brand-400 uppercase tracking-wide">
                     {t("detail_pages.event_details")}
@@ -187,10 +183,9 @@ const EventDetailPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FontAwesomeIcon
-                    icon={faCalendar}
-                    className="w-4 h-4 mt-0.5 shrink-0 text-brand-400"
+                  <Calendar
                     aria-hidden="true"
+                    className="w-4 h-4 mt-0.5 shrink-0 text-brand-400"
                   />
                   <div className="min-w-0">
                     <p className="font-medium text-brand-400 uppercase text-xs tracking-wide">
@@ -204,10 +199,9 @@ const EventDetailPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FontAwesomeIcon
-                    icon={faMapPin}
-                    className="w-4 h-4 mt-0.5 shrink-0 text-brand-400"
+                  <MapPin
                     aria-hidden="true"
+                    className="w-4 h-4 mt-0.5 shrink-0 text-brand-400"
                   />
                   <div className="min-w-0">
                     <p className="font-medium text-brand-400 uppercase text-xs tracking-wide">
@@ -220,10 +214,9 @@ const EventDetailPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FontAwesomeIcon
-                    icon={faUsers}
-                    className="w-4 h-4 mt-0.5 shrink-0 text-brand-400"
+                  <Users
                     aria-hidden="true"
+                    className="w-4 h-4 mt-0.5 shrink-0 text-brand-400"
                   />
                   <div className="min-w-0">
                     <p className="font-medium text-brand-400 uppercase text-xs tracking-wide">
@@ -237,10 +230,9 @@ const EventDetailPage = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FontAwesomeIcon
-                    icon={faRupiahSign}
-                    className="w-4 h-4 mt-0.5 shrink-0 text-brand-400"
+                  <CircleDollarSign
                     aria-hidden="true"
+                    className="w-4 h-4 mt-0.5 shrink-0 text-brand-400"
                   />
                   <div className="min-w-0">
                     <p className="font-medium text-brand-400 uppercase text-xs tracking-wide">

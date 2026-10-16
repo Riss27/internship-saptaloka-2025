@@ -1,6 +1,12 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiEdit, FiTrash2, FiUsers, FiCalendar, FiImage } from "react-icons/fi";
+import {
+  Pencil,
+  Trash2,
+  Users,
+  Calendar,
+  Image as ImageIcon,
+} from "lucide-react";
 import API_BASE from "../../lib/apiBase";
 
 const EventList = ({ events, deleteEvent }) => {
@@ -17,7 +23,10 @@ const EventList = ({ events, deleteEvent }) => {
       <div className="bg-gradient-to-br from-brand-700/60 to-brand-800/60 rounded-xl border border-border backdrop-blur-sm">
         <div className="text-center py-20 px-6">
           <div className="mb-6">
-            <FiCalendar className="mx-auto text-cream/70 mb-4" size={48} />
+            <Calendar
+              aria-hidden="true"
+              className="mx-auto text-cream/70 mb-4 w-10 h-10"
+            />
           </div>
           <h3 className="text-cream/80 text-xl font-semibold mb-3">
             Tidak ada event yang ditemukan
@@ -83,7 +92,10 @@ const EventList = ({ events, deleteEvent }) => {
                       }}
                     />
                     <div className="absolute inset-0 bg-black/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <FiImage className="text-cream/70" size={20} />
+                      <ImageIcon
+                        aria-hidden="true"
+                        className="text-cream/70 w-5 h-5"
+                      />
                     </div>
                   </div>
                 </td>
@@ -122,7 +134,10 @@ const EventList = ({ events, deleteEvent }) => {
                 {/* Date dengan icon */}
                 <td className="p-5 align-middle">
                   <div className="flex items-center gap-2 text-cream/80">
-                    <FiCalendar className="text-cream/70" size={16} />
+                    <Calendar
+                      aria-hidden="true"
+                      className="text-cream/70 w-4 h-4"
+                    />
                     <span className="text-sm font-medium">
                       {formatDate(event.startDateTime)}
                     </span>
@@ -138,10 +153,11 @@ const EventList = ({ events, deleteEvent }) => {
                       }
                       className="group/btn flex items-center justify-center w-10 h-10 text-cream bg-brand-600 rounded-lg transition-all duration-300 ease-in-out transform "
                       title="Lihat Peserta Terdaftar"
+                      aria-label="Lihat Peserta Terdaftar"
                     >
-                      <FiUsers
-                        size={18}
-                        className="transition-transform group-hover/btn:scale-110"
+                      <Users
+                        aria-hidden="true"
+                        className="w-5 h-5 transition-transform group-hover/btn:scale-110"
                       />
                     </button>
 
@@ -150,10 +166,11 @@ const EventList = ({ events, deleteEvent }) => {
                       to={`/admin/events/edit/${event.id}`}
                       className="group/btn flex items-center justify-center w-10 h-10 text-cream bg-yellow-500 rounded-lg transition-all duration-300 ease-in-out transform "
                       title="Edit Event"
+                      aria-label="Edit Event"
                     >
-                      <FiEdit
-                        size={18}
-                        className="transition-transform group-hover/btn:scale-110"
+                      <Pencil
+                        aria-hidden="true"
+                        className="w-5 h-5 transition-transform group-hover/btn:scale-110"
                       />
                     </Link>
 
@@ -162,10 +179,11 @@ const EventList = ({ events, deleteEvent }) => {
                       onClick={() => deleteEvent(event.id)}
                       className="group/btn flex items-center justify-center w-10 h-10 text-cream bg-red-500 rounded-lg transition-all duration-300 ease-in-out transform "
                       title="Hapus Event"
+                      aria-label="Hapus Event"
                     >
-                      <FiTrash2
-                        size={18}
-                        className="transition-transform group-hover/btn:scale-110"
+                      <Trash2
+                        aria-hidden="true"
+                        className="w-5 h-5 transition-transform group-hover/btn:scale-110"
                       />
                     </button>
                   </div>

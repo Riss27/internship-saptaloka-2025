@@ -1,43 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
-  FiChevronDown,
-  FiChevronUp,
-  FiHome,
-  FiGrid,
-  FiInfo,
-  FiFileText,
-  FiImage,
-  FiLogOut,
-  FiCalendar,
-  FiBriefcase,
-} from "react-icons/fi";
+  ChevronDown,
+  ChevronUp,
+  House,
+  LayoutGrid,
+  Info,
+  FileText,
+  Image as ImageIcon,
+  LogOut,
+  Calendar,
+  Briefcase,
+} from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
-import apiClient from "../hooks/apiClient";
-import API_BASE from "../lib/apiBase";
+import Wordmark from "../components/atoms/brand/Wordmark";
 
 const AdminLayout = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
-  const [logoFooter, setLogoFooter] = useState(null);
   const { logout } = useAuth();
   const navigate = useNavigate();
-
-  // Fetch logoFooter dari endpoint About
-  useEffect(() => {
-    const fetchLogo = async () => {
-      try {
-        const response = await apiClient.get("/api/about");
-        const data = response.data;
-        if (data?.data?.logoFooter) {
-          setLogoFooter(`${API_BASE}${data.data.logoFooter}`);
-        }
-      } catch (error) {
-        console.error("Gagal ambil logo footer:", error);
-      }
-    };
-    fetchLogo();
-  }, []);
 
   // Close dropdown when clicking outside (for collapsed sidebar)
   useEffect(() => {
@@ -63,12 +45,24 @@ const AdminLayout = () => {
   };
 
   const menuItems = [
-    { path: "/admin/homepage", name: "Homepage", icon: <FiHome /> },
-    { path: "/admin/events", name: "Events", icon: <FiCalendar /> },
-    { path: "/admin/workshop", name: "Workshop", icon: <FiBriefcase /> },
+    {
+      path: "/admin/homepage",
+      name: "Homepage",
+      icon: <House aria-hidden="true" className="w-4 h-4" />,
+    },
+    {
+      path: "/admin/events",
+      name: "Events",
+      icon: <Calendar aria-hidden="true" className="w-4 h-4" />,
+    },
+    {
+      path: "/admin/workshop",
+      name: "Workshop",
+      icon: <Briefcase aria-hidden="true" className="w-4 h-4" />,
+    },
     {
       name: "Catalogue",
-      icon: <FiGrid />,
+      icon: <LayoutGrid aria-hidden="true" className="w-4 h-4" />,
       children: [
         {
           path: "/admin/catalogue/products",
@@ -84,9 +78,21 @@ const AdminLayout = () => {
         },
       ],
     },
-    { path: "/admin/about", name: "About", icon: <FiInfo /> },
-    { path: "/admin/articles", name: "Articles", icon: <FiFileText /> },
-    { path: "/admin/gallery", name: "Gallery", icon: <FiImage /> },
+    {
+      path: "/admin/about",
+      name: "About",
+      icon: <Info aria-hidden="true" className="w-4 h-4" />,
+    },
+    {
+      path: "/admin/articles",
+      name: "Articles",
+      icon: <FileText aria-hidden="true" className="w-4 h-4" />,
+    },
+    {
+      path: "/admin/gallery",
+      name: "Gallery",
+      icon: <ImageIcon aria-hidden="true" className="w-4 h-4" />,
+    },
   ];
 
   const handleDropdownToggle = (name) => {
@@ -99,32 +105,18 @@ const AdminLayout = () => {
       <aside
         className={`${collapsed ? "w-20" : "w-64"} bg-brand-900 text-cream flex flex-col transition-all duration-300 ease-in-out border-r border-border`}
       >
-        {/* Logo */}
-        <div
-          className="h-20 flex items-center justify-center border-b border-border cursor-pointer transition-all duration-300"
+        {/* Brand lockup */}
+        <button
+          type="button"
+          className="h-20 flex items-center justify-center border-b border-border cursor-pointer transition-all duration-300 hover:bg-brand-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-400"
           onClick={() => setCollapsed(!collapsed)}
+          aria-label={collapsed ? "Expand the sidebar" : "Collapse the sidebar"}
         >
-          {logoFooter ? (
-            <img
-              src={logoFooter}
-              alt="Logo"
-              className={`transition-all duration-300 object-contain ${collapsed ? "w-12 h-12" : "w-32 h-16"}`}
-            />
-          ) : (
-            <>
-              <h1
-                className={`font-bold transition-all duration-300 ${collapsed ? "text-3xl tracking-wider" : "text-2xl scale-100"}`}
-              >
-                A
-              </h1>
-              {!collapsed && (
-                <span className="text-2xl font-bold ml-1 transition-all duration-300">
-                  skreative
-                </span>
-              )}
-            </>
-          )}
-        </div>
+          <Wordmark
+            size={collapsed ? "text-lg" : "text-xl"}
+            className="text-cream"
+          />
+        </button>
 
         {/* Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-2">
@@ -145,9 +137,9 @@ const AdminLayout = () => {
                   </div>
                   {!collapsed &&
                     (openDropdown === item.name ? (
-                      <FiChevronUp />
+                      <ChevronUp aria-hidden="true" />
                     ) : (
-                      <FiChevronDown />
+                      <ChevronDown aria-hidden="true" className="w-4 h-4" />
                     ))}
                 </button>
 
@@ -219,8 +211,9 @@ const AdminLayout = () => {
             onClick={handleLogout}
             className="flex items-center justify-center w-full px-4 py-2.5 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-300"
           >
-            <FiLogOut
-              className={`transition-transform duration-300 ${collapsed ? "scale-150" : "scale-100 mr-3"}`}
+            <LogOut
+              aria-hidden="true"
+              className={`w-4 h-4 transition-transform duration-300 ${collapsed ? "scale-150" : "scale-100 mr-3"}`}
             />
             {!collapsed && "Log Out"}
           </button>

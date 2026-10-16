@@ -2,19 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import {
-  FiSave,
-  FiType,
-  FiFileText,
-  FiImage,
-  FiCheckSquare,
-  FiSquare,
-  FiToggleLeft,
-  FiToggleRight,
-  FiTag,
-  FiPlus,
-  FiX,
-  FiUploadCloud,
-} from "react-icons/fi";
+  Save,
+  Type,
+  Image as ImageIcon,
+  SquareCheck,
+  Square,
+  Tag,
+  Plus,
+  X,
+  Upload,
+} from "lucide-react";
 import RichTextEditor from "../../components/RichTextEditor";
 import API_BASE from "../../../lib/apiBase";
 
@@ -211,7 +208,7 @@ const AddWorkshopPage = () => {
               name="title"
               value={workshop.title}
               onChange={handleWorkshopChange}
-              icon={<FiType />}
+              icon={<Type aria-hidden="true" className="w-5 h-5" />}
               required
               placeholder="Judul workshop..."
             />
@@ -223,7 +220,7 @@ const AddWorkshopPage = () => {
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
-                    <FiTag />
+                    <Tag aria-hidden="true" className="w-5 h-5" />
                   </span>
                   <select
                     name="category"
@@ -247,14 +244,18 @@ const AddWorkshopPage = () => {
                   onClick={() => setShowCategoryModal(true)}
                   className="bg-brand-600 hover:bg-brand-500 px-4 py-2 rounded-md font-semibold text-cream flex items-center gap-2 transition-colors whitespace-nowrap"
                 >
-                  <FiPlus /> Tambah Kategori
+                  <Plus aria-hidden="true" className="w-5 h-5" /> Tambah
+                  Kategori
                 </button>
               </div>
             </div>
 
             <div>
               <label className="mb-2 font-medium text-cream/80 flex items-center gap-2">
-                <FiImage className="text-brand-400" />
+                <ImageIcon
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-400"
+                />
                 Workshop Poster
               </label>
               <div className="relative group">
@@ -279,7 +280,10 @@ const AddWorkshopPage = () => {
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-                        <FiUploadCloud className="h-12 w-12 text-cream mb-2" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-cream mb-2"
+                        />
                         <span className="text-cream font-semibold">
                           Click to change poster
                         </span>
@@ -291,7 +295,10 @@ const AddWorkshopPage = () => {
                   ) : (
                     <div className="text-center p-6">
                       <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-brand-800 flex items-center justify-center">
-                        <FiUploadCloud className="h-10 w-10 text-brand-400" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-brand-400"
+                        />
                       </div>
                       <span className="block text-cream/80 font-semibold mb-1">
                         Click to upload poster
@@ -346,9 +353,15 @@ const AddWorkshopPage = () => {
                             className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-colors ${selectedEventIds.has(event.id) ? "bg-brand-600/30 border-brand-500" : "bg-brand-800 border-border hover:border-brand-500"}`}
                           >
                             {selectedEventIds.has(event.id) ? (
-                              <FiCheckSquare className="text-brand-400 mr-4 flex-shrink-0" />
+                              <SquareCheck
+                                aria-hidden="true"
+                                className="text-brand-400 mr-4 flex-shrink-0 w-5 h-5"
+                              />
                             ) : (
-                              <FiSquare className="text-cream/70 mr-4 flex-shrink-0" />
+                              <Square
+                                aria-hidden="true"
+                                className="text-cream/70 mr-4 flex-shrink-0 w-5 h-5"
+                              />
                             )}
                             <img
                               src={`${API_BASE}${event.imageBannerUrl}`}
@@ -383,7 +396,7 @@ const AddWorkshopPage = () => {
             disabled={isLoading}
             className="w-full bg-brand-600 hover:bg-brand-500 py-3 rounded-md font-bold text-lg flex items-center justify-center"
           >
-            <FiSave className="mr-2" />
+            <Save aria-hidden="true" className="w-5 h-5 mr-2" />
             {isLoading
               ? "Saving..."
               : isEditMode
@@ -407,8 +420,9 @@ const AddWorkshopPage = () => {
                   setNewCategoryName("");
                 }}
                 className="text-cream/60 hover:text-cream"
+                aria-label="Tutup modal tambah kategori"
               >
-                <FiX size={24} />
+                <X aria-hidden="true" className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleAddCategory}>

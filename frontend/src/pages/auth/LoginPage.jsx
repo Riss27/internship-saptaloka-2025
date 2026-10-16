@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../../hooks/apiClient";
 import { useAuth } from "../../hooks/useAuth";
-import { FiLogIn, FiMail, FiLock } from "react-icons/fi";
+import { LogIn, Mail, Lock } from "lucide-react";
+import Wordmark from "../../components/atoms/brand/Wordmark";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -48,9 +49,8 @@ const LoginPage = () => {
     <div className="flex items-center justify-center min-h-screen bg-brand-900 text-cream">
       <div className="w-full max-w-md p-8 space-y-8 bg-brand-700 border border-border rounded-lg">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-cream uppercase">
-            Admin Login
-          </h2>
+          <Wordmark size="text-3xl" className="block text-cream mb-6" />
+          <h2 className="text-heading-sm text-cream uppercase">Admin Login</h2>
           <p className="mt-2 text-cream/70">Selamat datang kembali!</p>
         </div>
 
@@ -62,7 +62,10 @@ const LoginPage = () => {
           )}
 
           <div className="relative">
-            <FiMail className="absolute top-1/2 left-3 -translate-y-1/2 text-cream/50" />
+            <Mail
+              aria-hidden="true"
+              className="absolute top-1/2 left-3 -translate-y-1/2 w-5 h-5 text-cream/50"
+            />
             <input
               type="email"
               name="email"
@@ -75,7 +78,10 @@ const LoginPage = () => {
           </div>
 
           <div className="relative">
-            <FiLock className="absolute top-1/2 left-3 -translate-y-1/2 text-cream/50" />
+            <Lock
+              aria-hidden="true"
+              className="absolute top-1/2 left-3 -translate-y-1/2 w-5 h-5 text-cream/50"
+            />
             <input
               type="password"
               name="password"
@@ -97,7 +103,7 @@ const LoginPage = () => {
                 "Loading..."
               ) : (
                 <>
-                  <FiLogIn className="mr-2" /> Sign In
+                  <LogIn aria-hidden="true" className="w-4 h-4 mr-2" /> Sign In
                 </>
               )}
             </button>

@@ -4,21 +4,21 @@ import apiClient from "../../../hooks/apiClient";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
-  FiPlus,
-  FiTrash2,
-  FiSave,
-  FiType,
-  FiUsers,
-  FiMapPin,
-  FiDollarSign,
-  FiCalendar,
-  FiImage,
-  FiX,
-  FiUploadCloud,
-  FiTag,
-  FiChevronDown,
-  FiToggleLeft,
-} from "react-icons/fi";
+  Plus,
+  Trash2,
+  Save,
+  Type,
+  Users,
+  MapPin,
+  CircleDollarSign,
+  Calendar,
+  Image as ImageIcon,
+  X,
+  Upload,
+  Tag,
+  ChevronDown,
+  ToggleLeft,
+} from "lucide-react";
 import RichTextEditor from "../../components/RichTextEditor";
 import API_BASE from "../../../lib/apiBase";
 
@@ -54,7 +54,10 @@ const InputField = ({
               </option>
             ))}
           </select>
-          <FiChevronDown className="absolute top-1/2 right-3 -translate-y-1/2 text-cream/60 pointer-events-none" />
+          <ChevronDown
+            aria-hidden="true"
+            className="absolute top-1/2 right-3 -translate-y-1/2 text-cream/60 pointer-events-none w-4 h-4"
+          />
         </>
       ) : (
         <input
@@ -288,7 +291,7 @@ const AddEventPage = () => {
                 name="title"
                 value={event.title}
                 onChange={handleEventChange}
-                icon={<FiType />}
+                icon={<Type aria-hidden="true" className="w-5 h-5" />}
                 required
                 placeholder="Judul event..."
               />
@@ -298,7 +301,7 @@ const AddEventPage = () => {
                 name="category"
                 value={event.category}
                 onChange={handleEventChange}
-                icon={<FiTag />}
+                icon={<Tag aria-hidden="true" className="w-5 h-5" />}
                 options={[
                   { value: "", label: "-- Tanpa Kategori --" },
                   ...categories.map((cat) => ({
@@ -312,7 +315,7 @@ const AddEventPage = () => {
                 name="location"
                 value={event.location}
                 onChange={handleEventChange}
-                icon={<FiMapPin />}
+                icon={<MapPin aria-hidden="true" className="w-5 h-5" />}
                 required
                 placeholder="Lokasi event..."
               />
@@ -322,7 +325,7 @@ const AddEventPage = () => {
                 </label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
-                    <FiToggleLeft />
+                    <ToggleLeft aria-hidden="true" className="w-5 h-5" />
                   </span>
                   <select
                     name="status"
@@ -345,7 +348,7 @@ const AddEventPage = () => {
                   min="1"
                   value={event.quota}
                   onChange={handleEventChange}
-                  icon={<FiUsers />}
+                  icon={<Users aria-hidden="true" className="w-5 h-5" />}
                   required
                 />
                 <InputField
@@ -355,7 +358,9 @@ const AddEventPage = () => {
                   min="0"
                   value={event.fee}
                   onChange={handleEventChange}
-                  icon={<FiDollarSign />}
+                  icon={
+                    <CircleDollarSign aria-hidden="true" className="w-5 h-5" />
+                  }
                   required
                 />
               </div>
@@ -364,7 +369,10 @@ const AddEventPage = () => {
             {/* IMPROVED BANNER UPLOAD */}
             <div>
               <label className="mb-2 font-medium text-cream/80 flex items-center gap-2">
-                <FiImage className="text-brand-400" />
+                <ImageIcon
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-400"
+                />
                 Event Banner
               </label>
               <div className="relative group">
@@ -389,7 +397,10 @@ const AddEventPage = () => {
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-                        <FiUploadCloud className="h-12 w-12 text-cream mb-2" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-cream mb-2"
+                        />
                         <span className="text-cream font-semibold">
                           Click to change banner
                         </span>
@@ -401,7 +412,10 @@ const AddEventPage = () => {
                   ) : (
                     <div className="text-center p-6">
                       <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-brand-800 flex items-center justify-center">
-                        <FiUploadCloud className="h-10 w-10 text-brand-400" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-brand-400"
+                        />
                       </div>
                       <span className="block text-cream/80 font-semibold mb-1">
                         Click to upload banner
@@ -425,7 +439,7 @@ const AddEventPage = () => {
                   }}
                   className="mt-3 w-full py-2 px-4 bg-red-600/20 hover:bg-red-600/40 text-red-400 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                 >
-                  <FiTrash2 size={16} />
+                  <Trash2 aria-hidden="true" className="w-5 h-5" />
                   Remove Banner
                 </button>
               )}
@@ -445,7 +459,8 @@ const AddEventPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
             <div>
               <label className="flex mb-2 font-medium text-cream/80 items-center">
-                <FiCalendar className="mr-2" /> Start Date & Time
+                <Calendar aria-hidden="true" className="w-5 h-5 mr-2" /> Start
+                Date & Time
               </label>
               <DatePicker
                 selected={event.startDateTime}
@@ -459,7 +474,8 @@ const AddEventPage = () => {
             </div>
             <div>
               <label className="block mb-2 font-medium text-cream/80 items-center">
-                <FiCalendar className="mr-2" /> End Date & Time
+                <Calendar aria-hidden="true" className="w-5 h-5 mr-2" /> End
+                Date & Time
               </label>
               <DatePicker
                 selected={event.endDateTime}
@@ -505,8 +521,10 @@ const AddEventPage = () => {
                   type="button"
                   onClick={() => removeRole(index)}
                   className="ml-2 text-cream"
+                  title={`Hapus role ${role}`}
+                  aria-label={`Hapus role ${role}`}
                 >
-                  <FiX size={16} />
+                  <X aria-hidden="true" className="w-4 h-4" />
                 </button>
               </span>
             ))}
@@ -531,8 +549,9 @@ const AddEventPage = () => {
                     type="button"
                     onClick={() => removeContentSection(index)}
                     className="p-1 text-red-500 text-red-400 bg-red-500/10 rounded-full"
+                    aria-label={`Hapus section ${index + 1}`}
                   >
-                    <FiTrash2 size={18} />
+                    <Trash2 aria-hidden="true" className="w-5 h-5" />
                   </button>
                 </div>
                 <InputField
@@ -542,7 +561,7 @@ const AddEventPage = () => {
                   onChange={(e) =>
                     handleContentTextChange(index, "header", e.target.value)
                   }
-                  icon={<FiType />}
+                  icon={<Type aria-hidden="true" className="w-5 h-5" />}
                   placeholder="Judul section..."
                 />
                 <div>
@@ -561,7 +580,10 @@ const AddEventPage = () => {
                 {/* IMPROVED CONTENT IMAGES */}
                 <div className="mt-6">
                   <label className="mb-3 font-medium text-cream/80 flex items-center gap-2">
-                    <FiImage className="text-brand-400" />
+                    <ImageIcon
+                      aria-hidden="true"
+                      className="w-5 h-5 text-brand-400"
+                    />
                     Section Images
                   </label>
                   <div className="bg-brand-800/70 p-4 rounded-lg border border-border">
@@ -581,8 +603,9 @@ const AddEventPage = () => {
                               type="button"
                               onClick={() => removeContentImage(index, i)}
                               className="p-2 bg-red-600 hover:bg-red-700 text-cream rounded-full transition-colors"
+                              aria-label={`Hapus gambar ${i + 1}`}
                             >
-                              <FiTrash2 size={18} />
+                              <Trash2 aria-hidden="true" className="w-5 h-5" />
                             </button>
                           </div>
                         </div>
@@ -590,7 +613,10 @@ const AddEventPage = () => {
 
                       {/* Upload Button */}
                       <label className="aspect-square flex flex-col justify-center items-center border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-brand-400 bg-brand-700/50 transition-all group">
-                        <FiUploadCloud className="h-8 w-8 text-cream/60 group-hover:text-brand-400 transition-colors mb-2" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-5 h-5 text-cream/60 group-hover:text-brand-400 transition-colors mb-2"
+                        />
                         <span className="text-xs text-cream/60 group-hover:text-brand-400 transition-colors text-center px-2">
                           Add Images
                         </span>
@@ -619,7 +645,8 @@ const AddEventPage = () => {
             onClick={addContentSection}
             className="w-full mt-6 border-2 border-dashed border-border border-brand-500 text-cream/80 text-brand-400 py-3 rounded-md font-semibold flex items-center justify-center transition-colors"
           >
-            <FiPlus className="mr-2" /> Add Content Section
+            <Plus aria-hidden="true" className="w-5 h-5 mr-2" /> Add Content
+            Section
           </button>
         </div>
 
@@ -651,7 +678,7 @@ const AddEventPage = () => {
                 ></path>
               </svg>
             ) : (
-              <FiSave className="mr-2" />
+              <Save aria-hidden="true" className="w-5 h-5 mr-2" />
             )}
             {isLoading
               ? "Saving..."

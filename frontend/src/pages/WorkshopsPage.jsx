@@ -132,8 +132,14 @@ const WorkshopsPage = () => {
                 />
                 <input
                   type="text"
-                  aria-label={t("workshops_page.search_placeholder", "Cari workshop...")}
-                  placeholder={t("workshops_page.search_placeholder", "Cari workshop...")}
+                  aria-label={t(
+                    "workshops_page.search_placeholder",
+                    "Cari workshop...",
+                  )}
+                  placeholder={t(
+                    "workshops_page.search_placeholder",
+                    "Cari workshop...",
+                  )}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className={`w-full pl-12 pr-12 py-3 bg-brand-800 text-cream rounded-inputs border border-border placeholder:text-cream/60 focus:border-brand-400 transition-colors ${FOCUS_RING}`}
@@ -157,7 +163,10 @@ const WorkshopsPage = () => {
                   aria-hidden="true"
                 />
                 <select
-                  aria-label={t("workshops_page.all_categories", "Semua Kategori")}
+                  aria-label={t(
+                    "workshops_page.all_categories",
+                    "Semua Kategori",
+                  )}
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className={`w-full pl-12 pr-12 py-3 bg-brand-800 text-cream rounded-inputs border border-border focus:border-brand-400 transition-colors appearance-none cursor-pointer ${FOCUS_RING}`}
@@ -175,7 +184,10 @@ const WorkshopsPage = () => {
                   <button
                     type="button"
                     onClick={handleClearCategory}
-                    aria-label={t("workshops_page.clear_filter", "Hapus filter")}
+                    aria-label={t(
+                      "workshops_page.clear_filter",
+                      "Hapus filter",
+                    )}
                     className={`absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 grid place-items-center text-cream/70 hover:text-cream transition-colors ${FOCUS_RING}`}
                   >
                     <X className="w-5 h-5" aria-hidden="true" />

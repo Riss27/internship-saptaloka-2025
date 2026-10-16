@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../../../hooks/apiClient";
-import {
-  FiInstagram,
-  FiPhone,
-  FiMail,
-  FiMapPin,
-  FiArrowUp,
-} from "react-icons/fi";
-import API_BASE from "../../../lib/apiBase";
+import { Instagram, Phone, Mail, MapPin, ArrowUp } from "lucide-react";
+import Wordmark from "../../atoms/brand/Wordmark";
 
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
@@ -44,21 +38,12 @@ const Footer = () => {
       <footer className="relative bg-brand-700 text-cream pt-10 md:pt-14 pb-6 md:pb-8 mt-12 md:mt-20 border-t border-border">
         <div className="container mx-auto px-4 sm:px-6 lg:px-10 relative">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-12 mb-10 md:mb-12">
-            {/* Logo Section */}
-            <div className="w-full flex items-center justify-center lg:col-span-2 py-6 md:py-0">
-              {aboutInfo.logoFooter ? (
-                <img
-                  src={`${API_BASE}${aboutInfo.logoFooter}`}
-                  alt="Askreative Logo"
-                  className="max-h-32 sm:max-h-40 md:max-h-48 lg:max-h-56 w-auto max-w-[70%] sm:max-w-none object-contain"
-                />
-              ) : (
-                <div className="w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 bg-brand-800 rounded-cards flex items-center justify-center">
-                  <span className="text-brand-400 font-medium text-2xl md:text-3xl lg:text-4xl uppercase tracking-wide">
-                    askr
-                  </span>
-                </div>
-              )}
+            {/* Brand lockup */}
+            <div className="w-full flex items-center lg:col-span-2">
+              <Wordmark
+                size="text-4xl md:text-5xl lg:text-6xl"
+                className="text-cream"
+              />
             </div>
 
             {/* Hubungi Kami */}
@@ -70,19 +55,19 @@ const Footer = () => {
               <ul className="space-y-3 md:space-y-4">
                 {[
                   {
-                    icon: FiMail,
+                    icon: Mail,
                     label: "Email",
                     value: aboutInfo.email || "info@askreative.com",
                     href: `mailto:${aboutInfo.email || "info@askreative.com"}`,
                   },
                   {
-                    icon: FiPhone,
+                    icon: Phone,
                     label: "Telepon",
                     value: aboutInfo.phone || "+62 xxx xxxx xxxx",
                     href: `tel:${aboutInfo.phone || ""}`,
                   },
                   {
-                    icon: FiMapPin,
+                    icon: MapPin,
                     label: "Lokasi",
                     value: aboutInfo.address || "Indonesia",
                   },
@@ -129,9 +114,9 @@ const Footer = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`flex items-center justify-center w-11 h-11 bg-brand-600 text-cream rounded-inputs hover:bg-brand-400 hover:text-brand-900 transition-colors duration-300 motion-reduce:transition-none ${FOCUS_RING}`}
-                    aria-label="Askreative Parfum on Instagram"
+                    aria-label="Ask Scent Lab on Instagram"
                   >
-                    <FiInstagram className="w-5 h-5" aria-hidden="true" />
+                    <Instagram className="w-5 h-5" aria-hidden="true" />
                   </a>
                 )}
               </div>
@@ -164,7 +149,7 @@ const Footer = () => {
           className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 w-11 h-11 bg-brand-600 text-cream rounded-full grid place-items-center transition-colors duration-300 hover:bg-brand-400 hover:text-brand-900 active:scale-95 motion-reduce:transition-none motion-reduce:transform-none ${FOCUS_RING}`}
           aria-label="Scroll back to the top of the page"
         >
-          <FiArrowUp className="w-5 h-5" aria-hidden="true" />
+          <ArrowUp className="w-5 h-5" aria-hidden="true" />
         </button>
       )}
     </>

@@ -2,16 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import {
-  FiInfo,
-  FiTag,
-  FiDollarSign,
-  FiFileText,
-  FiLink,
-  FiImage,
-  FiSave,
-  FiChevronDown,
-  FiUploadCloud,
-} from "react-icons/fi";
+  Info,
+  Tag,
+  CircleDollarSign,
+  Link as LinkIcon,
+  Image as ImageIcon,
+  Save,
+  ChevronDown,
+  Upload,
+} from "lucide-react";
 import RichTextEditor from "../RichTextEditor";
 import API_BASE from "../../../lib/apiBase";
 
@@ -174,7 +173,7 @@ const CatalogueForm = ({
               onChange={handleChange}
               required={true}
               placeholder={`Contoh: 'Nama ${itemType}'`}
-              icon={<FiInfo />}
+              icon={<Info aria-hidden="true" className="w-5 h-5" />}
             />
             <InputField
               label="Price"
@@ -184,7 +183,7 @@ const CatalogueForm = ({
               onChange={handleChange}
               required={true}
               placeholder="Contoh: 150000"
-              icon={<FiDollarSign />}
+              icon={<CircleDollarSign aria-hidden="true" className="w-5 h-5" />}
             />
             <div className="mb-6">
               <label className="block mb-2 font-medium text-cream/80">
@@ -217,7 +216,7 @@ const CatalogueForm = ({
                 </label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/50">
-                    <FiTag />
+                    <Tag aria-hidden="true" className="w-5 h-5" />
                   </span>
                   <select
                     id="category"
@@ -237,7 +236,7 @@ const CatalogueForm = ({
                     ))}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-cream/50">
-                    <FiChevronDown className="h-5 w-5" />
+                    <ChevronDown aria-hidden="true" className="w-5 h-5" />
                   </div>
                 </div>
               </div>
@@ -245,7 +244,10 @@ const CatalogueForm = ({
 
             <div className="mb-6">
               <label className="mb-2 font-medium text-cream/90 flex items-center gap-2">
-                <FiImage className="text-brand-400" />
+                <ImageIcon
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-400"
+                />
                 {itemTitle} Image
               </label>
               <div className="relative group">
@@ -270,7 +272,10 @@ const CatalogueForm = ({
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-brand-900/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-                        <FiUploadCloud className="h-12 w-12 text-cream mb-2" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-cream mb-2"
+                        />
                         <span className="text-cream font-semibold">
                           Click to change image
                         </span>
@@ -282,7 +287,10 @@ const CatalogueForm = ({
                   ) : (
                     <div className="text-center p-6">
                       <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-brand-900 flex items-center justify-center">
-                        <FiUploadCloud className="h-10 w-10 text-brand-400" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-brand-400"
+                        />
                       </div>
                       <span className="block text-cream font-semibold mb-1">
                         Click to upload image
@@ -304,7 +312,7 @@ const CatalogueForm = ({
               value={formData.linkTokopedia}
               onChange={handleChange}
               placeholder="https://..."
-              icon={<FiLink />}
+              icon={<LinkIcon aria-hidden="true" className="w-5 h-5" />}
             />
             <InputField
               label="Link Shopee"
@@ -312,7 +320,7 @@ const CatalogueForm = ({
               value={formData.linkShopee}
               onChange={handleChange}
               placeholder="https://..."
-              icon={<FiLink />}
+              icon={<LinkIcon aria-hidden="true" className="w-5 h-5" />}
             />
           </div>
         </div>
@@ -322,7 +330,7 @@ const CatalogueForm = ({
             disabled={isLoading}
             className="w-full bg-brand-600 hover:bg-brand-500 disabled:bg-brand-800 py-3 rounded-lg font-bold text-lg flex items-center justify-center text-cream"
           >
-            <FiSave className="mr-2" />
+            <Save aria-hidden="true" className="w-5 h-5 mr-2" />
             {isLoading
               ? "Saving..."
               : isEditMode

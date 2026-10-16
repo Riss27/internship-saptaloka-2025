@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { Pencil, Trash2 } from "lucide-react";
 import API_BASE from "../../../lib/apiBase";
 
 const GenericCatalogueList = ({ items, itemType, deleteItem }) => {
@@ -53,8 +53,9 @@ const GenericCatalogueList = ({ items, itemType, deleteItem }) => {
                         to={`${editPath}${item.id}`}
                         className="p-2.5 rounded-full bg-brand-600/30 text-brand-400 hover:bg-brand-600/50 hover:text-cream transition-all duration-200 hover:scale-110"
                         title="Edit Item"
+                        aria-label="Edit Item"
                       >
-                        <FiEdit size={18} />
+                        <Pencil aria-hidden="true" className="w-5 h-5" />
                       </Link>
 
                       {/* Tombol Delete */}
@@ -62,8 +63,9 @@ const GenericCatalogueList = ({ items, itemType, deleteItem }) => {
                         onClick={() => deleteItem(item.id)}
                         className="p-2.5 rounded-full bg-red-700/30 text-red-400 hover:bg-red-700/50 hover:text-red-300 transition-all duration-200 hover:scale-110"
                         title="Delete Item"
+                        aria-label="Delete Item"
                       >
-                        <FiTrash2 size={18} />
+                        <Trash2 aria-hidden="true" className="w-5 h-5" />
                       </button>
                     </div>
                   </td>

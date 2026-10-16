@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
-import { FiTrash2, FiDownload } from "react-icons/fi";
+import { Trash2 } from "lucide-react";
 
 const RegisteredPeoplePage = () => {
   const { eventId } = useParams();
@@ -87,8 +87,10 @@ const RegisteredPeoplePage = () => {
                     <button
                       onClick={() => deleteRegistration(reg.id)}
                       className="p-2 text-red-500 text-red-400"
+                      title="Hapus pendaftar"
+                      aria-label={`Hapus pendaftar ${reg.name}`}
                     >
-                      <FiTrash2 />
+                      <Trash2 aria-hidden="true" className="w-4 h-4" />
                     </button>
                   </td>
                 </tr>

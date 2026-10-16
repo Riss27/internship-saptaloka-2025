@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
-import { FiPlus, FiTrash2, FiEdit } from "react-icons/fi";
+import { Plus, Trash2, Pencil } from "lucide-react";
 import API_BASE from "../../../lib/apiBase";
 
 const GalleryPage = () => {
@@ -39,7 +39,7 @@ const GalleryPage = () => {
           to="/admin/gallery/add"
           className="flex items-center gap-2 bg-brand-600 hover:bg-brand-500 px-4 py-2 rounded-md font-semibold text-cream no-underline"
         >
-          <FiPlus />
+          <Plus aria-hidden="true" className="w-5 h-5" />
           Add New Image
         </Link>
       </header>
@@ -70,15 +70,17 @@ const GalleryPage = () => {
                       to={`/admin/gallery/edit/${image.id}`}
                       className="p-2 bg-yellow-600 hover:bg-yellow-700 rounded-full text-cream"
                       title="Edit Title"
+                      aria-label="Edit Title"
                     >
-                      <FiEdit size={16} />
+                      <Pencil aria-hidden="true" className="w-4 h-4" />
                     </Link>
                     <button
                       onClick={() => handleDelete(image.id)}
                       className="p-2 bg-red-600 hover:bg-red-700 rounded-full text-cream"
                       title="Delete Image"
+                      aria-label="Delete Image"
                     >
-                      <FiTrash2 size={16} />
+                      <Trash2 aria-hidden="true" className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

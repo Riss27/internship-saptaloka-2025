@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
-import { FiPlus } from "react-icons/fi";
+import { Plus } from "lucide-react";
 import WorkshopList from "../../components/WorkshopList";
 
 const WorkshopPage = () => {
@@ -55,7 +55,7 @@ const WorkshopPage = () => {
             to="/admin/workshop/add"
             className="bg-brand-600 hover:bg-brand-500 px-6 py-3 rounded-lg font-semibold text-cream no-underline whitespace-nowrap flex items-center justify-center transition-all duration-300"
           >
-            <FiPlus className="mr-2" size={18} /> New Workshop
+            <Plus aria-hidden="true" className="w-5 h-5 mr-2" /> New Workshop
           </Link>
         </div>
       </header>

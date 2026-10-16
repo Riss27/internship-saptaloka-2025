@@ -43,8 +43,8 @@ const Pagination = ({ meta, onPageChange }) => {
       </button>
 
       <p className="text-cream/80 text-sm">
-        Halaman <span className="text-brand-400 font-medium">{page}</span>{" "}
-        dari <span className="text-brand-400 font-medium">{totalPages}</span>
+        Halaman <span className="text-brand-400 font-medium">{page}</span> dari{" "}
+        <span className="text-brand-400 font-medium">{totalPages}</span>
       </p>
 
       <button

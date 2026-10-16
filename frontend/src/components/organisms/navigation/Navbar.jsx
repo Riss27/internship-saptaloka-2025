@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
+import Wordmark from "../../atoms/brand/Wordmark";
 import {
   logoVariants,
   menuItemVariants,
@@ -219,18 +220,17 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
       >
         <NavLink
           to="/"
-          aria-label="Askreative Parfum, back to the home page"
+          aria-label="Ask Scent Lab, back to the home page"
           className={`flex items-center shrink-0 ${FOCUS_RING}`}
         >
-          <motion.img
-            src="/Assets/asklogo2.png"
-            alt=""
-            aria-hidden="true"
-            className="h-10 sm:h-12 lg:h-16 w-auto max-w-[8rem] sm:max-w-none object-contain"
+          <motion.span
+            className="block"
             variants={logoVariants}
             initial="initial"
             whileHover={prefersReducedMotion ? "initial" : "hover"}
-          />
+          >
+            <Wordmark size="text-xl lg:text-2xl" className="text-cream" />
+          </motion.span>
         </NavLink>
 
         <div className="hidden lg:flex items-center gap-6">

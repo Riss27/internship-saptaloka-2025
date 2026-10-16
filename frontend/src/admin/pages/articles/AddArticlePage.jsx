@@ -6,19 +6,17 @@ import apiClient from "../../../hooks/apiClient";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-// TAMBAHKAN FiCalendar untuk ikon
+// TAMBAHKAN Calendar untuk ikon
 import {
-  FiType,
-  FiUser,
-  FiFileText,
-  FiImage,
-  FiSave,
-  FiPlus,
-  FiTrash2,
-  FiX,
-  FiUploadCloud,
-  FiCalendar,
-} from "react-icons/fi";
+  Type,
+  User,
+  Image as ImageIcon,
+  Plus,
+  Trash2,
+  X,
+  Upload,
+  Calendar,
+} from "lucide-react";
 import RichTextEditor from "../../components/RichTextEditor";
 import API_BASE from "../../../lib/apiBase";
 
@@ -276,7 +274,7 @@ const AddArticlePage = () => {
                 onChange={handleArticleChange}
                 required={true}
                 placeholder="Judul utama artikel..."
-                icon={<FiType />}
+                icon={<Type aria-hidden="true" className="w-5 h-5" />}
               />
               <InputField
                 label="Author"
@@ -285,7 +283,7 @@ const AddArticlePage = () => {
                 onChange={handleArticleChange}
                 required={true}
                 placeholder="Nama penulis..."
-                icon={<FiUser />}
+                icon={<User aria-hidden="true" className="w-5 h-5" />}
               />
 
               {/* TAMBAHKAN: Komponen DatePicker */}
@@ -295,7 +293,7 @@ const AddArticlePage = () => {
                 </label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
-                    <FiCalendar />
+                    <Calendar aria-hidden="true" className="w-5 h-5" />
                   </span>
                   <DatePicker
                     selected={
@@ -329,7 +327,10 @@ const AddArticlePage = () => {
             </div>
             <div>
               <label className="mb-2 font-medium text-cream/80 flex items-center gap-2">
-                <FiImage className="text-brand-400" />
+                <ImageIcon
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-400"
+                />
                 Featured Image
               </label>
               <div className="relative group">
@@ -354,7 +355,10 @@ const AddArticlePage = () => {
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-                        <FiUploadCloud className="h-12 w-12 text-cream mb-2" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-cream mb-2"
+                        />
                         <span className="text-cream font-semibold">
                           Click to change image
                         </span>
@@ -366,7 +370,10 @@ const AddArticlePage = () => {
                   ) : (
                     <div className="text-center p-6">
                       <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-brand-800 flex items-center justify-center">
-                        <FiUploadCloud className="h-10 w-10 text-brand-400" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-brand-400"
+                        />
                       </div>
                       <span className="block text-cream/80 font-semibold mb-1">
                         Click to upload featured image
@@ -403,8 +410,9 @@ const AddArticlePage = () => {
                     type="button"
                     onClick={() => removeContentSection(index)}
                     className="p-1 text-red-500 text-red-400 bg-red-500/10 rounded-full"
+                    aria-label={`Hapus section ${index + 1}`}
                   >
-                    <FiTrash2 size={18} />
+                    <Trash2 aria-hidden="true" className="w-5 h-5" />
                   </button>
                 </div>
                 <InputField
@@ -414,7 +422,7 @@ const AddArticlePage = () => {
                   onChange={(e) => handleContentChange(index, e)}
                   required={true}
                   placeholder="Judul sub-konten..."
-                  icon={<FiType />}
+                  icon={<Type aria-hidden="true" className="w-5 h-5" />}
                 />
                 <div className="mb-6">
                   <label className="block mb-2 font-medium text-cream/80">
@@ -447,13 +455,17 @@ const AddArticlePage = () => {
                           type="button"
                           onClick={() => removeContentImage(index, i)}
                           className="absolute -top-2 -right-2 p-1 bg-red-600 text-cream rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          aria-label="Hapus gambar"
                         >
-                          <FiX size={14} />
+                          <X aria-hidden="true" className="w-4 h-4" />
                         </button>
                       </div>
                     ))}
                     <label className="flex flex-col justify-center items-center w-full h-full border-2 border-dashed border-border rounded-md cursor-pointer hover:border-brand-400 bg-brand-700/50 transition-colors">
-                      <FiUploadCloud className="h-8 w-8 text-cream/60" />
+                      <Upload
+                        aria-hidden="true"
+                        className="w-5 h-5 text-cream/60"
+                      />
                       <span className="text-xs text-cream/60 mt-1">
                         Add more
                       </span>
@@ -475,7 +487,8 @@ const AddArticlePage = () => {
             onClick={addContentSection}
             className="w-full mt-6 border-2 border-dashed border-border border-brand-500 text-cream/80 text-brand-400 py-3 rounded-md font-semibold flex items-center justify-center transition-colors"
           >
-            <FiPlus className="mr-2" /> Add Content Section
+            <Plus aria-hidden="true" className="w-5 h-5 mr-2" /> Add Content
+            Section
           </button>
         </div>
 

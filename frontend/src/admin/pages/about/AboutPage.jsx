@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../../../hooks/apiClient";
 import {
-  FiInfo,
-  FiMapPin,
-  FiPhone,
-  FiMail,
-  FiInstagram,
-  FiMessageCircle,
-  FiImage,
-  FiSave,
-  FiUploadCloud,
-} from "react-icons/fi";
+  Info,
+  MapPin,
+  Phone,
+  Mail,
+  Instagram,
+  MessageCircle,
+  Image as ImageIcon,
+  Save,
+  Upload,
+} from "lucide-react";
 import API_BASE from "../../../lib/apiBase";
 
 // Komponen InputField dengan tambahan ikon
@@ -133,7 +133,7 @@ const AboutPage = () => {
               value={formData.about}
               onChange={handleChange}
               placeholder="Tulis deskripsi tentang perusahaan..."
-              icon={<FiInfo />}
+              icon={<Info aria-hidden="true" className="w-5 h-5" />}
             />
             <InputField
               label="Address"
@@ -141,7 +141,7 @@ const AboutPage = () => {
               value={formData.address}
               onChange={handleChange}
               placeholder="Jalan, Kota, Kode Pos"
-              icon={<FiMapPin />}
+              icon={<MapPin aria-hidden="true" className="w-5 h-5" />}
             />
             <InputField
               label="Phone"
@@ -149,7 +149,7 @@ const AboutPage = () => {
               value={formData.phone}
               onChange={handleChange}
               placeholder="0812-3456-7890"
-              icon={<FiPhone />}
+              icon={<Phone aria-hidden="true" className="w-5 h-5" />}
             />
             <InputField
               label="Email"
@@ -158,7 +158,7 @@ const AboutPage = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="kontak@perusahaan.com"
-              icon={<FiMail />}
+              icon={<Mail aria-hidden="true" className="w-5 h-5" />}
             />
           </div>
 
@@ -172,7 +172,7 @@ const AboutPage = () => {
               value={formData.instagram}
               onChange={handleChange}
               placeholder="https://instagram.com/username"
-              icon={<FiInstagram />}
+              icon={<Instagram aria-hidden="true" className="w-5 h-5" />}
             />
             <InputField
               label="WhatsApp URL (API Link)"
@@ -180,11 +180,14 @@ const AboutPage = () => {
               value={formData.whatsapp}
               onChange={handleChange}
               placeholder="https://wa.me/6281234567890"
-              icon={<FiMessageCircle />}
+              icon={<MessageCircle aria-hidden="true" className="w-5 h-5" />}
             />
             <div className="mb-6">
               <label className="mb-2 font-medium text-cream/80 flex items-center gap-2">
-                <FiImage className="text-brand-400" />
+                <ImageIcon
+                  aria-hidden="true"
+                  className="w-5 h-5 text-brand-400"
+                />
                 Logo Footer
               </label>
               <div className="relative group">
@@ -208,7 +211,10 @@ const AboutPage = () => {
                         className="w-full h-full object-contain p-4 bg-brand-700"
                       />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-                        <FiUploadCloud className="h-12 w-12 text-cream mb-2" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-cream mb-2"
+                        />
                         <span className="text-cream font-semibold">
                           Click to change logo
                         </span>
@@ -220,7 +226,10 @@ const AboutPage = () => {
                   ) : (
                     <div className="text-center p-6">
                       <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-brand-800 flex items-center justify-center">
-                        <FiUploadCloud className="h-10 w-10 text-brand-400" />
+                        <Upload
+                          aria-hidden="true"
+                          className="w-10 h-10 text-brand-400"
+                        />
                       </div>
                       <span className="block text-cream/80 font-semibold mb-1">
                         Click to upload logo
@@ -245,7 +254,7 @@ const AboutPage = () => {
             disabled={isLoading}
             className="w-full bg-brand-600 hover:bg-brand-500 disabled:bg-brand-800 disabled:cursor-not-allowed py-3 rounded-md font-bold text-lg flex items-center justify-center"
           >
-            <FiSave className="mr-2" />
+            <Save aria-hidden="true" className="w-5 h-5 mr-2" />
             {isLoading ? "Saving..." : "SAVE CHANGES"}
           </button>
         </div>

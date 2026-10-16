@@ -165,7 +165,10 @@ const ProductsPage = () => {
         ) : (
           <div className="bg-brand-800 border border-border rounded-cards px-6 py-10 sm:py-12 text-center max-w-lg mx-auto">
             <span className="inline-grid place-items-center w-20 h-20 rounded-full bg-brand-700 mb-5">
-              <Package className="w-10 h-10 text-brand-400" aria-hidden="true" />
+              <Package
+                className="w-10 h-10 text-brand-400"
+                aria-hidden="true"
+              />
             </span>
             <p className="text-cream/80 text-lg mb-6">
               {t("products_page.no_products_found")}

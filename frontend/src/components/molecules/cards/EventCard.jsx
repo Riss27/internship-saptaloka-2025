@@ -1,12 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  FiCalendar,
-  FiMapPin,
-  FiClock,
-  FiDollarSign,
-  FiUsers,
-} from "react-icons/fi";
+import { Calendar, MapPin, Clock, CircleDollarSign, Users } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
@@ -93,22 +87,34 @@ const EventCard = ({ event }) => {
 
         <div className="space-y-2.5 text-cream/80 text-sm flex-grow">
           <div className="flex items-center gap-2.5">
-            <FiCalendar className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
+            <Calendar
+              className="w-4 h-4 text-brand-400 flex-shrink-0"
+              aria-hidden="true"
+            />
             <span>{formatDate(event.startDateTime)}</span>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <FiClock className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
+            <Clock
+              className="w-4 h-4 text-brand-400 flex-shrink-0"
+              aria-hidden="true"
+            />
             <span>{formatTime(event.startDateTime)} WIB</span>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <FiMapPin className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
+            <MapPin
+              className="w-4 h-4 text-brand-400 flex-shrink-0"
+              aria-hidden="true"
+            />
             <span className="line-clamp-1">{event.location}</span>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <FiDollarSign className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
+            <CircleDollarSign
+              className="w-4 h-4 text-brand-400 flex-shrink-0"
+              aria-hidden="true"
+            />
             <span className="font-semibold text-cream">
               {event.fee > 0
                 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}`
@@ -117,7 +123,10 @@ const EventCard = ({ event }) => {
           </div>
 
           <div className="flex items-center gap-2.5">
-            <FiUsers className="w-4 h-4 text-brand-400 flex-shrink-0" aria-hidden="true" />
+            <Users
+              className="w-4 h-4 text-brand-400 flex-shrink-0"
+              aria-hidden="true"
+            />
             <span>
               Sisa kuota:{" "}
               <strong className="text-cream font-semibold">

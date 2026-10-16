@@ -31,9 +31,7 @@ const LanguageSwitcher = ({ currentLang, onChange, isMobile = false }) => {
       aria-label="Language"
       className={`${isMobile ? "flex" : "hidden lg:flex"} items-center gap-2`}
     >
-      {isMobile && (
-        <span className="text-cream/80 text-sm mr-1">Bahasa:</span>
-      )}
+      {isMobile && <span className="text-cream/80 text-sm mr-1">Bahasa:</span>}
       {LANGS.map((lang) => {
         const isActive = currentLang === lang;
         return (

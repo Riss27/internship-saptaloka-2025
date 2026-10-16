@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import apiClient from "../hooks/apiClient";
-import { FiCalendar, FiUser } from "react-icons/fi";
+import { Calendar, User } from "lucide-react";
 import RichTextDisplay from "../components/common/RichTextDisplay";
 import { useTranslateDB } from "../hooks/useTranslateDB";
 import { useTranslation } from "react-i18next";
@@ -84,13 +84,16 @@ const ArticleDetailPage = () => {
           </h1>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-cream/80 text-sm">
             <div className="flex items-center gap-2">
-              <FiUser className="w-4 h-4 shrink-0 text-brand-400" aria-hidden="true" />
+              <User
+                className="w-4 h-4 shrink-0 text-brand-400"
+                aria-hidden="true"
+              />
               <span>
                 {t("detail_pages.by")}: {article.author}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <FiCalendar
+              <Calendar
                 className="w-4 h-4 shrink-0 text-brand-400"
                 aria-hidden="true"
               />

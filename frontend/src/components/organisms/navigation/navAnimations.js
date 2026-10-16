@@ -1,63 +1,69 @@
+import { EASE, DURATION } from "../../../lib/motion";
+
+// The header runs on the same curve and timings as the rest of the site, so the
+// navigation never feels like it belongs to a different product.
+
 export const logoVariants = {
-  initial: { scale: 1, rotate: 0 },
+  initial: { opacity: 1 },
   hover: {
-    scale: 1.05,
-    rotate: [0, -5, 5, -5, 0],
-    transition: { duration: 0.5 },
+    opacity: 0.7,
+    transition: { duration: DURATION.micro, ease: EASE },
   },
 };
 
 export const menuItemVariants = {
   initial: { y: 0 },
   hover: {
-    y: -2,
-    transition: { type: "spring", stiffness: 400, damping: 10 },
+    y: 0,
+    transition: { duration: DURATION.micro, ease: EASE },
   },
 };
 
 export const dropdownVariants = {
-  hidden: { opacity: 0, scale: 0.95, y: -10 },
+  hidden: { opacity: 0, y: -6 },
   visible: {
     opacity: 1,
-    scale: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 25 },
+    transition: { duration: DURATION.panel, ease: EASE },
   },
-  exit: { opacity: 0, scale: 0.95, y: -10, transition: { duration: 0.15 } },
+  exit: {
+    opacity: 0,
+    y: -6,
+    transition: { duration: DURATION.micro, ease: EASE },
+  },
 };
 
 export const mobileMenuVariants = {
   hidden: {
     height: 0,
     opacity: 0,
-    transition: { duration: 0.3, ease: "easeInOut" },
+    transition: { duration: DURATION.panel, ease: EASE },
   },
   visible: {
     height: "auto",
     opacity: 1,
-    transition: { duration: 0.3, ease: "easeInOut" },
+    transition: { duration: DURATION.panel, ease: EASE },
   },
 };
 
 export const mobileItemVariants = {
-  hidden: { x: -20, opacity: 0 },
+  hidden: { opacity: 0, y: -8 },
   visible: (i) => ({
-    x: 0,
     opacity: 1,
+    y: 0,
     transition: {
-      delay: i * 0.05,
-      type: "spring",
-      stiffness: 300,
-      damping: 25,
+      delay: i * 0.04,
+      duration: DURATION.reveal,
+      ease: EASE,
     },
   }),
 };
 
 export const languageButtonVariants = {
-  initial: { scale: 1 },
+  initial: { opacity: 1 },
   hover: {
-    scale: 1.1,
-    transition: { type: "spring", stiffness: 400, damping: 10 },
+    opacity: 0.75,
+    transition: { duration: DURATION.micro, ease: EASE },
   },
-  tap: { scale: 0.95 },
+  tap: { opacity: 0.6 },
 };
