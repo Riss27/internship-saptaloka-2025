@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import apiClient from "../hooks/apiClient";
 import { Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 // The lint config does not track JSX usage, so the motion import looks unused.
- 
+
 import { motion, useReducedMotion } from "framer-motion";
 import { reveal, cardHover } from "../lib/motion";
 import Carousel from "../components/organisms/home/Carousel";
@@ -27,6 +28,21 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const prefersReducedMotion = useReducedMotion();
+
+  const galleryTrackRef = useRef(null);
+
+  // Move the photo row by one full tile, which is the distance a reader expects
+  // from an arrow on a carousel. On large screens the gallery is a grid and has
+  // no arrows, so this is only reachable from the small-screen row.
+  const scrollGallery = (direction) => {
+    const track = galleryTrackRef.current;
+    const tile = track?.firstElementChild;
+    if (!track || !tile) return;
+    track.scrollBy({
+      left: direction * (tile.offsetWidth + 24),
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
+  };
 
   useEffect(() => {
     (async () => {
@@ -153,7 +169,9 @@ const HomePage = () => {
               index="02"
               title={t("homepage.recent_activities")}
               action={
-                <ViewMore to="/events">{t("homepage.view_more_events")}</ViewMore>
+                <ViewMore to="/events">
+                  {t("homepage.view_more_events")}
+                </ViewMore>
               }
             />
             {data.events.length > 0 ? (
@@ -266,8 +284,9 @@ const HomePage = () => {
           </Section>
 
           {/* 05 — Gallery. The photographs are the content, so the caption sits
-              under the frame as a small left-aligned note and the second photo
-              in each pair drops a little, which gives the strip a rhythm. */}
+              under the frame as a small left-aligned note. It is a grid on large
+              screens and a scrollable row below that, with arrows that say the
+              row can be moved. */}
           <Section divider>
             <SectionHeading
               index="05"
@@ -278,28 +297,79 @@ const HomePage = () => {
                 </ViewMore>
               }
             />
-            <div className="flex snap-x snap-mandatory items-start gap-5 overflow-x-auto pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-6 lg:gap-8">
-              {data.gallery.map((g, i) => (
-                <motion.figure
-                  key={g.id}
-                  {...reveal(prefersReducedMotion, i)}
-                  className={`w-[260px] shrink-0 snap-start sm:w-[320px] ${
-                    i % 2 === 1 ? "lg:mt-12" : ""
-                  }`}
-                >
-                  <div className="h-56 overflow-hidden rounded-cards bg-brand-700 sm:h-64">
-                    <img
-                      src={`${API_BASE}${g.imageUrl}`}
-                      alt=""
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <figcaption className="mt-4 text-left text-meta text-cream/60">
-                    {g.title}
-                  </figcaption>
-                </motion.figure>
-              ))}
+            <div className="relative">
+              {/* Small screens scroll one row of photographs at a time. The
+                  arrows and the edge fade say so; without them most visitors
+                  never find out that the rest of the gallery is there. */}
+              <div
+                ref={galleryTrackRef}
+                className="flex snap-x snap-proximity items-start gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-6 lg:hidden"
+              >
+                {data.gallery.map((g, i) => (
+                  <motion.figure
+                    key={g.id}
+                    {...reveal(prefersReducedMotion, Math.min(i, 3))}
+                    className="w-[240px] shrink-0 snap-start sm:w-[300px]"
+                  >
+                    <div className="h-48 overflow-hidden rounded-cards bg-brand-700 sm:h-56">
+                      <img
+                        src={`${API_BASE}${g.imageUrl}`}
+                        alt=""
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <figcaption className="mt-4 text-left text-meta text-cream/60">
+                      {g.title}
+                    </figcaption>
+                  </motion.figure>
+                ))}
+              </div>
+
+              {/* From the large breakpoint up, every photograph is visible at
+                  once. The strip was 2800px wide on a 1440px screen, so half
+                  the gallery sat past the edge with nothing to indicate it. */}
+              <div className="hidden grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-8">
+                {data.gallery.map((g, i) => (
+                  <motion.figure
+                    key={g.id}
+                    {...reveal(prefersReducedMotion, Math.min(i, 3))}
+                  >
+                    <div className="h-48 overflow-hidden rounded-cards bg-brand-700 sm:h-56">
+                      <img
+                        src={`${API_BASE}${g.imageUrl}`}
+                        alt=""
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <figcaption className="mt-4 text-left text-meta text-cream/60">
+                      {g.title}
+                    </figcaption>
+                  </motion.figure>
+                ))}
+              </div>
+
+              {data.gallery.length > 0 && (
+                <div className="mt-6 flex items-center justify-between gap-4 lg:hidden">
+                  <button
+                    type="button"
+                    onClick={() => scrollGallery(-1)}
+                    aria-label="Previous photographs"
+                    className={`grid h-11 w-11 place-items-center rounded-full border border-cream/30 text-cream/70 transition-colors hover:border-cream/60 hover:text-cream ${FOCUS_RING}`}
+                  >
+                    <ChevronLeft aria-hidden="true" size={20} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollGallery(1)}
+                    aria-label="Next photographs"
+                    className={`grid h-11 w-11 place-items-center rounded-full border border-cream/30 text-cream/70 transition-colors hover:border-cream/60 hover:text-cream ${FOCUS_RING}`}
+                  >
+                    <ChevronRight aria-hidden="true" size={20} />
+                  </button>
+                </div>
+              )}
             </div>
           </Section>
         </div>

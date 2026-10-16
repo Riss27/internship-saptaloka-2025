@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, forwardRef } from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 // The lint config does not track JSX usage, so the motion import looks unused.
- 
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
 import Wordmark from "../../atoms/brand/Wordmark";
@@ -30,20 +30,53 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
     {
       name: t("navbar.services"),
       dropdown: [
+        // Each entry carries its own id. Both workshop entries lead to the same
+        // route, so keying the list on the destination would hand React two
+        // identical keys and the second one can fail to render.
         {
-          name: t("services_dropdown.workshop_kami", "Workshop Kami"),
+          id: "workshop-perfume",
+          name: t("services_dropdown.perfume_workshop", "Workshop Parfum"),
           to: "/workshops",
         },
-        { name: t("services_dropdown.custom_perfume"), to: "/pos" },
-        { name: t("services_dropdown.lab_tools"), to: "/lab-tools" },
-        { name: t("services_dropdown.ingredients"), to: "/ingredients" },
-        { name: t("services_dropdown.products"), to: "/products" },
+        {
+          id: "workshop-aromatherapy",
+          name: t(
+            "services_dropdown.aromatherapy_workshop",
+            "Workshop Aromaterapi",
+          ),
+          to: "/workshops",
+        },
+        {
+          id: "custom-perfume",
+          name: t(
+            "services_dropdown.custom_perfume",
+            "Buat Parfum & Aromaterapi",
+          ),
+          to: "/pos",
+        },
+        {
+          id: "lab-tools",
+          name: t("services_dropdown.lab_tools", "Alat Laboratorium"),
+          to: "/lab-tools",
+        },
+        {
+          id: "ingredients",
+          name: t(
+            "services_dropdown.ingredients",
+            "Bahan Parfum & Aromaterapi",
+          ),
+          to: "/ingredients",
+        },
+        {
+          id: "products",
+          name: t("services_dropdown.products", "Produk Parfum & Aromaterapi"),
+          to: "/products",
+        },
       ],
     },
     { name: t("navbar.articles"), to: "/articles" },
     { name: t("navbar.gallery"), to: "/gallery" },
     { name: t("navbar.about"), to: "/about" },
-    { name: "POS", to: "/pos" },
   ];
 
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -170,7 +203,7 @@ const Navbar = forwardRef(({ isTopNavbarVisible, topNavbarHeight }, ref) => {
             >
               {item.dropdown.map((sub) => (
                 <NavLink
-                  key={sub.to}
+                  key={sub.id}
                   to={sub.to}
                   onClick={handleNavClick}
                   className={({ isActive }) =>
