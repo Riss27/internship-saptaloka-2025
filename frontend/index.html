@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/Assets/asklogo1.png" />
-    <link rel="preconnect" href="https://rsms.me" />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <!-- Inter is self-hosted (see @font-face in index.css); these preloads
+         cover the weights the header and hero need before first paint so the
+         swap window stays as short as possible. -->
+    <link rel="preload" href="/fonts/Inter-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/Inter-500.woff2" as="font" type="font/woff2" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Askreative — katalog parfum, bahan & peralatan lab, workshop, event, dan artikel." />
     <title>Askreative</title>

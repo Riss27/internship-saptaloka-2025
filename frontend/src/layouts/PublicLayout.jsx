@@ -1,4 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+} from "react";
 import { Outlet, useLocation } from "react-router-dom";
 // The lint config does not track JSX usage, so the motion imports look unused.
  
@@ -38,7 +43,11 @@ const PublicLayout = () => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [location.pathname]);
 
-  useEffect(() => {
+  // useLayoutEffect, not useEffect: the header height has to be correct in
+  // the very first paint. An effect runs after the browser has already drawn,
+  // so the page painted with the estimated 88px and then jumped to the
+  // measured height - a layout shift on every load.
+  useLayoutEffect(() => {
     const updateHeights = () => {
       const topH = topNavRef.current?.clientHeight || 0;
       const mainH = mainNavRef.current?.clientHeight || 0;

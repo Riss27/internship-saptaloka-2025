@@ -1,5 +1,48 @@
 @import "tailwindcss";
 
+/* Inter, served from the app's own origin. The previous setup pulled this
+   stylesheet and the font files from rsms.me, which made the two largest
+   requests on every load depend on a third party's response time: first paint
+   waited on their CSS, the swap landed whenever their servers answered, and
+   cold runs shifted layout when it did. font-display: swap keeps text visible
+   while bytes arrive; the preloads in index.html shrink that window. Weights
+   are the ones the app actually uses, latin subset. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Inter-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/Inter-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/Inter-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Inter-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Inter-400-Italic.woff2") format("woff2");
+}
+
 @theme {
   /* Brand green */
   --color-brand-900: #0b1f1d;
