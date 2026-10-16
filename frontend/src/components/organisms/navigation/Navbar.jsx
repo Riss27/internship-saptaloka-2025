@@ -2,10 +2,11 @@ import React, { useState, useRef, useEffect, forwardRef } from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 // The lint config does not track JSX usage, so the motion import looks unused.
-// eslint-disable-next-line no-unused-vars
+ 
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
 import Wordmark from "../../atoms/brand/Wordmark";
+import { ChevronDown } from "lucide-react";
 import {
   logoVariants,
   menuItemVariants,

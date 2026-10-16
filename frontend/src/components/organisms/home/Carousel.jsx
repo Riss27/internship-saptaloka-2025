@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useReducedMotion, useScroll, useTransform } from "framer-motion";
 // The lint config does not track JSX usage, so the motion import looks unused.
-// eslint-disable-next-line no-unused-vars
+ 
 import { motion } from "framer-motion";
 import apiClient from "../../../hooks/apiClient";
 import { ChevronLeft, ChevronRight } from "lucide-react";

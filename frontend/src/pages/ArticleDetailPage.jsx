@@ -6,7 +6,7 @@ import RichTextDisplay from "../components/common/RichTextDisplay";
 import { useTranslateDB } from "../hooks/useTranslateDB";
 import { useTranslation } from "react-i18next";
 // The lint config does not track JSX usage, so the motion import looks unused.
-// eslint-disable-next-line no-unused-vars
+ 
 import { motion, useReducedMotion } from "framer-motion";
 import { reveal } from "../lib/motion";
 import API_BASE from "../lib/apiBase";

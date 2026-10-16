@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 // The lint config does not track JSX usage, so the motion imports look unused.
-// eslint-disable-next-line no-unused-vars
+ 
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Navbar, Footer, TopNavbar } from "../components/organisms/navigation";
 import { pageTransition } from "../lib/motion";

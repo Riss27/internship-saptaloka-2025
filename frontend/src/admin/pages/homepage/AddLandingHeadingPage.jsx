@@ -57,7 +57,6 @@ const AddLandingHeadingPage = () => {
   const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [_isDragOver, setIsDragOver] = useState(false);
   const isEditMode = Boolean(id);
 
   useEffect(() => {
@@ -97,26 +96,6 @@ const AddLandingHeadingPage = () => {
         return;
       }
 
-      setImageFile(file);
-      setPreviewImage(URL.createObjectURL(file));
-    }
-  };
-
-  const _handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const _handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
-
-  const _handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file) {
       setImageFile(file);
       setPreviewImage(URL.createObjectURL(file));
     }

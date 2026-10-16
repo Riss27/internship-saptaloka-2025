@@ -5,7 +5,7 @@ import PageHeader from "../components/atoms/layout/PageHeader";
 import SectionHeading from "../components/atoms/layout/SectionHeading";
 import { useTranslation } from "react-i18next";
 // The lint config does not track JSX usage, so the motion import looks unused.
-// eslint-disable-next-line no-unused-vars
+ 
 import { motion, useReducedMotion } from "framer-motion";
 import { reveal } from "../lib/motion";
 

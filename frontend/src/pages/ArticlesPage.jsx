@@ -124,7 +124,7 @@ const ArticlesPage = () => {
                 "articles_page.no_articles_found",
                 "No articles found matching your search",
               )}{" "}
-              "{searchQuery}"
+              &ldquo;{searchQuery}&rdquo;
             </p>
             <button
               type="button"

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
 import { Link } from "react-router-dom";
 // The lint config does not track JSX usage, so the motion import looks unused.
-// eslint-disable-next-line no-unused-vars
+ 
 import { motion, useReducedMotion } from "framer-motion";
 import { reveal, cardHover } from "../lib/motion";
 import Carousel from "../components/organisms/home/Carousel";

@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { ShoppingCart, Store, FileText, ArrowLeft, CircleAlert } from "lucide-react";
 // The lint config does not track JSX usage, so the motion import looks unused.
-// eslint-disable-next-line no-unused-vars
+ 
 import { motion, useReducedMotion } from "framer-motion";
 import { reveal } from "../../../lib/motion";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";

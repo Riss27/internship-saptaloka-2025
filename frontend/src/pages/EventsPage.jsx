@@ -131,8 +131,8 @@ const EventsPage = () => {
               />
             </span>
             <p className="text-body text-cream/80 mb-8">
-              {t("events_page.no_events_found", "No events found matching")} "
-              {searchQuery}"
+              {t("events_page.no_events_found", "No events found matching")}{" "}
+              &ldquo;{searchQuery}&rdquo;
             </p>
             <button
               type="button"
