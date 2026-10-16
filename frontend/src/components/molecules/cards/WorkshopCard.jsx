@@ -11,88 +11,91 @@ import API_BASE from "../../../lib/apiBase";
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
 
+/**
+ * Workshop card.
+ *
+ * A workshop is the one entry here that bundles other entries, so it keeps its
+ * related-event count alongside the description. The detail link is pinned to
+ * the bottom of the card with mt-auto, otherwise a two-line title would push it
+ * down and the row of cards would end on ragged edges.
+ */
 const WorkshopCard = ({ workshop }) => {
   const translatedTitle = useTranslateDB(workshop.title);
   const translatedDescription = useTranslateDB(workshop.description);
 
   return (
-    <div className="bg-brand-800 rounded-cards overflow-hidden group border border-border flex flex-col h-full">
-      <Link
-        to={`/workshops/${workshop.id}`}
-        tabIndex={-1}
-        aria-hidden="true"
-        className="block shrink-0"
-      >
-        {/* Image Container */}
-        <div className="w-full h-56 shrink-0 overflow-hidden bg-brand-700 relative">
+    <div className="group flex h-full flex-col overflow-hidden rounded-cards border border-border bg-brand-800 transition-colors hover:border-brand-400">
+      <div className="relative h-44 w-full shrink-0 overflow-hidden bg-brand-700 sm:h-48">
+        <Link to={`/workshops/${workshop.id}`} tabIndex={-1} aria-hidden="true">
           <LazyLoadImage
             alt=""
             src={`${API_BASE}${workshop.imageUrl}`}
             effect="blur"
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 motion-reduce:transform-none motion-reduce:transition-none"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transform-none motion-reduce:transition-none"
             wrapperClassName="w-full h-full"
             threshold={100}
           />
-          {workshop.category && (
-            <span className="absolute top-3 right-3 px-3 py-1.5 text-xs font-medium rounded-full bg-brand-600 text-cream uppercase">
-              {workshop.category}
-            </span>
-          )}
-        </div>
-      </Link>
+        </Link>
+        {workshop.category && (
+          <span className="absolute right-3 top-3 rounded-full bg-brand-600 px-3 py-1 text-meta uppercase tracking-[0.14em] text-cream">
+            {workshop.category}
+          </span>
+        )}
+      </div>
 
-      {/* Content */}
-      <div className="p-5 flex flex-col flex-grow">
-        <Link
-          to={`/workshops/${workshop.id}`}
-          aria-label={`${translatedTitle}, view workshop details`}
-          className={`self-start rounded-xs ${FOCUS_RING}`}
+      <div className="flex flex-1 flex-col p-5">
+        <h3
+          className="text-subheading leading-tight text-cream uppercase transition-colors group-hover:text-brand-400 line-clamp-2"
+          title={translatedTitle}
         >
-          <h3
-            className="font-medium text-xl text-cream mb-3 line-clamp-2 leading-snug uppercase transition-colors group-hover:text-brand-400"
-            title={translatedTitle}
+          <Link
+            to={`/workshops/${workshop.id}`}
+            aria-label={`${translatedTitle}, view workshop details`}
+            className={FOCUS_RING}
           >
             {translatedTitle}
-          </h3>
-        </Link>
+          </Link>
+        </h3>
 
-        <div className="space-y-2.5 text-cream/80 text-sm flex-grow mb-4">
+        <div className="mb-5 mt-4 flex-1 space-y-2.5 text-meta text-cream/70">
           {workshop.category && (
-            <div className="flex items-center gap-2.5">
+            <p className="flex items-center gap-2.5">
               <Tag
-                className="w-4 h-4 text-brand-400 flex-shrink-0"
+                className="h-4 w-4 flex-shrink-0 text-brand-400"
                 aria-hidden="true"
               />
               <span>{workshop.category}</span>
-            </div>
+            </p>
           )}
 
           {workshop.Events && workshop.Events.length > 0 && (
-            <div className="flex items-center gap-2.5">
+            <p className="flex items-center gap-2.5">
               <Calendar
-                className="w-4 h-4 text-brand-400 flex-shrink-0"
+                className="h-4 w-4 flex-shrink-0 text-brand-400"
                 aria-hidden="true"
               />
               <span>
                 {workshop.Events.length}{" "}
                 {workshop.Events.length === 1 ? "Event" : "Events"}
               </span>
-            </div>
+            </p>
           )}
 
           <RichTextDisplay
             content={translatedDescription}
-            className=" text-cream/80 line-clamp-3"
+            className="text-cream/70 line-clamp-3"
           />
         </div>
 
-        <Link
-          to={`/workshops/${workshop.id}`}
-          className={`mt-auto inline-flex items-center gap-2 min-h-11 self-start text-brand-400 hover:text-cream font-medium text-sm uppercase tracking-wide transition-colors ${FOCUS_RING}`}
-        >
-          Lihat Detail
-          <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
-        </Link>
+        <div className="mt-auto border-t border-border pt-4">
+          <Link
+            to={`/workshops/${workshop.id}`}
+            className={`inline-flex min-h-11 items-center gap-2 text-meta uppercase tracking-[0.18em] text-brand-400 transition-colors hover:text-cream ${FOCUS_RING}`}
+          >
+            Lihat Detail
+            <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
-import {
-  ShoppingCart,
-  Tag,
-  FileText,
-  ArrowLeft,
-  CircleAlert,
-} from "lucide-react";
+import { ShoppingCart, Store, FileText, ArrowLeft, CircleAlert } from "lucide-react";
+// The lint config does not track JSX usage, so the motion import looks unused.
+// eslint-disable-next-line no-unused-vars
+import { motion, useReducedMotion } from "framer-motion";
+import { reveal } from "../../../lib/motion";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
 import { useTranslation } from "react-i18next";
 import RichTextDisplay from "../../common/RichTextDisplay";
@@ -20,6 +18,19 @@ const FOCUS_RING =
 const IMAGE_FALLBACK =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect fill='%230f2626' width='400' height='400'/%3E%3Cpath d='M140 140h120v120h-120z' fill='%2316332e'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16' fill='%238fd9be'%3ENo image available%3C/text%3E%3C/svg%3E";
 
+/**
+ * Catalogue item page, shared by products, ingredients and lab tools.
+ *
+ * One surface only: the photograph. The column beside it is not a panel, so the
+ * name, the price, the specification and the description sit directly on the
+ * page background and are separated by space and hairlines. An earlier version
+ * wrapped a brand-800 card around a brand-700 block around a brand-900 well,
+ * which made an ordinary catalogue entry look like a template.
+ *
+ * The name is the lead and takes the display size. The price sits directly under
+ * it in the subheading voice, which is deliberately smaller: the loudest thing
+ * on a product page should be what the thing is, not what it costs.
+ */
 const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,6 +39,7 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
   const [error, setError] = useState(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const { t } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
 
   const translatedName = useTranslateDB(item?.name);
   const translatedDescription = useTranslateDB(item?.description);
@@ -80,29 +92,29 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
   if (error) {
     return (
       <div className="bg-brand-900 min-h-[60vh] flex items-center justify-center px-4 py-10 sm:py-12">
-        <div className="bg-brand-800 border border-border rounded-cards p-6 sm:p-8 max-w-md w-full text-center">
-          <span className="inline-grid place-items-center w-20 h-20 rounded-full bg-brand-700 border border-brand-400 mb-5">
+        <div className="border-t border-border pt-14 sm:pt-16 text-center max-w-lg mx-auto">
+          <span className="inline-grid place-items-center w-20 h-20 rounded-full border border-border mb-6">
             <CircleAlert
               className="w-10 h-10 text-brand-400"
               aria-hidden="true"
             />
           </span>
-          <h1 className="text-xl font-medium text-cream mb-2 uppercase tracking-wide">
+          <h1 className="text-heading-sm text-cream uppercase mb-4">
             {t("static.error_title")}
           </h1>
-          <p className="text-cream/80 mb-6 break-words">{error}</p>
+          <p className="text-body text-cream/80 mb-8 break-words">{error}</p>
           <div className="flex flex-col gap-3 sm:flex-row justify-center">
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className={`min-h-11 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide py-2.5 px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
+              className={`min-h-11 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
             >
               {t("static.retry")}
             </button>
             <button
               type="button"
               onClick={() => navigate(breadcrumbPath)}
-              className={`min-h-11 bg-brand-800 border border-border text-cream hover:bg-brand-700 font-medium uppercase tracking-wide py-2.5 px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
+              className={`min-h-11 bg-brand-800 border border-border text-cream hover:bg-brand-700 hover:text-cream font-medium uppercase tracking-wide px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
             >
               {t("back")}
             </button>
@@ -116,15 +128,15 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
   if (!item) {
     return (
       <div className="bg-brand-900 min-h-[60vh] flex items-center justify-center px-4 py-10 sm:py-12">
-        <div className="bg-brand-800 border border-border rounded-cards p-6 sm:p-8 max-w-md w-full text-center">
-          <h1 className="text-xl font-medium text-cream mb-2 uppercase tracking-wide">
+        <div className="border-t border-border pt-14 sm:pt-16 text-center max-w-lg mx-auto">
+          <h1 className="text-heading-sm text-cream uppercase mb-4">
             {t("static.not_found_title")}
           </h1>
-          <p className="text-cream/80 mb-6">{t("static.not_found_message")}</p>
+          <p className="text-body text-cream/80 mb-8">{t("static.not_found_message")}</p>
           <button
             type="button"
             onClick={() => navigate(breadcrumbPath)}
-            className={`min-h-11 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide py-2.5 px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
+            className={`min-h-11 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
           >
             {t("static.back_to_list")}
           </button>
@@ -133,47 +145,66 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
     );
   }
 
-  // MAIN CONTENT
+  // The two storefronts get different marks so they can be told apart at a
+  // glance, since the palette has no room for either of their brand colours.
+  const storeLinks = [
+    {
+      href: item.linkShopee,
+      label: t("shopee"),
+      icon: <ShoppingCart className="w-5 h-5 shrink-0" aria-hidden="true" />,
+    },
+    {
+      href: item.linkTokopedia,
+      label: t("tokopedia"),
+      icon: <Store className="w-5 h-5 shrink-0" aria-hidden="true" />,
+    },
+  ].filter((link) => link.href);
+
+  const hasSpecification = Boolean(item.category);
+
   return (
-    <div className="py-10 sm:py-12 lg:py-20 bg-brand-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-10">
-        {/* Tombol Back */}
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className={`inline-flex items-center gap-2 min-h-11 text-cream/80 hover:text-cream transition-colors mb-4 sm:mb-6 ${FOCUS_RING}`}
+    <div className="bg-brand-900">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14 lg:py-20">
+        {/* Way back and current position share one row, with a hairline under it
+            so the reader is oriented before the item itself starts. */}
+        <motion.div
+          {...reveal(prefersReducedMotion)}
+          className="mb-10 sm:mb-14 border-b border-border pb-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2"
         >
-          <ArrowLeft className="w-4 h-4 shrink-0" aria-hidden="true" />
-          <span className="font-medium uppercase tracking-wide text-sm">
-            {t("back")}
-          </span>
-        </button>
-
-        {/* Breadcrumb */}
-        <nav
-          aria-label="Breadcrumb"
-          className="text-sm text-cream/80 mb-6 bg-brand-800 px-4 py-2 rounded-full inline-block max-w-full border border-border"
-        >
-          <Link
-            to={breadcrumbPath}
-            className={`hover:text-cream transition-colors font-medium ${FOCUS_RING}`}
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className={`-ml-2 inline-flex items-center gap-2 min-h-11 px-2 text-meta uppercase tracking-[0.18em] text-cream/70 hover:text-cream transition-colors ${FOCUS_RING}`}
           >
-            {breadcrumbName}
-          </Link>
-          <span className="mx-2 text-cream/60" aria-hidden="true">
-            /
-          </span>
-          <span className="text-cream font-medium break-words">
-            {translatedName}
-          </span>
-        </nav>
+            <ArrowLeft className="w-4 h-4 shrink-0" aria-hidden="true" />
+            <span>{t("back")}</span>
+          </button>
 
-        {/* Main Card */}
-        <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-6 sm:gap-8 md:gap-10 bg-brand-800 rounded-cards p-5 sm:p-6 md:p-8 border border-border">
-          {/* Image */}
-          <div className="bg-brand-900 rounded-inputs p-4 relative overflow-hidden">
+          <nav
+            aria-label="Breadcrumb"
+            className="text-meta text-cream/60 min-w-0 break-words"
+          >
+            <Link
+              to={breadcrumbPath}
+              className={`text-cream/80 hover:text-brand-400 transition-colors ${FOCUS_RING}`}
+            >
+              {breadcrumbName}
+            </Link>
+            <span className="mx-2" aria-hidden="true">
+              /
+            </span>
+            <span className="text-cream">{translatedName}</span>
+          </nav>
+        </motion.div>
+
+        <motion.div
+          {...reveal(prefersReducedMotion, 1)}
+          className="grid grid-cols-1 gap-10 sm:gap-12 lg:grid-cols-2 lg:gap-14 lg:items-start"
+        >
+          {/* The photograph is the only surface on this page. */}
+          <div className="relative aspect-square overflow-hidden rounded-cards bg-brand-800">
             {!imageLoaded && (
-              <div className="absolute inset-0 bg-brand-700 animate-pulse motion-reduce:animate-none rounded-inputs m-4"></div>
+              <div className="absolute inset-0 bg-brand-700 animate-pulse motion-reduce:animate-none"></div>
             )}
             <img
               src={`${API_URL}${item.imageUrl}`}
@@ -183,88 +214,69 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
                 e.target.src = IMAGE_FALLBACK;
                 setImageLoaded(true);
               }}
-              className="w-full h-auto object-cover rounded-inputs relative z-10"
+              className="relative z-10 block h-full w-full object-cover"
             />
           </div>
 
-          {/* Info */}
-          <div className="space-y-6">
-            <div className="bg-brand-700 rounded-inputs p-5 border border-border">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium text-cream mb-2 uppercase tracking-wide leading-tight break-words">
-                {translatedName}
-              </h1>
-              <p className="text-2xl md:text-3xl font-semibold text-cream">
-                {formatPrice(item.price)}
-              </p>
-            </div>
+          {/* Everything else is unboxed. */}
+          <div>
+            <h1 className="text-display text-cream uppercase break-words">
+              {translatedName}
+            </h1>
 
-            {/* Tombol E-commerce */}
-            {(item.linkShopee || item.linkTokopedia) && (
-              <div className="flex flex-wrap gap-3">
-                {item.linkShopee && (
+            <p className="mt-6 text-subheading text-cream/80">
+              {formatPrice(item.price)}
+            </p>
+
+            {storeLinks.length > 0 && (
+              <div className="mt-8 flex flex-wrap gap-3">
+                {storeLinks.map(({ href, label, icon }) => (
                   <a
-                    href={item.linkShopee}
+                    key={href}
+                    href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`inline-flex items-center justify-center gap-2 min-h-11 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide py-3 px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
+                    className={`inline-flex items-center justify-center gap-2 min-h-11 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
                   >
-                    <ShoppingCart
-                      className="w-5 h-5 shrink-0"
-                      aria-hidden="true"
-                    />
-                    <span>{t("shopee")}</span>
+                    {icon}
+                    <span>{label}</span>
                   </a>
-                )}
-                {item.linkTokopedia && (
-                  <a
-                    href={item.linkTokopedia}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center justify-center gap-2 min-h-11 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide py-3 px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
-                  >
-                    <ShoppingCart
-                      className="w-5 h-5 shrink-0"
-                      aria-hidden="true"
-                    />
-                    <span>{t("tokopedia")}</span>
-                  </a>
-                )}
+                ))}
               </div>
             )}
 
-            {/* Kategori */}
-            {item.category && (
-              <div className="flex items-center gap-3 bg-brand-700 rounded-inputs p-4 border border-border flex-wrap">
-                <Tag
-                  className="w-4 h-4 shrink-0 text-cream/80"
-                  aria-hidden="true"
-                />
-                <span className="text-cream/80 text-sm font-medium uppercase tracking-wide">
-                  {t("static.category")}:
-                </span>
-                <span className="bg-brand-800 text-cream text-sm font-medium px-4 py-1.5 rounded-full border border-border uppercase">
-                  {translatedCategory}
-                </span>
-              </div>
+            {/* Specification rows sit on a fixed label column so several facts
+                line up under each other instead of drifting with their text. */}
+            {hasSpecification && (
+              <dl className="mt-10 sm:mt-12">
+                <div className="grid grid-cols-1 gap-1.5 border-t border-border py-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:items-baseline sm:gap-6">
+                  <dt className="text-meta uppercase tracking-[0.18em] text-cream/60">
+                    {t("static.category")}
+                  </dt>
+                  <dd className="text-body text-cream break-words">
+                    {translatedCategory}
+                  </dd>
+                </div>
+              </dl>
             )}
 
-            {/* Deskripsi */}
-            <div className="bg-brand-700 rounded-inputs p-5 border border-border">
-              <h2 className="flex items-center gap-2.5 text-lg font-medium text-cream mb-3 uppercase tracking-wide">
-                <FileText
-                  className="w-5 h-5 shrink-0 text-brand-400"
-                  aria-hidden="true"
-                />
+            <section className="mt-10 sm:mt-12">
+              <h2 className="flex items-center gap-3 text-heading-sm text-cream uppercase">
+                <FileText className="w-5 h-5 shrink-0 text-brand-400" aria-hidden="true" />
                 <span>{t("static.description")}</span>
               </h2>
-              <div className="text-cream/90 leading-relaxed bg-brand-900 rounded-inputs p-4 border border-border">
+              <div
+                className="w-16 border-t border-dashed border-brand-400/50 mt-5"
+                aria-hidden="true"
+              />
+              <div className="mt-6 max-w-[68ch] text-body text-cream/90">
                 <RichTextDisplay
                   content={translatedDescription || t("static.no_description")}
                 />
               </div>
-            </div>
+            </section>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

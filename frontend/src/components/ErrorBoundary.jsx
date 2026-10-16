@@ -23,7 +23,7 @@ class ErrorBoundary extends React.Component {
           role="alert"
           className="min-h-[60vh] flex flex-col items-center justify-center bg-brand-900 text-cream/80 px-4 py-10 text-center"
         >
-          <h1 className="text-2xl font-medium text-cream mb-2 uppercase tracking-wide">
+          <h1 className="text-heading-sm text-cream uppercase mb-2">
             Terjadi kesalahan
           </h1>
           <p className="text-cream/80 mb-6 max-w-md">

@@ -1,11 +1,34 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
 import { MapPin, Phone, Mail, Instagram } from "lucide-react";
+import PageHeader from "../components/atoms/layout/PageHeader";
+import SectionHeading from "../components/atoms/layout/SectionHeading";
 import { useTranslation } from "react-i18next";
+// The lint config does not track JSX usage, so the motion import looks unused.
+// eslint-disable-next-line no-unused-vars
+import { motion, useReducedMotion } from "framer-motion";
+import { reveal } from "../lib/motion";
 
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
 
+/**
+ * About page.
+ *
+ * This page has the least to explain and the most to say, so it uses the same
+ * masthead every other page uses and lets the writing carry it. The underline
+ * that used to sit under the title is gone: a rule repeated under every heading
+ * stops meaning anything. What is left is the short dashed mark the shared
+ * section heading already draws, and that earns its place because there are
+ * only two headings on the page.
+ *
+ * The contact details are printed like a colophon at the back of a book: a
+ * label column, a value column, a hairline between entries. No coloured discs
+ * and no icon tiles, because an address is not a button and should not be
+ * dressed as one. The form is the single surface on the page, and its fields sit
+ * one step lighter than the panel so they read as inputs rather than as holes
+ * punched through it.
+ */
 const AboutPage = () => {
   const { t } = useTranslation();
   const [aboutInfo, setAboutInfo] = useState(null);
@@ -16,6 +39,7 @@ const AboutPage = () => {
     phone: "",
     message: "",
   });
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     apiClient
@@ -58,32 +82,75 @@ const AboutPage = () => {
   if (!aboutInfo) {
     return (
       <div className="bg-brand-900 min-h-[60vh] flex items-center justify-center px-4 text-center">
-        <p className="text-cream/80 text-lg">Informasi tidak tersedia.</p>
+        <p className="text-body text-cream/80">Informasi tidak tersedia.</p>
       </div>
     );
   }
 
+  // Every entry follows the same two-column shape, so the label column stays
+  // straight down the page whether or not the value is a link. The mark sits
+  // inline with the label rather than in a tile of its own.
+  const contactEntries = [
+    {
+      icon: (
+        <MapPin className="h-4 w-4 shrink-0 text-brand-400" aria-hidden="true" />
+      ),
+      label: t("about_page.address"),
+      value: aboutInfo.address,
+    },
+    {
+      icon: (
+        <Phone className="h-4 w-4 shrink-0 text-brand-400" aria-hidden="true" />
+      ),
+      label: t("about_page.phone"),
+      value: aboutInfo.phone,
+      href: `tel:${aboutInfo.phone}`,
+    },
+    {
+      icon: (
+        <Mail className="h-4 w-4 shrink-0 text-brand-400" aria-hidden="true" />
+      ),
+      label: t("about_page.email"),
+      value: aboutInfo.email,
+      href: `mailto:${aboutInfo.email}`,
+      wraps: "break-all",
+    },
+    ...(aboutInfo.instagram
+      ? [
+          {
+            icon: (
+              <Instagram
+                className="h-4 w-4 shrink-0 text-brand-400"
+                aria-hidden="true"
+              />
+            ),
+            label: t("about_page.instagram"),
+            value: t("about_page.visit_instagram"),
+            href: aboutInfo.instagram,
+            external: true,
+          },
+        ]
+      : []),
+  ];
+
+  const fieldClass = `w-full bg-brand-700 border border-border rounded-inputs p-3 text-cream placeholder:text-cream/60 focus:border-brand-400 transition-colors ${FOCUS_RING}`;
+  const labelClass =
+    "block text-meta uppercase tracking-[0.18em] text-cream/60 mb-2";
+
   return (
     <div className="bg-brand-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-12 lg:py-16">
-        {/* Header Section */}
-        <div className="mb-8 sm:mb-12">
-          <div className="bg-brand-800 rounded-cards p-6 sm:p-8 border border-border">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium text-brand-400 mb-6 relative inline-block uppercase tracking-wide break-words">
-              {t("about_page.about_us")}
-              <span className="absolute -bottom-2 left-0 w-24 h-1 bg-brand-400 rounded-full" />
-            </h1>
-            <p className="text-cream/90 leading-relaxed text-base sm:text-lg break-words">
-              {aboutInfo.about}
-            </p>
-          </div>
-        </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-28">
+        <PageHeader
+          title={t("about_page.about_us")}
+          subtitle={aboutInfo.about}
+        />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          {/*Map + Kontak */}
-          <div className="space-y-6 sm:space-y-8">
-            {/* Map Container */}
-            <div className="w-full h-72 sm:h-80 md:h-96 rounded-cards overflow-hidden border border-border">
+        <motion.div
+          {...reveal(prefersReducedMotion)}
+          className="grid grid-cols-1 gap-12 sm:gap-14 lg:grid-cols-2 lg:gap-20"
+        >
+          <div className="space-y-12 sm:space-y-14">
+            <div className="aspect-[4/3] w-full overflow-hidden rounded-cards border border-border bg-brand-800">
               <iframe
                 title={t("about_page.contact_us")}
                 src={
@@ -99,102 +166,48 @@ const AboutPage = () => {
               ></iframe>
             </div>
 
-            {/* Contact Info Cards */}
-            <div className="bg-brand-800 rounded-cards p-6 border border-border">
-              <h2 className="font-medium text-brand-400 text-xl mb-6 relative inline-block uppercase tracking-wide">
-                {t("about_page.contact_us")}
-                <span className="absolute -bottom-2 left-0 w-16 h-0.5 bg-brand-400" />
-              </h2>
+            <div>
+              <SectionHeading title={t("about_page.contact_us")} />
 
-              <div className="space-y-5">
-                <div className="flex items-center gap-3">
-                  <div className="shrink-0 w-11 h-11 bg-brand-600 rounded-inputs grid place-items-center">
-                    <MapPin className="w-5 h-5 text-cream" aria-hidden="true" />
+              <dl className="border-t border-border">
+                {contactEntries.map(({ icon, label, value, href, external, wraps }) => (
+                  <div
+                    key={label}
+                    className="grid grid-cols-1 gap-1.5 border-t border-border py-5 first:border-t-0 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-baseline sm:gap-6"
+                  >
+                    <dt className="flex items-center gap-2.5 text-meta uppercase tracking-[0.18em] text-cream/60">
+                      {icon}
+                      {label}
+                    </dt>
+                    <dd className="min-w-0 text-body text-cream">
+                      {href ? (
+                        <a
+                          href={href}
+                          {...(external && {
+                            target: "_blank",
+                            rel: "noopener noreferrer",
+                          })}
+                          className={`inline-flex items-center min-h-11 hover:text-brand-400 transition-colors ${wraps || "break-words"} ${FOCUS_RING}`}
+                        >
+                          {value}
+                        </a>
+                      ) : (
+                        <span className={wraps || "break-words"}>{value}</span>
+                      )}
+                    </dd>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-cream/70 mb-1 font-medium uppercase tracking-wide">
-                      {t("about_page.address")}
-                    </p>
-                    <p className="text-cream text-sm break-words">
-                      {aboutInfo.address}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="shrink-0 w-11 h-11 bg-brand-600 rounded-inputs grid place-items-center">
-                    <Phone className="w-5 h-5 text-cream" aria-hidden="true" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-cream/70 mb-1 font-medium uppercase tracking-wide">
-                      {t("about_page.phone")}
-                    </p>
-                    <a
-                      href={`tel:${aboutInfo.phone}`}
-                      className={`inline-flex items-center min-h-11 text-cream hover:text-brand-400 transition-colors font-medium text-sm break-words ${FOCUS_RING}`}
-                    >
-                      {aboutInfo.phone}
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="shrink-0 w-11 h-11 bg-brand-600 rounded-inputs grid place-items-center">
-                    <Mail className="w-5 h-5 text-cream" aria-hidden="true" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-cream/70 mb-1 font-medium uppercase tracking-wide">
-                      {t("about_page.email")}
-                    </p>
-                    <a
-                      href={`mailto:${aboutInfo.email}`}
-                      className={`inline-flex items-center min-h-11 text-cream hover:text-brand-400 transition-colors font-medium text-sm break-all ${FOCUS_RING}`}
-                    >
-                      {aboutInfo.email}
-                    </a>
-                  </div>
-                </div>
-
-                {aboutInfo.instagram && (
-                  <div className="flex items-center gap-3">
-                    <div className="shrink-0 w-11 h-11 bg-brand-600 rounded-inputs grid place-items-center">
-                      <Instagram
-                        className="w-5 h-5 text-cream"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-cream/70 mb-1 font-medium uppercase tracking-wide">
-                        {t("about_page.instagram")}
-                      </p>
-                      <a
-                        href={aboutInfo.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`inline-flex items-center min-h-11 text-cream hover:text-brand-400 transition-colors font-medium text-sm ${FOCUS_RING}`}
-                      >
-                        {t("about_page.visit_instagram")}
-                      </a>
-                    </div>
-                  </div>
-                )}
-              </div>
+                ))}
+              </dl>
             </div>
           </div>
 
-          {/*Form Kontak */}
-          <div className="bg-brand-800 rounded-cards p-6 sm:p-8 border border-border">
-            <h2 className="font-medium text-brand-400 text-xl mb-6 relative inline-block uppercase tracking-wide">
-              {t("about_page.send_message")}
-              <span className="absolute -bottom-2 left-0 w-16 h-0.5 bg-brand-400" />
-            </h2>
+          {/* The form is the one surface on this page. */}
+          <div className="self-start rounded-cards bg-brand-800 border border-border p-6 sm:p-8">
+            <SectionHeading title={t("about_page.send_message")} />
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label
-                  htmlFor="about-name"
-                  className="block text-sm font-medium text-cream/80 mb-2 uppercase tracking-wide"
-                >
+                <label htmlFor="about-name" className={labelClass}>
                   {t("about_page.full_name")}
                 </label>
                 <input
@@ -204,16 +217,13 @@ const AboutPage = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder={t("about_page.your_name")}
-                  className={`w-full bg-brand-900 border border-border rounded-inputs p-3 text-cream placeholder:text-cream/60 focus:border-brand-400 transition-colors ${FOCUS_RING}`}
+                  className={fieldClass}
                   required
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="about-email"
-                  className="block text-sm font-medium text-cream/80 mb-2 uppercase tracking-wide"
-                >
+                <label htmlFor="about-email" className={labelClass}>
                   Email
                 </label>
                 <input
@@ -223,16 +233,13 @@ const AboutPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="email@example.com"
-                  className={`w-full bg-brand-900 border border-border rounded-inputs p-3 text-cream placeholder:text-cream/60 focus:border-brand-400 transition-colors ${FOCUS_RING}`}
+                  className={fieldClass}
                   required
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="about-phone"
-                  className="block text-sm font-medium text-cream/80 mb-2 uppercase tracking-wide"
-                >
+                <label htmlFor="about-phone" className={labelClass}>
                   {t("about_page.phone_number")}
                 </label>
                 <input
@@ -242,15 +249,12 @@ const AboutPage = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="+62 xxx xxxx xxxx"
-                  className={`w-full bg-brand-900 border border-border rounded-inputs p-3 text-cream placeholder:text-cream/60 focus:border-brand-400 transition-colors ${FOCUS_RING}`}
+                  className={fieldClass}
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="about-message"
-                  className="block text-sm font-medium text-cream/80 mb-2 uppercase tracking-wide"
-                >
+                <label htmlFor="about-message" className={labelClass}>
                   {t("about_page.message")}
                 </label>
                 <textarea
@@ -260,7 +264,7 @@ const AboutPage = () => {
                   onChange={handleChange}
                   placeholder={t("about_page.write_message")}
                   rows={6}
-                  className={`w-full bg-brand-900 border border-border rounded-inputs p-3 text-cream placeholder:text-cream/60 focus:border-brand-400 transition-colors resize-none ${FOCUS_RING}`}
+                  className={`${fieldClass} resize-none`}
                   required
                 />
               </div>
@@ -273,7 +277,7 @@ const AboutPage = () => {
               </button>
             </form>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

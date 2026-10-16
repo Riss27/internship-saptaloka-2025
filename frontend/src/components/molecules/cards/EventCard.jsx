@@ -21,6 +21,15 @@ const getStatusBadge = (status) => {
   return badges[status] || "bg-brand-800 text-cream/80 border border-border";
 };
 
+/**
+ * Event card.
+ *
+ * The banner is short and wide, so the card reads as a landscape plate rather
+ * than another portrait tile. Inside it the order is inverted from the old
+ * version: the date is a small tracked label at the top and the title carries
+ * the card. The remaining facts sit under a hairline at the foot, where they
+ * stay readable without competing with the title.
+ */
 const EventCard = ({ event }) => {
   const translatedTitle = useTranslateDB(event.title);
   const translatedStatus = useTranslateDB(event.status);
@@ -43,97 +52,89 @@ const EventCard = ({ event }) => {
   const availableQuota = event.quota - (event.registeredCount || 0);
 
   return (
-    <div className="bg-brand-800 rounded-cards overflow-hidden group border border-border flex flex-col h-full">
-      <Link
-        to={`/events/${event.id}`}
-        tabIndex={-1}
-        aria-hidden="true"
-        className="block shrink-0"
-      >
-        {/* Image Container */}
-        <div className="w-full h-56 shrink-0 overflow-hidden bg-brand-700 relative">
+    <div className="group flex h-full flex-col overflow-hidden rounded-cards border border-border bg-brand-800 transition-colors hover:border-brand-400">
+      <div className="relative h-36 w-full shrink-0 overflow-hidden bg-brand-700 sm:h-40">
+        <Link to={`/events/${event.id}`} tabIndex={-1} aria-hidden="true">
           <LazyLoadImage
             alt=""
             src={`${API_BASE}${event.imageBannerUrl}`}
             effect="blur"
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 motion-reduce:transform-none motion-reduce:transition-none"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transform-none motion-reduce:transition-none"
             wrapperClassName="w-full h-full"
             threshold={100}
           />
-          {event.status && (
-            <span
-              className={`absolute top-3 right-3 px-3 py-1.5 text-xs font-medium rounded-full uppercase ${getStatusBadge(event.status)}`}
-            >
-              {translatedStatus}
-            </span>
-          )}
-        </div>
-      </Link>
+        </Link>
+        {event.status && (
+          <span
+            className={`absolute right-3 top-3 rounded-full px-3 py-1 text-meta uppercase tracking-[0.14em] ${getStatusBadge(event.status)}`}
+          >
+            {translatedStatus}
+          </span>
+        )}
+      </div>
 
-      {/* Content */}
-      <div className="p-5 flex flex-col flex-grow">
-        <Link
-          to={`/events/${event.id}`}
-          aria-label={`${translatedTitle}, view event details`}
-          className={`self-start rounded-xs ${FOCUS_RING}`}
+      <div className="flex flex-1 flex-col p-5">
+        <p className="mb-3 flex items-center gap-2 text-meta uppercase tracking-[0.18em] text-brand-400">
+          <Calendar className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <time dateTime={event.startDateTime}>
+            {formatDate(event.startDateTime)}
+          </time>
+        </p>
+
+        <h3
+          className="text-subheading leading-tight text-cream uppercase transition-colors group-hover:text-brand-400 line-clamp-2"
+          title={translatedTitle}
         >
-          <h3
-            className="font-medium text-xl text-cream mb-4 line-clamp-2 leading-snug uppercase transition-colors group-hover:text-brand-400"
-            title={translatedTitle}
+          <Link
+            to={`/events/${event.id}`}
+            aria-label={`${translatedTitle}, view event details`}
+            className={FOCUS_RING}
           >
             {translatedTitle}
-          </h3>
-        </Link>
+          </Link>
+        </h3>
 
-        <div className="space-y-2.5 text-cream/80 text-sm flex-grow">
-          <div className="flex items-center gap-2.5">
-            <Calendar
-              className="w-4 h-4 text-brand-400 flex-shrink-0"
-              aria-hidden="true"
-            />
-            <span>{formatDate(event.startDateTime)}</span>
-          </div>
-
-          <div className="flex items-center gap-2.5">
+        <div className="mt-auto space-y-2 border-t border-border pt-4 text-meta text-cream/70">
+          <p className="flex items-center gap-2.5">
             <Clock
-              className="w-4 h-4 text-brand-400 flex-shrink-0"
+              className="h-4 w-4 flex-shrink-0 text-brand-400"
               aria-hidden="true"
             />
             <span>{formatTime(event.startDateTime)} WIB</span>
-          </div>
+          </p>
 
-          <div className="flex items-center gap-2.5">
+          <p className="flex items-center gap-2.5">
             <MapPin
-              className="w-4 h-4 text-brand-400 flex-shrink-0"
+              className="h-4 w-4 flex-shrink-0 text-brand-400"
               aria-hidden="true"
             />
             <span className="line-clamp-1">{event.location}</span>
-          </div>
+          </p>
 
-          <div className="flex items-center gap-2.5">
+          <p className="flex items-center gap-2.5">
             <CircleDollarSign
-              className="w-4 h-4 text-brand-400 flex-shrink-0"
+              className="h-4 w-4 flex-shrink-0 text-brand-400"
               aria-hidden="true"
             />
-            <span className="font-semibold text-cream">
+            <span className="text-cream">
               {event.fee > 0
                 ? `Rp ${new Intl.NumberFormat("id-ID").format(event.fee)}`
                 : "Gratis"}
             </span>
-          </div>
+          </p>
 
-          <div className="flex items-center gap-2.5">
+          <p className="flex items-center gap-2.5">
             <Users
-              className="w-4 h-4 text-brand-400 flex-shrink-0"
+              className="h-4 w-4 flex-shrink-0 text-brand-400"
               aria-hidden="true"
             />
             <span>
               Sisa kuota:{" "}
-              <strong className="text-cream font-semibold">
+              <strong className="text-cream">
                 {availableQuota > 0 ? availableQuota : "Penuh"}
               </strong>
             </span>
-          </div>
+          </p>
         </div>
       </div>
     </div>

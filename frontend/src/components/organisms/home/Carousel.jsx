@@ -1,16 +1,26 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useReducedMotion } from "framer-motion";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useReducedMotion, useScroll, useTransform } from "framer-motion";
+// The lint config does not track JSX usage, so the motion import looks unused.
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
 import apiClient from "../../../hooks/apiClient";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { EASE, DURATION } from "../../../lib/motion";
 import API_BASE from "../../../lib/apiBase";
 
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
 
+// The counter is editorial, so the digits are padded to a fixed width and set
+// with tabular figures. That way the number never shifts sideways as the slides
+// change.
+const pad = (n) => String(n).padStart(2, "0");
+
 const Carousel = () => {
   const [slides, setSlides] = useState([]);
   const [current, setCurrent] = useState(0);
   const prefersReducedMotion = useReducedMotion();
+  const sectionRef = useRef(null);
 
   // Ambil data slide dari backend
   useEffect(() => {
@@ -37,6 +47,15 @@ const Carousel = () => {
     }
   }, [slides.length, nextSlide, prefersReducedMotion]);
 
+  // The photograph drifts up slightly as the reader scrolls the hero away. The
+  // image is drawn taller than its frame and pulled up by half that excess, so
+  // there is always overscan above and below and the frame never shows a gap.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const slideShift = useTransform(scrollYProgress, [0, 1], ["0%", "6%"]);
+
   if (slides.length === 0) {
     return (
       <div
@@ -45,43 +64,21 @@ const Carousel = () => {
         className="flex flex-col justify-center items-center gap-4 min-h-[60vh] bg-brand-900 text-cream/80"
       >
         <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
-        <p className="text-lg">Loading Carousel...</p>
+        <p className="text-body">Loading Carousel...</p>
       </div>
     );
   }
 
   return (
     <section
+      ref={sectionRef}
       aria-roledescription="carousel"
       aria-label="Featured highlights"
-      className="relative w-full min-h-[60vh] h-[calc(100svh-var(--public-header-height,180px))] overflow-hidden"
+      className="relative h-[calc(100svh-var(--public-header-height,180px))] min-h-[32rem] w-full overflow-hidden bg-brand-900 sm:min-h-[36rem]"
     >
-      <div className="absolute top-0 left-0 right-0 z-20 h-16 sm:h-20 bg-gradient-to-b from-brand-900/80 to-transparent flex items-center justify-end px-6 sm:px-12 lg:px-20 gap-3">
-        <span className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.2em] text-cream/80 mr-auto">
-          {String(current + 1).padStart(2, "0")} /{" "}
-          {String(slides.length).padStart(2, "0")}
-        </span>
-        <button
-          type="button"
-          onClick={prevSlide}
-          aria-label="Show the previous slide"
-          className={`h-11 w-11 grid place-items-center text-cream/80 hover:text-cream border border-cream/40 hover:border-cream rounded-full transition-colors ${FOCUS_RING}`}
-        >
-          <ChevronLeft size={20} aria-hidden="true" />
-        </button>
-        <button
-          type="button"
-          onClick={nextSlide}
-          aria-label="Show the next slide"
-          className={`h-11 w-11 grid place-items-center text-cream/80 hover:text-cream border border-cream/40 hover:border-cream rounded-full transition-colors ${FOCUS_RING}`}
-        >
-          <ChevronRight size={20} aria-hidden="true" />
-        </button>
-      </div>
-
       {/* Container slide */}
       <div
-        className="flex w-full h-full transition-transform duration-700 ease-in-out motion-reduce:transition-none"
+        className="flex h-full w-full transition-transform duration-700 ease-in-out motion-reduce:transition-none"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {slides.map((slide, index) => {
@@ -94,54 +91,108 @@ const Carousel = () => {
             <div
               key={index}
               aria-hidden={!isActive}
-              className="min-w-full h-full flex-shrink-0 relative"
+              className="relative h-full w-full min-w-full shrink-0"
             >
-              <img
+              <motion.img
                 src={`${API_BASE}${slide.imageUrl}`}
                 alt=""
-                className="w-full h-full object-cover"
+                style={prefersReducedMotion ? undefined : { y: slideShift }}
+                className="absolute left-0 top-[-6%] h-[112%] w-full object-cover"
               />
 
-              {/* Teks */}
-              <div className="absolute inset-0 flex flex-col justify-end items-start text-left px-6 sm:px-12 lg:px-20 pb-20 sm:pb-28">
-                <Heading className="text-3xl sm:text-5xl lg:text-6xl font-medium text-cream mb-4 uppercase leading-[0.9] max-w-4xl">
+              {/* Two scrims rather than one, so the lockup keeps its contrast on
+                  a bright photograph without flattening the whole image. */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/45 to-transparent"
+              />
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-r from-brand-900/70 to-transparent"
+              />
+
+              {/* The lockup sits low and hard left, so the hero opens on the
+                  photograph and the words arrive underneath it. */}
+              <motion.div
+                key={`${index}-lockup`}
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: DURATION.panel, ease: EASE }}
+                className="absolute inset-x-0 bottom-0 px-6 pb-36 sm:px-12 sm:pb-28 lg:max-w-4xl lg:px-10 lg:pb-20 lg:pr-56"
+              >
+                <Heading className="text-display uppercase text-cream">
                   {slide.heading}
                 </Heading>
-                <div className="w-16 border-t border-dashed border-cream/40 mb-4" />
-                <p className="text-base sm:text-xl lg:text-2xl text-cream/90 max-w-3xl font-normal">
+                <div
+                  className="my-6 w-16 border-t border-dashed border-cream/40"
+                  aria-hidden="true"
+                />
+                <p className="max-w-2xl text-voice text-cream/90">
                   {slide.paragraph}
                 </p>
-              </div>
+              </motion.div>
             </div>
           );
         })}
       </div>
 
-      {/* Indicator */}
-      {/* Each dot keeps a 44px touch target, so a long slide list cannot be laid
-          out as one row on a phone. The row scrolls inside its own track instead
-          of widening the page. */}
-      <div className="absolute bottom-6 left-0 right-0 sm:left-12 sm:right-auto lg:left-20 z-20">
-        <div className="flex items-center gap-1 overflow-x-auto px-6 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => setCurrent(index)}
-              aria-label={`Show slide ${index + 1} of ${slides.length}`}
-              aria-current={index === current ? "true" : undefined}
-              className={`h-11 min-w-11 shrink-0 grid place-items-center px-1 ${FOCUS_RING}`}
-            >
-              <span
-                aria-hidden="true"
-                className={`block h-0.5 transition-all duration-300 motion-reduce:transition-none ${
-                  index === current
-                    ? "w-12 bg-cream"
-                    : "w-6 bg-cream/50 hover:bg-cream/80"
-                }`}
-              />
-            </button>
-          ))}
+      {/* Counter, indicators and arrows share one row that is pinned to the
+          bottom edge. They live outside the slide track so they stay put while
+          the photographs move. */}
+      <div className="absolute bottom-6 left-6 right-6 z-20 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 sm:left-12 lg:left-10 lg:right-10">
+        <div className="flex items-center gap-4 sm:gap-6">
+          <p
+            aria-hidden="true"
+            className="text-meta tabular-nums text-cream/70"
+          >
+            {pad(current + 1)}
+            <span className="px-1.5 text-cream/40">/</span>
+            {pad(slides.length)}
+          </p>
+
+          {/* Each indicator keeps a 44px touch target, so a long slide list
+              cannot be laid out as one row on a phone. The row scrolls inside its
+              own track instead of widening the page. */}
+          <div className="flex items-center gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => setCurrent(index)}
+                aria-label={`Show slide ${index + 1} of ${slides.length}`}
+                aria-current={index === current ? "true" : undefined}
+                className={`grid h-11 min-w-11 shrink-0 place-items-center px-1 ${FOCUS_RING}`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`block h-0.5 transition-all duration-300 motion-reduce:transition-none ${
+                    index === current
+                      ? "w-12 bg-cream"
+                      : "w-6 bg-cream/50 hover:bg-cream/80"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={prevSlide}
+            aria-label="Show the previous slide"
+            className={`grid h-11 w-11 place-items-center rounded-full border border-cream/40 text-cream/80 transition-colors hover:border-cream hover:text-cream ${FOCUS_RING}`}
+          >
+            <ChevronLeft size={20} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={nextSlide}
+            aria-label="Show the next slide"
+            className={`grid h-11 w-11 place-items-center rounded-full border border-cream/40 text-cream/80 transition-colors hover:border-cream hover:text-cream ${FOCUS_RING}`}
+          >
+            <ChevronRight size={20} aria-hidden="true" />
+          </button>
         </div>
       </div>
     </section>

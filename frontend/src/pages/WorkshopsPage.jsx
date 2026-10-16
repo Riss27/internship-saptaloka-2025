@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import apiClient from "../hooks/apiClient";
 import WorkshopCard from "../components/molecules/cards/WorkshopCard";
 import Pagination from "../components/molecules/Pagination";
+import PageHeader from "../components/atoms/layout/PageHeader";
 import { Search, X, Filter } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -108,23 +109,19 @@ const WorkshopsPage = () => {
 
   return (
     <div className="bg-brand-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-12 lg:py-16">
-        {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl font-medium text-brand-400 mb-3 uppercase tracking-wide">
-            {t("workshops_page.title", "Workshop")}
-          </h1>
-          <p className="text-cream/80 text-sm sm:text-base mb-8 max-w-2xl mx-auto">
-            {t(
-              "workshops_page.subtitle",
-              "Jelajahi berbagai workshop yang tersedia",
-            )}
-          </p>
-
-          {/* Search Bar and Category Filter */}
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              {/* Search */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-28">
+        <PageHeader
+          eyebrow={t("homepage.our_services")}
+          title={t("workshops_page.title", "Workshop")}
+          subtitle={t(
+            "workshops_page.subtitle",
+            "Jelajahi berbagai workshop yang tersedia",
+          )}
+        >
+          {/* Dua kontrol sejajar, rata kiri. Di layar sempit kolomnya runtuh
+              menjadi satu, jadi urutan baca tetap pencarian lalu kategori. */}
+          <div className="max-w-4xl mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="relative">
                 <Search
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/70 w-5 h-5"
@@ -156,7 +153,6 @@ const WorkshopsPage = () => {
                 )}
               </div>
 
-              {/* Category Filter */}
               <div className="relative">
                 <Filter
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/70 w-5 h-5 z-10"
@@ -206,9 +202,8 @@ const WorkshopsPage = () => {
               </p>
             )}
           </div>
-        </div>
+        </PageHeader>
 
-        {/* Grid Workshops */}
         {filteredWorkshops.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
             {filteredWorkshops.map((workshop) => (
@@ -216,13 +211,13 @@ const WorkshopsPage = () => {
             ))}
           </div>
         ) : (
-          <div className="bg-brand-800 border border-border rounded-cards px-6 py-10 sm:py-12 text-center max-w-lg mx-auto">
-            <span className="inline-grid place-items-center w-20 h-20 rounded-full bg-brand-700 mb-5">
+          <div className="border-t border-border pt-14 sm:pt-16 text-center max-w-lg mx-auto">
+            <span className="inline-grid place-items-center w-20 h-20 rounded-full border border-border mb-6">
               <Filter className="w-10 h-10 text-brand-400" aria-hidden="true" />
             </span>
             {searchQuery || selectedCategory ? (
               <>
-                <p className="text-cream/80 text-lg mb-6">
+                <p className="text-body text-cream/80 mb-8">
                   {t(
                     "workshops_page.no_workshops_found",
                     "Tidak ada workshop yang ditemukan",
@@ -252,7 +247,7 @@ const WorkshopsPage = () => {
                 </div>
               </>
             ) : (
-              <p className="text-cream/80 text-lg">
+              <p className="text-body text-cream/80">
                 {t(
                   "workshops_page.no_workshops",
                   "Belum ada workshop yang tersedia saat ini.",

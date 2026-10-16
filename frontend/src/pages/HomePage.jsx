@@ -9,6 +9,8 @@ import Carousel from "../components/organisms/home/Carousel";
 import ProductCard from "../components/molecules/cards/ProductCard";
 import ArticleCard from "../components/molecules/cards/ArticleCard";
 import ServiceCard from "../components/molecules/cards/ServiceCard";
+import Section from "../components/atoms/layout/Section";
+import SectionHeading from "../components/atoms/layout/SectionHeading";
 import { useTranslation } from "react-i18next";
 import API_BASE from "../lib/apiBase";
 
@@ -48,11 +50,6 @@ const HomePage = () => {
       }
     })();
   }, []);
-
-  // Reveal timing and hover behaviour come from the shared motion vocabulary in
-  // lib/motion.js, so every section on this page moves on the same curve.
-  const fadeUp = (index) => reveal(prefersReducedMotion, index);
-  const hoverLift = () => cardHover(prefersReducedMotion);
 
   if (loading) {
     return (
@@ -110,59 +107,36 @@ const HomePage = () => {
     },
   ];
 
-  const SectionTitle = ({ title, subtitle }) => (
-    <motion.div {...fadeUp(0.1)} className="text-center mb-8 sm:mb-10 md:mb-12">
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-medium text-cream mb-3 uppercase tracking-wide">
-        {title}
-      </h2>
-      {subtitle && (
-        <p className="text-cream/80 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
-          {subtitle}
-        </p>
-      )}
-    </motion.div>
-  );
-
-  const ViewMoreButton = ({ to, children }) => (
-    <motion.div {...fadeUp(0.2)} className="text-center mt-8 sm:mt-12">
-      <Link
-        to={to}
-        className={`inline-flex items-center justify-center min-h-11 px-8 py-3 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide rounded-buttons-pill transition-colors ${FOCUS_RING}`}
-      >
-        {children}
-      </Link>
-    </motion.div>
+  /*
+   * A quiet way past a band: a rule above a tracked label, with no filled pill
+   * competing with the pictures underneath. The border warms on hover so the
+   * row still reads as clickable without adding another shape to the page.
+   */
+  const ViewMore = ({ to, children }) => (
+    <Link
+      to={to}
+      className={`inline-flex min-h-11 items-center border-t border-border pt-4 text-meta uppercase tracking-[0.18em] text-cream/70 transition-colors hover:border-brand-400 hover:text-brand-400 ${FOCUS_RING}`}
+    >
+      {children}
+    </Link>
   );
 
   return (
-    <motion.div
-      className="bg-brand-900 text-cream"
-      initial={prefersReducedMotion ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: prefersReducedMotion ? 0 : 0.6 }}
-    >
+    <div className="bg-brand-900 text-cream">
       <Carousel />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-12 sm:py-16 md:py-20 space-y-12 sm:space-y-16 md:space-y-20">
-        {/* Services Section */}
-        <motion.section
-          {...fadeUp(0.1)}
-          className="bg-brand-800 p-5 sm:p-6 md:p-8 lg:p-10 rounded-cards border border-border"
-        >
-          <SectionTitle
-            title={t("homepage.our_services")}
-            subtitle={t("homepage.services_subtitle")}
-          />
-          <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6">
-            {/* First Row - 3 Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-              {services.slice(0, 3).map((s, i) => (
-                <motion.div
-                  key={i}
-                  {...fadeUp(i * 0.1)}
-                  {...hoverLift()}
-                  className="h-full"
-                >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-28">
+        <div className="space-y-16 sm:space-y-24 lg:space-y-32">
+          {/* 01 — Services, laid out as an index rather than a row of tiles. */}
+          <Section>
+            <SectionHeading
+              index="01"
+              title={t("homepage.our_services")}
+              subtitle={t("homepage.services_subtitle")}
+            />
+            <div className="border-t border-border">
+              {services.map((s, i) => (
+                <motion.div key={s.link} {...reveal(prefersReducedMotion, i)}>
                   <ServiceCard
                     title={s.title}
                     description={s.description}
@@ -171,174 +145,166 @@ const HomePage = () => {
                 </motion.div>
               ))}
             </div>
+          </Section>
 
-            {/* Second Row - 2 Cards Centered */}
-            <div className="flex flex-wrap justify-center gap-4 sm:gap-5 md:gap-6">
-              {services.slice(3, 5).map((s, i) => (
-                <motion.div
-                  key={i + 3}
-                  {...fadeUp((i + 3) * 0.1)}
-                  {...hoverLift()}
-                  className="h-full w-full sm:w-[calc(50%-10px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-20px)] lg:max-w-none"
-                >
-                  <ServiceCard
-                    title={s.title}
-                    description={s.description}
-                    linkTo={s.link}
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Events Section */}
-        <motion.section
-          {...fadeUp(0.1)}
-          className="bg-brand-800 p-5 sm:p-6 md:p-8 lg:p-10 rounded-cards border border-border"
-        >
-          <SectionTitle title={t("homepage.recent_activities")} />
-          {data.events.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
-              {data.events.map((e, i) => (
-                <motion.div
-                  key={e.id}
-                  {...fadeUp(i * 0.1)}
-                  {...hoverLift()}
-                  className="h-full"
-                >
-                  <Link
-                    to={`/events/${e.id}`}
-                    aria-label={`${e.title}, view event details`}
-                    className="group flex flex-col h-full rounded-cards overflow-hidden bg-brand-900 border border-border transition-colors hover:border-brand-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+          {/* 02 — Events, one per row so the titles have room to be read. */}
+          <Section divider>
+            <SectionHeading
+              index="02"
+              title={t("homepage.recent_activities")}
+              action={
+                <ViewMore to="/events">{t("homepage.view_more_events")}</ViewMore>
+              }
+            />
+            {data.events.length > 0 ? (
+              <ul className="border-t border-border">
+                {data.events.map((e, i) => (
+                  <motion.li
+                    key={e.id}
+                    {...reveal(prefersReducedMotion, i)}
+                    className="border-b border-border"
                   >
-                    <div className="aspect-video shrink-0 overflow-hidden bg-brand-700">
-                      <img
-                        src={`${API_BASE}${e.imageBannerUrl}`}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="p-5 flex flex-col flex-grow">
-                      <p className="text-brand-400 font-medium mb-2 text-sm uppercase tracking-wide">
-                        {new Date(e.startDateTime).toLocaleDateString("id-ID", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </p>
-                      <h3 className="font-medium text-lg sm:text-xl text-cream line-clamp-2 uppercase leading-snug transition-colors group-hover:text-brand-400">
-                        {e.title}
-                      </h3>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-center text-cream/80">
-              {t("events_page.no_events", "Belum ada kegiatan saat ini.")}
-            </p>
-          )}
-          <ViewMoreButton to="/events">
-            {t("homepage.view_more_events")}
-          </ViewMoreButton>
-        </motion.section>
+                    <Link
+                      to={`/events/${e.id}`}
+                      aria-label={`${e.title}, view event details`}
+                      className="group grid gap-5 py-7 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-400 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:items-center sm:gap-10"
+                    >
+                      <div className="aspect-[16/10] w-full overflow-hidden rounded-cards bg-brand-700 sm:aspect-[4/3]">
+                        <img
+                          src={`${API_BASE}${e.imageBannerUrl}`}
+                          alt=""
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transform-none motion-reduce:transition-none"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-meta uppercase tracking-[0.18em] text-brand-400">
+                          <time dateTime={e.startDateTime}>
+                            {new Date(e.startDateTime).toLocaleDateString(
+                              "id-ID",
+                              {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              },
+                            )}
+                          </time>
+                        </p>
+                        <h3 className="mt-3 text-heading-sm leading-tight text-cream uppercase transition-colors group-hover:text-brand-400">
+                          {e.title}
+                        </h3>
+                      </div>
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
+            ) : (
+              <p className="border-t border-border pt-8 text-body text-cream/70">
+                {t("events_page.no_events", "Belum ada kegiatan saat ini.")}
+              </p>
+            )}
+          </Section>
 
-        {/* Products Section */}
-        <motion.section
-          {...fadeUp(0.1)}
-          className="bg-brand-800 p-5 sm:p-6 md:p-8 lg:p-10 rounded-cards border border-border"
-        >
-          <SectionTitle title={t("homepage.featured_products")} />
-          {data.products.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-8">
-              {data.products.map((p, i) => (
-                <motion.div
-                  key={p.id}
-                  {...fadeUp(i * 0.1)}
-                  {...hoverLift()}
-                  className="h-full"
+          {/* 03 — Products, a catalogue strip where the photograph leads. */}
+          <Section divider>
+            <SectionHeading
+              index="03"
+              title={t("homepage.featured_products")}
+            />
+            {data.products.length > 0 ? (
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-8">
+                {data.products.map((p, i) => (
+                  <motion.div
+                    key={p.id}
+                    {...cardHover(prefersReducedMotion)}
+                    {...reveal(prefersReducedMotion, i)}
+                    className="h-full"
+                  >
+                    <ProductCard product={p} />
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <p className="border-t border-border pt-8 text-body text-cream/70">
+                {t("products_page.no_products_found")}
+              </p>
+            )}
+          </Section>
+
+          {/* 04 — Articles, words first and the picture pushed to the foot. */}
+          <Section divider>
+            <SectionHeading
+              index="04"
+              title={t("homepage.latest_articles")}
+              action={
+                <ViewMore to="/articles">
+                  {t("homepage.view_more_articles")}
+                </ViewMore>
+              }
+            />
+            {data.articles.length > 0 ? (
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-8">
+                {data.articles.map((a, i) => (
+                  <motion.div
+                    key={a.id}
+                    {...cardHover(prefersReducedMotion)}
+                    {...reveal(prefersReducedMotion, i)}
+                    className="h-full"
+                  >
+                    <ArticleCard article={a} />
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <p className="border-t border-border pt-8 text-body text-cream/70">
+                {t(
+                  "articles_page.no_articles_found",
+                  "Belum ada artikel saat ini.",
+                )}
+              </p>
+            )}
+          </Section>
+
+          {/* 05 — Gallery. The photographs are the content, so the caption sits
+              under the frame as a small left-aligned note and the second photo
+              in each pair drops a little, which gives the strip a rhythm. */}
+          <Section divider>
+            <SectionHeading
+              index="05"
+              title={t("homepage.gallery")}
+              action={
+                <ViewMore to="/gallery">
+                  {t("homepage.view_more_gallery")}
+                </ViewMore>
+              }
+            />
+            <div className="flex snap-x snap-mandatory items-start gap-5 overflow-x-auto pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-6 lg:gap-8">
+              {data.gallery.map((g, i) => (
+                <motion.figure
+                  key={g.id}
+                  {...reveal(prefersReducedMotion, i)}
+                  className={`w-[260px] shrink-0 snap-start sm:w-[320px] ${
+                    i % 2 === 1 ? "lg:mt-12" : ""
+                  }`}
                 >
-                  <ProductCard product={p} />
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-center text-cream/80">
-              {t("products_page.no_products_found")}
-            </p>
-          )}
-        </motion.section>
-
-        {/* Articles Section */}
-        <motion.section
-          {...fadeUp(0.1)}
-          className="bg-brand-800 p-5 sm:p-6 md:p-8 lg:p-10 rounded-cards border border-border"
-        >
-          <SectionTitle title={t("homepage.latest_articles")} />
-          {data.articles.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
-              {data.articles.map((a, i) => (
-                <motion.div
-                  key={a.id}
-                  {...fadeUp(i * 0.1)}
-                  {...hoverLift()}
-                  className="h-full"
-                >
-                  <ArticleCard article={a} />
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-center text-cream/80">
-              {t(
-                "articles_page.no_articles_found",
-                "Belum ada artikel saat ini.",
-              )}
-            </p>
-          )}
-          <ViewMoreButton to="/articles">
-            {t("homepage.view_more_articles")}
-          </ViewMoreButton>
-        </motion.section>
-
-        {/* Gallery Section */}
-        <motion.section {...fadeUp(0.1)}>
-          <SectionTitle title={t("homepage.gallery")} />
-          <motion.div
-            className="flex overflow-x-auto gap-4 sm:gap-6 pb-6 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            whileTap={prefersReducedMotion ? {} : { cursor: "grabbing" }}
-          >
-            {data.gallery.map((g, i) => (
-              <motion.figure
-                key={g.id}
-                {...fadeUp(i * 0.05)}
-                {...hoverLift()}
-                className="relative group flex-shrink-0 w-[280px] sm:w-[350px] h-[220px] rounded-cards overflow-hidden snap-center bg-brand-700"
-              >
-                <img
-                  src={`${API_BASE}${g.imageUrl}`}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
-                {/* A touch screen never fires hover, so the caption stays visible
-                    on phones and only fades in from the small breakpoint up. */}
-                <div className="absolute inset-0 bg-brand-900/60 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500 motion-reduce:transition-none" />
-                <figcaption className="absolute bottom-4 left-4 right-4 text-cream opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500 motion-reduce:transition-none">
-                  <p className="font-medium text-base sm:text-lg uppercase leading-snug break-words">
+                  <div className="h-56 overflow-hidden rounded-cards bg-brand-700 sm:h-64">
+                    <img
+                      src={`${API_BASE}${g.imageUrl}`}
+                      alt=""
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <figcaption className="mt-4 text-left text-meta text-cream/60">
                     {g.title}
-                  </p>
-                </figcaption>
-              </motion.figure>
-            ))}
-          </motion.div>
-          <ViewMoreButton to="/gallery">
-            {t("homepage.view_more_gallery")}
-          </ViewMoreButton>
-        </motion.section>
+                  </figcaption>
+                </motion.figure>
+              ))}
+            </div>
+          </Section>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

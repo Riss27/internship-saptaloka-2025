@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
 import Pagination from "../components/molecules/Pagination";
+import PageHeader from "../components/atoms/layout/PageHeader";
 import { ImageIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import API_BASE from "../lib/apiBase";
@@ -43,25 +44,22 @@ const GalleryPage = () => {
 
   return (
     <div className="bg-brand-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-12 lg:py-16">
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl font-medium text-brand-400 mb-3 uppercase tracking-wide">
-            {t("gallery_page.title")}
-          </h1>
-          <p className="text-cream/80 text-sm sm:text-base max-w-2xl mx-auto">
-            {t("gallery_page.subtitle")}
-          </p>
-        </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-28">
+        <PageHeader
+          eyebrow={t("homepage.recent_activities")}
+          title={t("gallery_page.title")}
+          subtitle={t("gallery_page.subtitle")}
+        />
 
         {images.length === 0 ? (
-          <div className="bg-brand-800 border border-border rounded-cards px-6 py-10 sm:py-12 text-center max-w-lg mx-auto">
-            <span className="inline-grid place-items-center w-20 h-20 rounded-full bg-brand-700 mb-5">
+          <div className="border-t border-border pt-14 sm:pt-16 text-center max-w-lg mx-auto">
+            <span className="inline-grid place-items-center w-20 h-20 rounded-full border border-border mb-6">
               <ImageIcon
                 className="w-10 h-10 text-brand-400"
                 aria-hidden="true"
               />
             </span>
-            <p className="text-cream/80 text-lg">
+            <p className="text-body text-cream/80">
               {t(
                 "gallery_page.no_images",
                 "No images available in the gallery.",
@@ -69,7 +67,7 @@ const GalleryPage = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-8">
             {images.map((image) => (
               <figure
                 key={image.id}
@@ -80,7 +78,9 @@ const GalleryPage = () => {
                   alt=""
                   className="w-full h-40 sm:h-56 shrink-0 object-cover"
                 />
-                <figcaption className="p-2 sm:p-3 text-brand-400 font-medium text-xs sm:text-sm text-center break-words leading-snug uppercase tracking-wide">
+                {/* Keterangan rata kiri supaya mengikuti sisi masthead, dan
+                    setingkat meta supaya gambar tetap yangeriah. */}
+                <figcaption className="p-3 sm:p-4 text-meta text-cream/80 break-words leading-snug uppercase tracking-wide">
                   {image.title}
                 </figcaption>
               </figure>

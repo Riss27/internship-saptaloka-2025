@@ -13,47 +13,52 @@ const PLACEHOLDER_SRC =
 const FALLBACK_SRC =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%230f2626' width='400' height='300'/%3E%3Cpath d='M150 100h100v80h-100z' fill='%2316332e'/%3E%3Ccircle cx='170' cy='130' r='10' fill='%232e9c74'/%3E%3Cpath d='M150 160l30-20 25 15 45-35v60h-100z' fill='%232e9c74'/%3E%3Ctext x='50%25' y='85%25' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%238fd9be'%3EImage not found%3C/text%3E%3C/svg%3E";
 
+/**
+ * Catalogue card for a piece of lab equipment.
+ *
+ * Same family as the product and ingredient entries. A tool has no category to
+ * advertise, so the name rises to where the category label would sit and the
+ * name alone carries the card.
+ */
 const LabToolCard = ({ tool }) => {
   const translatedName = useTranslateDB(tool.name);
 
   return (
-    <div className="h-full flex flex-col bg-brand-800 rounded-cards overflow-hidden group border border-border">
-      <Link
-        to={`/lab-tools/${tool.id}`}
-        aria-label={`${translatedName}, view lab tool details`}
-        className="block h-full flex flex-col transition-transform duration-300 hover:-translate-y-1 motion-reduce:transform-none motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
-      >
-        {/* Image Container */}
-        <div className="w-full h-56 shrink-0 overflow-hidden bg-brand-700">
-          <LazyLoadImage
-            alt=""
-            src={`${API_BASE}${tool.imageUrl}`}
-            effect="blur"
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 motion-reduce:transform-none motion-reduce:transition-none"
-            placeholderSrc={PLACEHOLDER_SRC}
-            onError={(e) => {
-              e.target.src = FALLBACK_SRC;
-            }}
-            wrapperClassName="w-full h-full"
-            threshold={100}
-          />
-        </div>
+    <Link
+      to={`/lab-tools/${tool.id}`}
+      aria-label={`${translatedName}, view lab tool details`}
+      className="group flex h-full flex-col overflow-hidden rounded-cards border border-border bg-brand-800 transition-colors hover:border-brand-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+    >
+      <div className="h-44 w-full shrink-0 overflow-hidden bg-brand-700 sm:h-48">
+        <LazyLoadImage
+          alt=""
+          src={`${API_BASE}${tool.imageUrl}`}
+          effect="blur"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transform-none motion-reduce:transition-none"
+          placeholderSrc={PLACEHOLDER_SRC}
+          onError={(e) => {
+            e.target.src = FALLBACK_SRC;
+          }}
+          wrapperClassName="w-full h-full"
+          threshold={100}
+        />
+      </div>
 
-        {/* Content */}
-        <div className="p-5 flex flex-col flex-grow">
-          <h3
-            className="font-medium text-lg text-cream mb-2 truncate uppercase transition-colors group-hover:text-brand-400"
-            title={translatedName}
-          >
-            {translatedName}
-          </h3>
+      <div className="flex flex-1 flex-col p-5">
+        <h3
+          className="text-subheading text-cream uppercase leading-tight transition-colors group-hover:text-brand-400 line-clamp-2"
+          title={translatedName}
+        >
+          {translatedName}
+        </h3>
 
-          <p className="mt-auto text-cream font-semibold text-lg">
+        <div className="mt-auto pt-5">
+          <p className="border-t border-border pt-3 text-meta text-cream/60">
             Rp {new Intl.NumberFormat("id-ID").format(tool.price)}
           </p>
         </div>
-      </Link>
-    </div>
+      </div>
+    </Link>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
 import EventCard from "../components/molecules/cards/EventCard";
 import Pagination from "../components/molecules/Pagination";
+import PageHeader from "../components/atoms/layout/PageHeader";
 import { Search, X, Calendar } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -70,18 +71,14 @@ const EventsPage = () => {
 
   return (
     <div className="bg-brand-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-12 lg:py-16">
-        {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl font-medium text-brand-400 mb-3 uppercase tracking-wide">
-            {t("events_page.title")}
-          </h1>
-          <p className="text-cream/80 text-sm sm:text-base mb-8 max-w-2xl mx-auto">
-            {t("events_page.subtitle")}
-          </p>
-
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-28">
+        {/* Tanpa eyebrow: judul halaman sudah menyebut "Activities", jadi label
+            section hanya akan mengulang kata yang sama tepat di bawahnya. */}
+        <PageHeader
+          title={t("events_page.title")}
+          subtitle={t("events_page.subtitle")}
+        >
+          <div className="max-w-2xl mt-10">
             <div className="relative">
               <Search
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/70 w-5 h-5"
@@ -117,9 +114,8 @@ const EventsPage = () => {
               </p>
             )}
           </div>
-        </div>
+        </PageHeader>
 
-        {/* Grid Events */}
         {filteredEvents.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
             {filteredEvents.map((event) => (
@@ -127,14 +123,14 @@ const EventsPage = () => {
             ))}
           </div>
         ) : (
-          <div className="bg-brand-800 border border-border rounded-cards px-6 py-10 sm:py-12 text-center max-w-lg mx-auto">
-            <span className="inline-grid place-items-center w-20 h-20 rounded-full bg-brand-700 mb-5">
+          <div className="border-t border-border pt-14 sm:pt-16 text-center max-w-lg mx-auto">
+            <span className="inline-grid place-items-center w-20 h-20 rounded-full border border-border mb-6">
               <Calendar
                 className="w-10 h-10 text-brand-400"
                 aria-hidden="true"
               />
             </span>
-            <p className="text-cream/80 text-lg mb-6">
+            <p className="text-body text-cream/80 mb-8">
               {t("events_page.no_events_found", "No events found matching")} "
               {searchQuery}"
             </p>

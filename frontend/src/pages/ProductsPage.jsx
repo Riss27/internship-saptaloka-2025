@@ -4,6 +4,7 @@ import ProductCard from "../components/molecules/cards/ProductCard";
 import Pagination from "../components/molecules/Pagination";
 import { Search, X, Package } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import PageHeader from "../components/atoms/layout/PageHeader";
 
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
@@ -92,17 +93,14 @@ const ProductsPage = () => {
 
   return (
     <div className="bg-brand-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-12 lg:py-16">
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl font-medium text-brand-400 mb-3 uppercase tracking-wide">
-            {t("products_page.our_collection")}
-          </h1>
-          <p className="text-cream/80 text-sm sm:text-base mb-8 max-w-2xl mx-auto">
-            {t("products_page.collection_subtitle")}
-          </p>
-
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-28">
+        <PageHeader
+          eyebrow={t("products_page.all")}
+          title={t("products_page.our_collection")}
+          subtitle={t("products_page.collection_subtitle")}
+        >
           {/* Search bar */}
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-2xl mt-10">
             <div className="relative">
               <Search
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/70 w-5 h-5"
@@ -138,10 +136,10 @@ const ProductsPage = () => {
               </p>
             )}
           </div>
-        </div>
+        </PageHeader>
 
         {/* Filter Kategori */}
-        <div className="flex justify-center gap-3 sm:gap-4 mb-8 sm:mb-12 flex-wrap">
+        <div className="flex gap-3 sm:gap-4 mb-10 sm:mb-14 flex-wrap">
           {categories.map((category) => (
             <button
               key={category.id}
@@ -163,14 +161,14 @@ const ProductsPage = () => {
             ))}
           </div>
         ) : (
-          <div className="bg-brand-800 border border-border rounded-cards px-6 py-10 sm:py-12 text-center max-w-lg mx-auto">
-            <span className="inline-grid place-items-center w-20 h-20 rounded-full bg-brand-700 mb-5">
+          <div className="border-t border-border pt-14 sm:pt-16 text-center max-w-lg mx-auto">
+            <span className="inline-grid place-items-center w-20 h-20 rounded-full border border-border mb-6">
               <Package
                 className="w-10 h-10 text-brand-400"
                 aria-hidden="true"
               />
             </span>
-            <p className="text-cream/80 text-lg mb-6">
+            <p className="text-body text-cream/80 mb-8">
               {t("products_page.no_products_found")}
             </p>
             <div className="flex gap-3 justify-center flex-wrap">

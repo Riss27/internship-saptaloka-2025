@@ -4,6 +4,15 @@ import { X } from "lucide-react";
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
 
+/**
+ * Dialog panel.
+ *
+ * On a phone this is a sheet that sits against the bottom of the screen and
+ * rounds only its top corners. From the tablet width up it becomes a centred
+ * modal with all four corners rounded. None of that changes the behaviour:
+ * Escape closes it, focus moves to the close button on open, and that button
+ * keeps a full touch target because it is what a phone user reaches for first.
+ */
 const Popup = ({ isOpen, onClose, title, children }) => {
   const closeButtonRef = useRef(null);
 
@@ -39,7 +48,8 @@ const Popup = ({ isOpen, onClose, title, children }) => {
       className="fixed inset-0 bg-brand-900/85 backdrop-blur-sm flex justify-center items-end sm:items-center z-50 p-0 sm:p-4"
       onClick={onClose}
     >
-      {/* Konten Popup */}
+      {/* The header shares the panel colour on purpose. While the body scrolls,
+          a different tone behind the title would read as a second layer. */}
       <div
         role="dialog"
         aria-modal="true"
@@ -47,11 +57,10 @@ const Popup = ({ isOpen, onClose, title, children }) => {
         className="bg-brand-700 text-cream rounded-t-cards sm:rounded-cards border border-border w-full sm:max-w-md max-h-[92svh] sm:max-h-[85vh] overflow-y-auto p-5 sm:p-6 relative"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header Popup */}
         <div className="flex justify-between items-start gap-4 border-b border-border pb-3 mb-4 sticky top-0 bg-brand-700 z-10">
           <h2
             id="popup-title"
-            className="text-lg sm:text-xl font-medium text-cream uppercase leading-snug break-words"
+            className="text-subheading text-cream uppercase leading-snug break-words"
           >
             {title}
           </h2>

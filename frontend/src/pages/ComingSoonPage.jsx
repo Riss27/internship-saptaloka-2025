@@ -1,32 +1,27 @@
 import React from "react";
 import { Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
+import PageHeader from "../components/atoms/layout/PageHeader";
 
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400";
 
 const ComingSoonPage = () => {
   return (
-    <div className="bg-brand-900 min-h-[60vh] flex items-center justify-center px-4 sm:px-6 py-14 sm:py-16">
-      <div className="max-w-xl w-full text-center">
-        {/* Icon */}
-        <span className="inline-grid place-items-center w-24 h-24 bg-brand-700 rounded-full mb-6">
-          <Wrench className="w-11 h-11 text-brand-400" aria-hidden="true" />
+    <div className="bg-brand-900 min-h-[60vh]">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-28">
+        {/* Mark hollow dengan garis rambut, bukan lingkaran berisi, supaya
+            sekilas seerat dengan bagian atas halaman daftar lainnya. */}
+        <span className="inline-grid place-items-center w-20 h-20 rounded-full border border-border mb-10">
+          <Wrench className="w-9 h-9 text-brand-400" aria-hidden="true" />
         </span>
 
-        {/* Title */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium text-brand-400 mb-4 uppercase tracking-wide">
-          Segera Hadir!
-        </h1>
+        <PageHeader
+          title="Segera Hadir!"
+          subtitle="Fitur ini sedang dalam tahap pengembangan dan akan segera kami luncurkan. Terima kasih atas kesabaran Anda!"
+        />
 
-        {/* Description */}
-        <p className="text-cream/90 text-base sm:text-lg mb-10 leading-relaxed">
-          Fitur ini sedang dalam tahap pengembangan dan akan segera kami
-          luncurkan. Terima kasih atas kesabaran Anda!
-        </p>
-
-        {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <Link
             to="/"
             className={`inline-flex items-center justify-center min-h-11 px-8 py-3 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide rounded-buttons-pill transition-colors ${FOCUS_RING}`}

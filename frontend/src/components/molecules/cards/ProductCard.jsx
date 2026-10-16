@@ -5,50 +5,58 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import { useTranslateDB } from "../../../hooks/useTranslateDB";
 import API_BASE from "../../../lib/apiBase";
 
+/**
+ * Catalogue card, used for a thing that can be bought.
+ *
+ * The photograph is the product, so it leads and everything under it stays
+ * compact. The name carries the card. The price sits at the very bottom behind a
+ * hairline as a plain spec line, because the loudest thing on a catalogue entry
+ * should be what the thing is called, not what it costs.
+ *
+ * The whole tile is the link, so the focus ring wraps the entire card.
+ */
 const ProductCard = ({ product }) => {
   const translatedName = useTranslateDB(product?.name);
   const translatedCategory = useTranslateDB(product?.category);
 
   return (
-    <div className="h-full flex flex-col bg-brand-800 rounded-cards overflow-hidden group border border-border">
-      <Link
-        to={`/products/${product.id}`}
-        aria-label={`${translatedName}, view product details`}
-        className="block h-full flex flex-col transition-transform duration-300 hover:-translate-y-1 motion-reduce:transform-none motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
-      >
-        {/* Image Container */}
-        <div className="w-full h-56 shrink-0 overflow-hidden bg-brand-700">
-          <LazyLoadImage
-            alt=""
-            src={`${API_BASE}${product.imageUrl}`}
-            effect="blur"
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 motion-reduce:transform-none motion-reduce:transition-none"
-            wrapperClassName="w-full h-full"
-            threshold={100}
-          />
-        </div>
+    <Link
+      to={`/products/${product.id}`}
+      aria-label={`${translatedName}, view product details`}
+      className="group flex h-full flex-col overflow-hidden rounded-cards border border-border bg-brand-800 transition-colors hover:border-brand-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+    >
+      <div className="h-44 w-full shrink-0 overflow-hidden bg-brand-700 sm:h-48">
+        <LazyLoadImage
+          alt=""
+          src={`${API_BASE}${product.imageUrl}`}
+          effect="blur"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transform-none motion-reduce:transition-none"
+          wrapperClassName="w-full h-full"
+          threshold={100}
+        />
+      </div>
 
-        {/* Content */}
-        <div className="p-5 flex flex-col flex-grow">
-          {translatedCategory && (
-            <span className="self-start text-xs bg-brand-600 text-cream px-3 py-1 rounded-full font-medium mb-2 uppercase">
-              {translatedCategory}
-            </span>
-          )}
+      <div className="flex flex-1 flex-col p-5">
+        {translatedCategory && (
+          <span className="mb-3 text-meta uppercase tracking-[0.18em] text-brand-400">
+            {translatedCategory}
+          </span>
+        )}
 
-          <h3
-            className="font-medium text-lg text-cream mb-2 truncate uppercase transition-colors group-hover:text-brand-400"
-            title={translatedName}
-          >
-            {translatedName}
-          </h3>
+        <h3
+          className="text-subheading text-cream uppercase leading-tight transition-colors group-hover:text-brand-400 line-clamp-2"
+          title={translatedName}
+        >
+          {translatedName}
+        </h3>
 
-          <p className="mt-auto text-cream font-semibold text-lg">
+        <div className="mt-auto pt-5">
+          <p className="border-t border-border pt-3 text-meta text-cream/60">
             Rp {new Intl.NumberFormat("id-ID").format(product.price)}
           </p>
         </div>
-      </Link>
-    </div>
+      </div>
+    </Link>
   );
 };
 
