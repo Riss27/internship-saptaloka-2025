@@ -42,7 +42,14 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+// Uploads selalu pakai nama unik ber-timestamp, jadi aman di-cache lama.
+// Tanpa ini setiap kunjungan mengunduh ulang gambar ber-megabyte.
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    maxAge: "7d",
+    etag: true,
+  })
+);
 
 app.use("/api", allRoutes);
 

@@ -1,0 +1,28 @@
+# Askreative
+
+Askreative is an Indonesian perfume and aromatherapy studio: custom perfume and
+aromatherapy services, laboratory tools and ingredients, workshops, events,
+articles, and a product catalogue.
+
+Askreative berbasis di Indonesia dan melayani pembuatan parfum serta aromaterapi
+kustom, penyediaan alat dan bahan laboratorium, workshop, kegiatan, artikel, dan
+katalog produk.
+
+## Main pages
+
+- [Home](/): Overview of services, featured products, events, articles, gallery
+- [Services](/pos): Custom perfume and aromatherapy ordering
+- [Workshops](/workshops): Perfume and aromatherapy workshops
+- [Lab Tools](/lab-tools): Laboratory equipment catalogue
+- [Ingredients](/ingredients): Perfume and aromatherapy raw materials
+- [Products](/products): Finished perfume and aromatherapy products
+- [Events](/events): Workshops and community events
+- [Articles](/articles): Articles on perfume and aromatherapy
+- [Gallery](/gallery): Photo gallery
+- [About](/about): About Askreative
+
+## Notes
+
+- The site is a JavaScript single-page application; content is served from a
+  JSON API under `/api/`.
+- Contact details are available on the home page footer and the About page.

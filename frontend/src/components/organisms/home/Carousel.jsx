@@ -100,6 +100,8 @@ const Carousel = () => {
               <motion.img
                 src={`${API_BASE}${slide.imageUrl}`}
                 alt=""
+                fetchPriority="high"
+                loading="eager"
                 style={prefersReducedMotion ? undefined : { y: slideShift }}
                 className="absolute left-0 top-[-6%] h-[112%] w-full object-cover"
               />

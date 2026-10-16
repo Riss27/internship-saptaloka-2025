@@ -12,11 +12,18 @@ import { pageTransition } from "../lib/motion";
 // instead of hard-coding a guess.
 const STICKY_GUTTER = 24;
 
+// First paint cannot wait for the measurement pass, so the layout reserves the
+// static header height up front: TopNavbar 28px (py-2 8+8 padding + ~12px
+// 10px/normal line, border excluded) + main Navbar 60px (py-2 8+8 nav padding
+// + 44px control row) = 88px. The useEffect below overwrites it with the
+// measured value, so the correction is a ~0px shift instead of a jump from 0.
+const INITIAL_HEADER_HEIGHT = 88;
+
 const PublicLayout = () => {
   const topNavRef = useRef(null);
   const mainNavRef = useRef(null);
   const [isTopVisible, setIsTopVisible] = useState(true);
-  const [paddingTop, setPaddingTop] = useState(0);
+  const [paddingTop, setPaddingTop] = useState(INITIAL_HEADER_HEIGHT);
   const [topNavHeight, setTopNavHeight] = useState(0);
   const [mainNavHeight, setMainNavHeight] = useState(0);
 
