@@ -1,6 +1,42 @@
-# Website Parfum & Laboratorium — Askreative (Magang Saptaloka 2025)
+<div align="center">
 
-Full-stack website katalog (parfum, bahan, alat lab), workshop, event, dan artikel — dengan admin panel, i18n ID/EN, dan API terpublikasi.
+<img src="frontend/public/Assets/asklogo1.png" alt="Logo Askreative Parfum" width="140">
+
+# Askreative Parfum
+
+**Katalog parfum & aromatherapy — bahan, alat lab, workshop, dan event dalam satu situs.**
+
+Magang Saptaloka 2025 · full-stack · admin panel · i18n ID/EN
+
+<p>
+  <img src="https://img.shields.io/badge/Node.js-%3E%3D18-339933?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node.js >= 18">
+  <img src="https://img.shields.io/badge/Express-5.1-000000?style=flat-square&logo=express&logoColor=white" alt="Express 5.1">
+  <img src="https://img.shields.io/badge/MySQL-Sequelize-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL + Sequelize">
+  <img src="https://img.shields.io/badge/React-19-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React 19">
+  <img src="https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite 7">
+  <img src="https://img.shields.io/badge/TailwindCSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="TailwindCSS 4">
+</p>
+
+</div>
+
+## Tentang
+
+Situs katalog untuk brand parfum & aromatherapy: pengunjung bisa telusuri produk parfum, bahan (*ingredients*), alat laboratorium, workshop, event (plus registrasi publik), artikel, dan galeri. Di baliknya ada admin panel untuk mengelola semua konten itu, dan seluruh antarmuka bisa ditampil-terjemahkan ID/EN lewat i18next.
+
+## Fitur
+
+**Publik**
+
+- Homepage, katalog Produk, Ingredients, Lab Tools
+- Workshop, Event + registrasi publik, Artikel, Gallery, About
+- Multi-bahasa ID/EN (i18next)
+
+**Admin**
+
+- Login JWT, CRUD semua konten
+- Upload gambar dengan whitelist MIME/ukuran
+- Manajemen event + daftar pendaftar
+- Editor rich-text (Tiptap)
 
 ## Tech Stack
 
@@ -14,17 +50,22 @@ Full-stack website katalog (parfum, bahan, alat lab), workshop, event, dan artik
 | Frontend | React 19 + Vite 7 + TailwindCSS 4 |
 | Routing | React Router 7 (code splitting per halaman via `React.lazy`) |
 | i18n | i18next (ID/EN) |
+| Image | sharp (kompresi & orientasi otomatis saat upload) |
 | Testing | `node:test` + Supertest (6 smoke test) |
 
-## Fitur
+## Arsitektur
 
-**Publik:** Homepage, Produk, Ingredients, Lab Tools, Workshop, Event + registrasi, Artikel, Gallery, About, multi-bahasa.
+Monorepo dua bagian:
 
-**Admin:** login JWT, CRUD semua konten, upload gambar (whitelist MIME/ukuran), manajemen event + daftar pendaftar, editor rich-text (Tiptap).
+- `backend/` — Express + Sequelize, base URL `http://localhost:3000/api`
+- `frontend/` — React + Vite, dev server `http://localhost:5173`
+
+Upload gambar tersimpan di `backend/public/uploads/` dan dilayani backend. Terjemahan halaman lewat endpoint `translate` (dipanggil i18next-http-backend dari frontend).
 
 ## Setup
 
 ### Prasyarat
+
 - Node.js v18+
 - MySQL berjalan
 
@@ -63,6 +104,7 @@ npm run dev    # http://localhost:5173
 | backend | `npm run seed` | seeding admin (butuh `ADMIN_*` di `.env`) |
 | backend | `npm test` | 6 smoke test (butuh MySQL aktif) |
 | frontend | `npm run dev` / `build` / `lint` | dev server / build produksi / ESLint |
+| frontend | `npm run preview:dist` | sajikan build produksi terkompresi gzip (audit Lighthouse) |
 
 ## API
 
@@ -70,9 +112,23 @@ npm run dev    # http://localhost:5173
 - Auth: header `Authorization: Bearer <token>` (login `POST /api/auth/login`)
 - **Pagination opt-in**: `GET /api/products?page=1&limit=12` mengembalikan
   `meta: { page, limit, total, totalPages }`. Tanpa `?page`, daftar penuh (lama).
-- Endpoint utama: `auth`, `products`, `ingredients`, `lab-tools`, `workshops`,
-  `events` (+ `/:id/register`, admin `/:id/registrations`), `articles`, `gallery`,
-  `about`, `categories`, `landing-page`, `translate`
+
+<details>
+<summary>Endpoint utama</summary>
+
+`auth`, `products`, `ingredients`, `lab-tools`, `workshops`,
+`events` (+ `/:id/register`, admin `/:id/registrations`), `articles`, `gallery`,
+`about`, `categories`, `landing-page`, `translate`
+
+</details>
+
+## Performance & Upload Otomatis
+
+- **Kompresi gambar saat upload (sharp).** Gambar divalidasi lewat metadata sharp — file rusak atau bukan gambar ditolak `400`. Orientasi EXIF dibake, GIF & WebP animasi dilewatkan tanpa diubah, sisanya di-resize maksimal 1600px (tanpa perbesaran) menjadi WebP q80. Hasil hanya disimpan jika lebih kecil dari asli, jadi upload tidak pernah memperbesar file. Terukur: JPEG 4.082.825 B → WebP 36.360 B.
+- **Cache gambar**: `Cache-Control: public, max-age=604800` (7 hari).
+- **Font Inter self-hosted** — tidak lagi dimuat dari pihak ketiga.
+- **`npm run preview:dist`** di frontend menyajikan build produksi terkompresi gzip (script stdlib `frontend/scripts/serve-dist.mjs`) — untuk audit Lighthouse yang representatif.
+- **Lighthouse Desktop** terukur di jalur production: **96–98** (LCP ~0,9–1,3 detik, CLS 0,075).
 
 ## Keamanan
 
@@ -91,10 +147,20 @@ cd backend
 npm test        # node --test, Supertest langsung ke app (tanpa listen port)
 ```
 
-Menutup: list + pagination, proteksi PII event, 404 API, login gagal. Rate limit otomatis nonaktif saat `NODE_ENV=test`.
+<details>
+<summary>Apa yang dicover</summary>
+
+Menutup: list + pagination, proteksi PII event, 404 API, login gagal.
+Rate limit otomatis nonaktif saat `NODE_ENV=test`.
+
+</details>
 
 ## Catatan
 
 - Skema auto-sync `sync({ alter: true })` hanya non-production; production pakai migration.
 - Upload tersimpan di `backend/public/uploads/` (tidak di-track git).
-- `npm audit` sisa: `braces` via nodemon (dev-only, advisory berlaku untuk semua versi) dan `uuid` via sequelize (jalur pemakaian tidak terjangkau); frontend: 1 low di `i18next-http-backend` (butuh major bump).
+- `npm audit`: `uuid` via sequelize sudah ditangani dengan override `^11.1.1`; tersisa `braces` via nodemon (dev-only, advisory berlaku untuk semua versi). Frontend: 1 low di `i18next-http-backend` (butuh major bump).
+
+---
+
+Dibuat untuk magang **Saptaloka 2025** · [Riss27/internship-saptaloka-2025](https://github.com/Riss27/internship-saptaloka-2025)
