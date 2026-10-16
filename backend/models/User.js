@@ -10,7 +10,6 @@ const User = sequelize.define("User", {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true, // Setiap email harus unik
     validate: {
       isEmail: true,
     },
@@ -24,6 +23,20 @@ const User = sequelize.define("User", {
     defaultValue: "user",
     allowNull: false,
   },
+}, {
+  // Unique sebagai index bernama eksplisit. Field-level `unique: true`
+  // menghasilkan index tanpa nama, dan sync({ alter: true }) membandingkan
+  // index lama berdasarkan nama — index tanpa nama selalu dianggap hilang,
+  // jadi tiap boot MySQL menambah satu index duplikat sampai tabel mentok
+  // batas 64 index dan server gagal start. Dengan nama yang stabil, sync
+  // berhenti menambah apa pun setelah index pertama terbentuk.
+  indexes: [
+    {
+      name: "users_email_unique",
+      unique: true,
+      fields: ["email"],
+    },
+  ],
 });
 
 User.beforeCreate(async (user) => {
