@@ -50,24 +50,17 @@ const Carousel = () => {
   // The photograph drifts up slightly as the reader scrolls the hero away. The
   // image is drawn taller than its frame and pulled up by half that excess, so
   // there is always overscan above and below and the frame never shows a gap.
+  //
+  // The target element has to exist from the very first render. The slides are
+  // fetched, so on the first pass there is nothing to show, but the section
+  // itself is always rendered and the loading state lives inside it. Returning
+  // early instead would leave this ref detached, and useScroll throws when it
+  // measures a target that never mounted.
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
   });
   const slideShift = useTransform(scrollYProgress, [0, 1], ["0%", "6%"]);
-
-  if (slides.length === 0) {
-    return (
-      <div
-        role="status"
-        aria-live="polite"
-        className="flex flex-col justify-center items-center gap-4 min-h-[60vh] bg-brand-900 text-cream/80"
-      >
-        <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
-        <p className="text-body">Loading Carousel...</p>
-      </div>
-    );
-  }
 
   return (
     <section
@@ -76,6 +69,17 @@ const Carousel = () => {
       aria-label="Featured highlights"
       className="relative h-[calc(100svh-var(--public-header-height,180px))] min-h-[32rem] w-full overflow-hidden bg-brand-900 sm:min-h-[36rem]"
     >
+      {slides.length === 0 && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="flex h-full w-full flex-col items-center justify-center gap-4 text-cream/80"
+        >
+          <div className="h-12 w-12 animate-spin rounded-full border-2 border-border border-t-brand-400 motion-reduce:animate-none" />
+          <p className="text-body">Loading Carousel...</p>
+        </div>
+      )}
+
       {/* Container slide */}
       <div
         className="flex h-full w-full transition-transform duration-700 ease-in-out motion-reduce:transition-none"
@@ -139,62 +143,64 @@ const Carousel = () => {
       {/* Counter, indicators and arrows share one row that is pinned to the
           bottom edge. They live outside the slide track so they stay put while
           the photographs move. */}
-      <div className="absolute bottom-6 left-6 right-6 z-20 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 sm:left-12 lg:left-10 lg:right-10">
-        <div className="flex items-center gap-4 sm:gap-6">
-          <p
-            aria-hidden="true"
-            className="text-meta tabular-nums text-cream/70"
-          >
-            {pad(current + 1)}
-            <span className="px-1.5 text-cream/40">/</span>
-            {pad(slides.length)}
-          </p>
+      {slides.length > 0 && (
+        <div className="absolute bottom-6 left-6 right-6 z-20 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 sm:left-12 lg:left-10 lg:right-10">
+          <div className="flex items-center gap-4 sm:gap-6">
+            <p
+              aria-hidden="true"
+              className="text-meta tabular-nums text-cream/70"
+            >
+              {pad(current + 1)}
+              <span className="px-1.5 text-cream/40">/</span>
+              {pad(slides.length)}
+            </p>
 
-          {/* Each indicator keeps a 44px touch target, so a long slide list
+            {/* Each indicator keeps a 44px touch target, so a long slide list
               cannot be laid out as one row on a phone. The row scrolls inside its
               own track instead of widening the page. */}
-          <div className="flex items-center gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {slides.map((_, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => setCurrent(index)}
-                aria-label={`Show slide ${index + 1} of ${slides.length}`}
-                aria-current={index === current ? "true" : undefined}
-                className={`grid h-11 min-w-11 shrink-0 place-items-center px-1 ${FOCUS_RING}`}
-              >
-                <span
-                  aria-hidden="true"
-                  className={`block h-0.5 transition-all duration-300 motion-reduce:transition-none ${
-                    index === current
-                      ? "w-12 bg-cream"
-                      : "w-6 bg-cream/50 hover:bg-cream/80"
-                  }`}
-                />
-              </button>
-            ))}
+            <div className="flex items-center gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {slides.map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => setCurrent(index)}
+                  aria-label={`Show slide ${index + 1} of ${slides.length}`}
+                  aria-current={index === current ? "true" : undefined}
+                  className={`grid h-11 min-w-11 shrink-0 place-items-center px-1 ${FOCUS_RING}`}
+                >
+                  <span
+                    aria-hidden="true"
+                    className={`block h-0.5 transition-all duration-300 motion-reduce:transition-none ${
+                      index === current
+                        ? "w-12 bg-cream"
+                        : "w-6 bg-cream/50 hover:bg-cream/80"
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={prevSlide}
+              aria-label="Show the previous slide"
+              className={`grid h-11 w-11 place-items-center rounded-full border border-cream/40 text-cream/80 transition-colors hover:border-cream hover:text-cream ${FOCUS_RING}`}
+            >
+              <ChevronLeft size={20} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={nextSlide}
+              aria-label="Show the next slide"
+              className={`grid h-11 w-11 place-items-center rounded-full border border-cream/40 text-cream/80 transition-colors hover:border-cream hover:text-cream ${FOCUS_RING}`}
+            >
+              <ChevronRight size={20} aria-hidden="true" />
+            </button>
           </div>
         </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={prevSlide}
-            aria-label="Show the previous slide"
-            className={`grid h-11 w-11 place-items-center rounded-full border border-cream/40 text-cream/80 transition-colors hover:border-cream hover:text-cream ${FOCUS_RING}`}
-          >
-            <ChevronLeft size={20} aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            onClick={nextSlide}
-            aria-label="Show the next slide"
-            className={`grid h-11 w-11 place-items-center rounded-full border border-cream/40 text-cream/80 transition-colors hover:border-cream hover:text-cream ${FOCUS_RING}`}
-          >
-            <ChevronRight size={20} aria-hidden="true" />
-          </button>
-        </div>
-      </div>
+      )}
     </section>
   );
 };
