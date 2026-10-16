@@ -33,11 +33,11 @@ const GalleryPage = () => {
 
   return (
     <div>
-      <header className="flex justify-between items-center mb-8">
+      <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <h1 className="text-3xl font-bold text-cream">Gallery Management</h1>
         <Link
           to="/admin/gallery/add"
-          className="flex items-center gap-2 bg-brand-600 hover:bg-brand-500 px-4 py-2 rounded-md font-semibold text-cream no-underline"
+          className="flex items-center gap-2 bg-brand-600 hover:bg-brand-500 px-4 py-2 min-h-11 rounded-md font-semibold text-cream no-underline"
         >
           <Plus aria-hidden="true" className="w-5 h-5" />
           Add New Image
@@ -50,7 +50,7 @@ const GalleryPage = () => {
             No images found in the gallery.
           </p>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-10">
             {images.map((image) => (
               <div
                 key={image.id}
@@ -68,7 +68,7 @@ const GalleryPage = () => {
                   <div className="flex gap-2">
                     <Link
                       to={`/admin/gallery/edit/${image.id}`}
-                      className="p-2 bg-yellow-600 hover:bg-yellow-700 rounded-full text-cream"
+                      className="min-h-11 min-w-11 grid place-items-center p-2 bg-yellow-600 hover:bg-yellow-700 rounded-full text-cream"
                       title="Edit Title"
                       aria-label="Edit Title"
                     >
@@ -76,7 +76,7 @@ const GalleryPage = () => {
                     </Link>
                     <button
                       onClick={() => handleDelete(image.id)}
-                      className="p-2 bg-red-600 hover:bg-red-700 rounded-full text-cream"
+                      className="min-h-11 min-w-11 grid place-items-center p-2 bg-red-600 hover:bg-red-700 rounded-full text-cream"
                       title="Delete Image"
                       aria-label="Delete Image"
                     >

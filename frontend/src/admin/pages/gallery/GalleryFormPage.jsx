@@ -76,20 +76,20 @@ const GalleryFormPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <header className="flex justify-between items-center mb-8">
+      <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <h1 className="text-3xl font-bold text-cream">
           {isEditMode ? "Edit Image" : "Add New Image to Gallery"}
         </h1>
         <Link
           to="/admin/gallery"
-          className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold text-cream no-underline"
+          className="bg-red-600 hover:bg-red-700 px-5 py-2 min-h-11 inline-flex items-center rounded-md font-semibold text-cream no-underline"
         >
           BACK
         </Link>
       </header>
       <form
         onSubmit={handleSubmit}
-        className="bg-brand-700 p-8 rounded-lg text-cream"
+        className="bg-brand-700 p-4 sm:p-8 rounded-lg text-cream"
       >
         {/* Input Judul */}
         <div className="mb-6">
@@ -106,7 +106,7 @@ const GalleryFormPage = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            className="w-full p-2 bg-brand-600/30 rounded border border-border"
+            className="w-full min-h-11 p-2 bg-brand-600/30 rounded border border-border"
           />
         </div>
 

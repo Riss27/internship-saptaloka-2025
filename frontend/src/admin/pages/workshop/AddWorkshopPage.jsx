@@ -27,7 +27,7 @@ const InputField = ({ label, name, value, onChange, icon, ...props }) => (
         name={name}
         value={value || ""}
         onChange={onChange}
-        className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+        className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
       />
     </div>
   </div>
@@ -182,13 +182,13 @@ const AddWorkshopPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto text-cream">
-      <header className="flex justify-between items-center mb-8">
+      <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <h1 className="text-3xl font-bold">
           {isEditMode ? "Edit Workshop" : "Create New Workshop"}
         </h1>
         <Link
           to="/admin/workshop"
-          className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold no-underline"
+          className="bg-red-600 hover:bg-red-700 px-5 py-2 min-h-11 inline-flex items-center rounded-md font-semibold no-underline"
         >
           BACK
         </Link>
@@ -199,7 +199,7 @@ const AddWorkshopPage = () => {
         className="grid grid-cols-1 lg:grid-cols-3 gap-8"
       >
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-brand-800/50 p-8 rounded-lg">
+          <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg">
             <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
               Workshop Details
             </h2>
@@ -217,8 +217,8 @@ const AddWorkshopPage = () => {
               <label className="block mb-2 font-medium text-cream/80">
                 Category
               </label>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="relative w-full sm:flex-1">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
                     <Tag aria-hidden="true" className="w-5 h-5" />
                   </span>
@@ -227,7 +227,7 @@ const AddWorkshopPage = () => {
                     value={workshop.category}
                     onChange={handleWorkshopChange}
                     required
-                    className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+                    className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
                   >
                     <option value="" disabled>
                       -- Pilih Kategori Workshop --
@@ -242,7 +242,7 @@ const AddWorkshopPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowCategoryModal(true)}
-                  className="bg-brand-600 hover:bg-brand-500 px-4 py-2 rounded-md font-semibold text-cream flex items-center gap-2 transition-colors whitespace-nowrap"
+                  className="bg-brand-600 hover:bg-brand-500 px-4 py-2 min-h-11 rounded-md font-semibold text-cream flex items-center gap-2 transition-colors whitespace-nowrap"
                 >
                   <Plus aria-hidden="true" className="w-5 h-5" /> Tambah
                   Kategori
@@ -328,7 +328,7 @@ const AddWorkshopPage = () => {
         </div>
 
         <div className="space-y-8">
-          <div className="bg-brand-800/50 p-8 rounded-lg">
+          <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg">
             <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
               Select Events
             </h2>
@@ -408,7 +408,7 @@ const AddWorkshopPage = () => {
 
       {/* Modal Tambah Kategori */}
       {showCategoryModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-brand-800 rounded-lg p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-cream">
@@ -419,7 +419,7 @@ const AddWorkshopPage = () => {
                   setShowCategoryModal(false);
                   setNewCategoryName("");
                 }}
-                className="text-cream/60 hover:text-cream"
+                className="min-h-11 min-w-11 grid place-items-center text-cream/60 hover:text-cream"
                 aria-label="Tutup modal tambah kategori"
               >
                 <X aria-hidden="true" className="w-5 h-5" />
@@ -435,7 +435,7 @@ const AddWorkshopPage = () => {
                   value={newCategoryName}
                   onChange={(e) => setNewCategoryName(e.target.value)}
                   placeholder="Masukkan nama kategori..."
-                  className="w-full p-2 bg-brand-900 border border-border rounded-md focus:outline-none focus:border-brand-400  text-cream"
+                  className="w-full min-h-11 p-2 bg-brand-900 border border-border rounded-md focus:outline-none focus:border-brand-400  text-cream"
                   autoFocus
                 />
               </div>
@@ -446,14 +446,14 @@ const AddWorkshopPage = () => {
                     setShowCategoryModal(false);
                     setNewCategoryName("");
                   }}
-                  className="px-4 py-2 bg-brand-700 hover:bg-brand-600 rounded-md font-semibold transition-colors"
+                  className="px-4 py-2 min-h-11 bg-brand-700 hover:bg-brand-600 rounded-md font-semibold transition-colors"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isAddingCategory || !newCategoryName.trim()}
-                  className="px-4 py-2 bg-brand-600 hover:bg-brand-500 disabled:bg-brand-800 disabled:cursor-not-allowed rounded-md font-semibold transition-colors"
+                  className="px-4 py-2 min-h-11 bg-brand-600 hover:bg-brand-500 disabled:bg-brand-800 disabled:cursor-not-allowed rounded-md font-semibold transition-colors"
                 >
                   {isAddingCategory ? "Menambahkan..." : "Tambah"}
                 </button>

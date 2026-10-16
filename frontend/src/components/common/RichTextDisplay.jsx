@@ -66,6 +66,17 @@ const RichTextDisplay = ({ content, className = "", isDark = false }) => {
       <style
         dangerouslySetInnerHTML={{
           __html: `
+ .rich-text-display {
+ overflow-wrap: break-word;
+ }
+ .rich-text-display table {
+ display: block;
+ width: 100%;
+ overflow-x: auto;
+ }
+ .rich-text-display pre {
+ overflow-x: auto;
+ }
  .rich-text-display ul {
  list-style-type: disc !important;
  padding-left: 1.5rem !important;

@@ -329,7 +329,7 @@ const HomePage = () => {
               {/* From the large breakpoint up, every photograph is visible at
                   once. The strip was 2800px wide on a 1440px screen, so half
                   the gallery sat past the edge with nothing to indicate it. */}
-              <div className="hidden grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-8">
+              <div className="hidden lg:grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-8">
                 {data.gallery.map((g, i) => (
                   <motion.figure
                     key={g.id}

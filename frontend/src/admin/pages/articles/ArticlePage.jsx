@@ -88,7 +88,7 @@ const ArticlePage = () => {
                       <div className="flex justify-center gap-3">
                         <Link
                           to={`/admin/articles/edit/${article.id}`}
-                          className="p-2.5 rounded-full bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 transition-all duration-200"
+                          className="min-h-11 min-w-11 grid place-items-center p-2.5 rounded-full bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 transition-all duration-200"
                           title="Edit"
                           aria-label="Edit"
                         >
@@ -96,7 +96,7 @@ const ArticlePage = () => {
                         </Link>
                         <button
                           onClick={() => deleteArticle(article.id)}
-                          className="p-2.5 rounded-full bg-red-500/10 text-red-500 bg-red-500/20 text-red-400 transition-all duration-200"
+                          className="min-h-11 min-w-11 grid place-items-center p-2.5 rounded-full bg-red-500/10 text-red-500 bg-red-500/20 text-red-400 transition-all duration-200"
                           title="Delete"
                           aria-label="Delete"
                         >

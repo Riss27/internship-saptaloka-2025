@@ -9,6 +9,7 @@ import {
   FileText,
   Image as ImageIcon,
   LogOut,
+  Menu,
   Calendar,
   Briefcase,
 } from "lucide-react";
@@ -18,6 +19,8 @@ import Wordmark from "../components/atoms/brand/Wordmark";
 const AdminLayout = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
+  // Below md the sidebar sits off-canvas and is opened from the header bar.
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -38,6 +41,18 @@ const AdminLayout = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [collapsed, openDropdown]);
+
+  // The collapsed rail only exists at md and up. If the window is resized past
+  // that breakpoint while the rail is collapsed, drop the state so the mobile
+  // drawer keeps its full-width menu and inline submenus.
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const handleBreakpoint = () => {
+      if (!mq.matches) setCollapsed(false);
+    };
+    mq.addEventListener("change", handleBreakpoint);
+    return () => mq.removeEventListener("change", handleBreakpoint);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -101,14 +116,18 @@ const AdminLayout = () => {
 
   return (
     <div className="flex h-screen bg-brand-800 text-cream transition-all duration-300">
-      {/* Sidebar */}
+      {/* Sidebar. On phones and small tablets it is an off-canvas drawer so the
+          content keeps the full width; from md up it is the static rail it has
+          always been. */}
       <aside
-        className={`${collapsed ? "w-20" : "w-64"} bg-brand-900 text-cream flex flex-col transition-all duration-300 ease-in-out border-r border-border`}
+        id="admin-sidebar"
+        className={`w-64 ${collapsed ? "md:w-20" : "md:w-64"} bg-brand-900 text-cream flex flex-col transition-all duration-300 ease-in-out border-r border-border fixed inset-y-0 left-0 z-40 md:static md:z-auto ${mobileNavOpen ? "translate-x-0 visible" : "-translate-x-full invisible md:translate-x-0 md:visible"}`}
       >
-        {/* Brand lockup */}
+        {/* Brand lockup. Collapsing the rail only exists from md up, where the
+            rail has room; below that the sidebar is the off-canvas drawer. */}
         <button
           type="button"
-          className="h-20 flex items-center justify-center border-b border-border cursor-pointer transition-all duration-300 hover:bg-brand-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-400"
+          className="hidden md:flex h-20 items-center justify-center border-b border-border cursor-pointer transition-all duration-300 hover:bg-brand-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-400"
           onClick={() => setCollapsed(!collapsed)}
           aria-label={collapsed ? "Expand the sidebar" : "Collapse the sidebar"}
         >
@@ -119,13 +138,13 @@ const AdminLayout = () => {
         </button>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2">
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
           {menuItems.map((item) =>
             item.children ? (
               <div key={item.name} className="dropdown-container relative">
                 <button
                   onClick={() => handleDropdownToggle(item.name)}
-                  className="w-full flex justify-between items-center px-4 py-2.5 rounded-lg text-cream/90 bg-brand-700 text-cream transition-all duration-200 relative"
+                  className="w-full min-h-11 flex justify-between items-center px-4 py-2.5 rounded-lg text-cream/90 bg-brand-700 text-cream transition-all duration-200 relative"
                 >
                   <div className="flex items-center">
                     <span
@@ -150,8 +169,9 @@ const AdminLayout = () => {
                       <NavLink
                         key={sub.name}
                         to={sub.path}
+                        onClick={() => setMobileNavOpen(false)}
                         className={({ isActive }) =>
-                          `flex items-center px-4 py-2 rounded-lg text-sm border-l-2 transition-colors ${isActive ? "bg-brand-700 text-cream border-brand-400" : "text-cream/80 bg-brand-700/60 text-cream border-transparent"}`
+                          `flex items-center min-h-11 px-4 py-2 rounded-lg text-sm border-l-2 transition-colors ${isActive ? "bg-brand-700 text-cream border-brand-400" : "text-cream/80 bg-brand-700/60 text-cream border-transparent"}`
                         }
                       >
                         {sub.name}
@@ -162,7 +182,7 @@ const AdminLayout = () => {
 
                 {/* Dropdown untuk sidebar collapsed - muncul di samping */}
                 {openDropdown === item.name && collapsed && (
-                  <div className="absolute left-full top-0 ml-2 bg-brand-900 border border-border rounded-lg z-50 min-w-[250px]">
+                  <div className="hidden md:block absolute left-full top-0 ml-2 bg-brand-900 border border-border rounded-lg z-50 min-w-[250px]">
                     <div className="p-2 border-b border-border">
                       <span className="text-sm font-semibold text-cream uppercase">
                         {item.name}
@@ -190,8 +210,9 @@ const AdminLayout = () => {
                 key={item.name}
                 to={item.path}
                 end={item.path === "/admin/homepage"}
+                onClick={() => setMobileNavOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center px-4 py-2.5 rounded-lg border-l-2 transition-all duration-200 ${isActive ? "bg-brand-700 text-cream border-brand-400" : "text-cream/90 bg-brand-700/60 text-cream border-transparent"}`
+                  `flex items-center min-h-11 px-4 py-2.5 rounded-lg border-l-2 transition-all duration-200 ${isActive ? "bg-brand-700 text-cream border-brand-400" : "text-cream/90 bg-brand-700/60 text-cream border-transparent"}`
                 }
               >
                 <span
@@ -209,7 +230,7 @@ const AdminLayout = () => {
         <div className="p-4 border-t border-border">
           <button
             onClick={handleLogout}
-            className="flex items-center justify-center w-full px-4 py-2.5 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-300"
+            className="flex items-center justify-center w-full min-h-11 px-4 py-2.5 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-300"
           >
             <LogOut
               aria-hidden="true"
@@ -220,10 +241,37 @@ const AdminLayout = () => {
         </div>
       </aside>
 
+      {/* Scrim for the off-canvas drawer: tapping outside closes it. */}
+      {mobileNavOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-brand-900/70 md:hidden"
+          aria-hidden="true"
+          onClick={() => setMobileNavOpen(false)}
+        />
+      )}
+
       {/* Content */}
-      <main className="flex-1 p-8 overflow-y-auto">
-        <Outlet />
-      </main>
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Drawer trigger. Below md the sidebar lives off-canvas, so this bar
+            carries the menu button and the brand. */}
+        <div className="flex items-center gap-2 border-b border-border px-4 py-2 md:hidden">
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen(true)}
+            aria-label="Open the sidebar menu"
+            aria-expanded={mobileNavOpen}
+            aria-controls="admin-sidebar"
+            className="h-11 w-11 grid place-items-center rounded-lg text-cream hover:bg-brand-700 transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-400"
+          >
+            <Menu aria-hidden="true" className="h-5 w-5" />
+          </button>
+          <Wordmark size="text-lg" className="text-cream" />
+        </div>
+
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };

@@ -36,7 +36,7 @@ const InputField = ({
           onChange={onChange}
           rows="6"
           placeholder={placeholder}
-          className="w-full p-2 pl-10 bg-brand-800 text-cream border border-border rounded-lg focus:outline-none focus:border-brand-400"
+          className="w-full min-h-11 p-2 pl-10 bg-brand-800 text-cream border border-border rounded-lg focus:outline-none focus:border-brand-400"
         />
       ) : (
         <input
@@ -45,7 +45,7 @@ const InputField = ({
           value={value || ""}
           onChange={onChange}
           placeholder={placeholder}
-          className="w-full p-2 pl-10 bg-brand-800 text-cream border border-border rounded-lg focus:outline-none focus:border-brand-400"
+          className="w-full min-h-11 p-2 pl-10 bg-brand-800 text-cream border border-border rounded-lg focus:outline-none focus:border-brand-400"
         />
       )}
     </div>
@@ -148,13 +148,13 @@ const CatalogueForm = ({
 
   return (
     <div className="max-w-7xl mx-auto text-cream">
-      <header className="flex justify-between items-center mb-8">
+      <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <h1 className="text-3xl font-bold uppercase">
           {isEditMode ? `Edit ${itemTitle}` : `Add New ${itemTitle}`}
         </h1>
         <Link
           to={navigateBackUrl}
-          className="bg-red-700 hover:bg-red-800 px-5 py-2 rounded-md font-semibold text-cream no-underline"
+          className="bg-red-700 hover:bg-red-800 px-5 py-2 min-h-11 inline-flex items-center rounded-md font-semibold text-cream no-underline"
         >
           BACK
         </Link>
@@ -162,7 +162,7 @@ const CatalogueForm = ({
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 bg-brand-700 p-8 rounded-lg border border-border">
+          <div className="lg:col-span-2 bg-brand-700 p-4 sm:p-8 rounded-lg border border-border">
             <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4 uppercase">
               {itemTitle} Details
             </h2>
@@ -200,7 +200,7 @@ const CatalogueForm = ({
             </div>
           </div>
 
-          <div className="bg-brand-700 p-8 rounded-lg border border-border">
+          <div className="bg-brand-700 p-4 sm:p-8 rounded-lg border border-border">
             <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4 uppercase">
               Organize
             </h2>
@@ -224,7 +224,7 @@ const CatalogueForm = ({
                     value={formData.category || ""}
                     onChange={handleChange}
                     required={true}
-                    className="w-full p-2 pl-10 bg-brand-800 text-cream border border-border rounded-lg focus:outline-none focus:border-brand-400 appearance-none"
+                    className="w-full min-h-11 p-2 pl-10 bg-brand-800 text-cream border border-border rounded-lg focus:outline-none focus:border-brand-400 appearance-none"
                   >
                     <option value="" disabled>
                       -- Pilih Kategori --

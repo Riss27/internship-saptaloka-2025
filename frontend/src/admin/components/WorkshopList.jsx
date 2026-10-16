@@ -56,7 +56,7 @@ const WorkshopList = ({ workshops, deleteWorkshop }) => {
             <div className="flex justify-end gap-3 mt-6">
               <Link
                 to={`/admin/workshop/edit/${workshop.id}`}
-                className="inline-flex items-center justify-center p-2 bg-yellow-500/20 text-yellow-300 rounded-full hover:bg-yellow-500/40 transition-colors"
+                className="inline-flex items-center justify-center min-h-11 min-w-11 p-2 bg-yellow-500/20 text-yellow-300 rounded-full hover:bg-yellow-500/40 transition-colors"
                 title="Edit Workshop"
                 aria-label="Edit Workshop"
               >
@@ -64,7 +64,7 @@ const WorkshopList = ({ workshops, deleteWorkshop }) => {
               </Link>
               <button
                 onClick={() => deleteWorkshop(workshop.id)}
-                className="p-2 bg-red-500/20 text-red-400 rounded-full bg-red-500/40 transition-colors"
+                className="min-h-11 min-w-11 grid place-items-center p-2 bg-red-500/20 text-red-400 rounded-full bg-red-500/40 transition-colors"
                 title="Delete Workshop"
                 aria-label="Delete Workshop"
               >

@@ -46,7 +46,7 @@ const InputField = ({
           rows="8"
           placeholder={placeholder}
           required={required}
-          className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400"
+          className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400"
         />
       ) : (
         <input
@@ -56,7 +56,7 @@ const InputField = ({
           onChange={onChange}
           placeholder={placeholder}
           required={required}
-          className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400"
+          className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400"
         />
       )}
     </div>
@@ -248,20 +248,20 @@ const AddArticlePage = () => {
 
   return (
     <div className="max-w-7xl mx-auto text-cream">
-      <header className="flex justify-between items-center mb-8">
+      <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <h1 className="text-3xl font-bold">
           {isEditMode ? "Edit Article" : "Add New Article"}
         </h1>
         <Link
           to="/admin/articles"
-          className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold text-cream no-underline"
+          className="bg-red-600 hover:bg-red-700 px-5 py-2 min-h-11 inline-flex items-center rounded-md font-semibold text-cream no-underline"
         >
           BACK
         </Link>
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="bg-brand-800/50 p-8 rounded-lg ">
+        <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg ">
           <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
             Main Article Details
           </h2>
@@ -306,7 +306,7 @@ const AddArticlePage = () => {
                     }
                     dateFormat="MMMM d, yyyy h:mm aa"
                     showTimeSelect
-                    className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400"
+                    className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400"
                   />
                 </div>
               </div>
@@ -392,7 +392,7 @@ const AddArticlePage = () => {
           </div>
         </div>
 
-        <div className="bg-brand-800/50 p-8 rounded-lg ">
+        <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg ">
           <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
             Content Sections
           </h2>
@@ -409,7 +409,7 @@ const AddArticlePage = () => {
                   <button
                     type="button"
                     onClick={() => removeContentSection(index)}
-                    className="p-1 text-red-500 text-red-400 bg-red-500/10 rounded-full"
+                    className="min-h-11 min-w-11 grid place-items-center p-1 text-red-500 text-red-400 bg-red-500/10 rounded-full"
                     aria-label={`Hapus section ${index + 1}`}
                   >
                     <Trash2 aria-hidden="true" className="w-5 h-5" />
@@ -454,7 +454,7 @@ const AddArticlePage = () => {
                         <button
                           type="button"
                           onClick={() => removeContentImage(index, i)}
-                          className="absolute -top-2 -right-2 p-1 bg-red-600 text-cream rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute -top-2 -right-2 min-h-11 min-w-11 grid place-items-center p-1 bg-red-600 text-cream rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                           aria-label="Hapus gambar"
                         >
                           <X aria-hidden="true" className="w-4 h-4" />

@@ -108,7 +108,7 @@ const Homepage = () => {
           </div>
           <button
             onClick={fetchSlides}
-            className="ml-auto px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded text-sm transition-colors duration-200"
+            className="ml-auto min-h-11 px-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded text-sm transition-colors duration-200"
           >
             Coba Lagi
           </button>
@@ -118,7 +118,7 @@ const Homepage = () => {
       <main>
         {slides.length === 0 ? (
           /* Empty State */
-          <div className="bg-gradient-to-br from-brand-700/60 to-brand-800/60 border border-border rounded-xl p-12 text-center">
+          <div className="bg-gradient-to-br from-brand-700/60 to-brand-800/60 border border-border rounded-xl p-6 sm:p-12 text-center">
             <div className="max-w-md mx-auto">
               <div className="w-20 h-20 bg-brand-700 rounded-full flex items-center justify-center mx-auto mb-6">
                 <ImageIcon
@@ -166,7 +166,7 @@ const Homepage = () => {
                     <div className="flex items-center gap-2">
                       <Link
                         to={`/admin/homepage/edit/${slide.id}`}
-                        className="p-2.5 text-yellow-400 text-yellow-300 bg-yellow-500/10 rounded-lg transition-all duration-200 group/edit"
+                        className="min-h-11 min-w-11 grid place-items-center p-2.5 text-yellow-400 text-yellow-300 bg-yellow-500/10 rounded-lg transition-all duration-200 group/edit"
                         title="Edit slide"
                         aria-label="Edit slide"
                       >
@@ -177,7 +177,7 @@ const Homepage = () => {
                       </Link>
                       <button
                         onClick={() => deleteSlide(slide.id)}
-                        className="p-2.5 text-red-400 text-red-300 bg-red-500/10 rounded-lg transition-all duration-200 group/delete"
+                        className="min-h-11 min-w-11 grid place-items-center p-2.5 text-red-400 text-red-300 bg-red-500/10 rounded-lg transition-all duration-200 group/delete"
                         title="Hapus slide"
                         aria-label="Hapus slide"
                       >

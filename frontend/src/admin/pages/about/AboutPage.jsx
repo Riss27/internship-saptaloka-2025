@@ -36,7 +36,7 @@ const InputField = ({
           onChange={onChange}
           rows="8"
           placeholder={placeholder}
-          className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400"
+          className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400"
         ></textarea>
       ) : (
         <input
@@ -45,7 +45,7 @@ const InputField = ({
           value={value || ""}
           onChange={onChange}
           placeholder={placeholder}
-          className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400"
+          className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400"
         />
       )}
     </div>
@@ -122,7 +122,7 @@ const AboutPage = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 bg-brand-700 p-8 rounded-lg ">
+          <div className="lg:col-span-2 bg-brand-700 p-4 sm:p-8 rounded-lg ">
             <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
               Company Information
             </h2>
@@ -162,7 +162,7 @@ const AboutPage = () => {
             />
           </div>
 
-          <div className="bg-brand-700 p-8 rounded-lg ">
+          <div className="bg-brand-700 p-4 sm:p-8 rounded-lg ">
             <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
               Social & Branding
             </h2>

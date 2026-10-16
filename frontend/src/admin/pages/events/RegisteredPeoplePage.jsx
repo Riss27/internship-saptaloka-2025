@@ -41,7 +41,7 @@ const RegisteredPeoplePage = () => {
   return (
     <div className="max-w-7xl mx-auto">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-cream">
+        <h1 className="text-3xl font-bold text-cream break-words">
           Registered People for: {event.title}
         </h1>
         <p className="text-cream/60 mt-1">
@@ -50,7 +50,10 @@ const RegisteredPeoplePage = () => {
       </header>
 
       <div className="bg-brand-800/50 rounded-lg overflow-hidden">
-        <table className="w-full text-left text-cream/80">
+        {/* The table keeps its column widths on a phone and scrolls inside the
+            card instead of pushing the whole page sideways. */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-cream/80">
           <thead className="bg-brand-800">
             <tr>
               <th className="p-4">No</th>
@@ -86,7 +89,7 @@ const RegisteredPeoplePage = () => {
                   <td className="p-4 text-center">
                     <button
                       onClick={() => deleteRegistration(reg.id)}
-                      className="p-2 text-red-500 text-red-400"
+                      className="p-2 min-h-11 min-w-11 grid place-items-center text-red-500 text-red-400"
                       title="Hapus pendaftar"
                       aria-label={`Hapus pendaftar ${reg.name}`}
                     >
@@ -97,7 +100,8 @@ const RegisteredPeoplePage = () => {
               ))
             )}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
     </div>
   );

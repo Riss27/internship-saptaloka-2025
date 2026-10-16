@@ -46,7 +46,7 @@ const InputField = ({
             value={value}
             onChange={onChange}
             {...props}
-            className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400  appearance-none"
+            className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400  appearance-none"
           >
             {options.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -65,7 +65,7 @@ const InputField = ({
           name={name}
           value={value || ""}
           onChange={onChange}
-          className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+          className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
         />
       )}
     </div>
@@ -267,20 +267,20 @@ const AddEventPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto text-cream">
-      <header className="flex justify-between items-center mb-8">
+      <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <h1 className="text-3xl font-bold">
           {isEditMode ? "Edit Event" : "Create New Event"}
         </h1>
         <Link
           to="/admin/events"
-          className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-md font-semibold no-underline"
+          className="bg-red-600 hover:bg-red-700 px-5 py-2 min-h-11 inline-flex items-center rounded-md font-semibold no-underline"
         >
           BACK
         </Link>
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="bg-brand-800/50 p-8 rounded-lg ">
+        <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg ">
           <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
             Event Details
           </h2>
@@ -331,7 +331,7 @@ const AddEventPage = () => {
                     name="status"
                     value={event.status}
                     onChange={handleEventChange}
-                    className="w-full p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+                    className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
                   >
                     <option value="Coming Soon">Coming Soon</option>
                     <option value="Open">Open for Registration</option>
@@ -340,7 +340,7 @@ const AddEventPage = () => {
                   </select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <InputField
                   label="Quota"
                   name="quota"
@@ -437,7 +437,7 @@ const AddEventPage = () => {
                     setPreviewBanner("");
                     setImageBanner(null);
                   }}
-                  className="mt-3 w-full py-2 px-4 bg-red-600/20 hover:bg-red-600/40 text-red-400 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                  className="mt-3 w-full min-h-11 py-2 px-4 bg-red-600/20 hover:bg-red-600/40 text-red-400 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                 >
                   <Trash2 aria-hidden="true" className="w-5 h-5" />
                   Remove Banner
@@ -469,7 +469,7 @@ const AddEventPage = () => {
                 }
                 showTimeSelect
                 dateFormat="MMMM d, yyyy h:mm aa"
-                className="w-full p-2 bg-brand-800 border border-border rounded-md"
+                className="w-full min-h-11 p-2 bg-brand-800 border border-border rounded-md"
               />
             </div>
             <div>
@@ -484,13 +484,13 @@ const AddEventPage = () => {
                 }
                 showTimeSelect
                 dateFormat="MMMM d, yyyy h:mm aa"
-                className="w-full p-2 bg-brand-800 border border-border rounded-md"
+                className="w-full min-h-11 p-2 bg-brand-800 border border-border rounded-md"
               />
             </div>
           </div>
         </div>
 
-        <div className="bg-brand-800/50 p-8 rounded-lg ">
+        <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg ">
           <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
             Participant Roles
           </h2>
@@ -500,12 +500,12 @@ const AddEventPage = () => {
               value={newRole}
               onChange={(e) => setNewRole(e.target.value)}
               placeholder="Contoh: Mahasiswa"
-              className="flex-grow p-2 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+              className="flex-grow min-h-11 p-2 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
             />
             <button
               type="button"
               onClick={addRole}
-              className="bg-brand-600 hover:bg-brand-500 px-4 py-2 rounded-md font-semibold transition-colors"
+              className="bg-brand-600 hover:bg-brand-500 px-4 py-2 min-h-11 rounded-md font-semibold transition-colors"
             >
               Add Role
             </button>
@@ -520,7 +520,7 @@ const AddEventPage = () => {
                 <button
                   type="button"
                   onClick={() => removeRole(index)}
-                  className="ml-2 text-cream"
+                  className="ml-2 -my-2.5 min-h-11 min-w-11 grid place-items-center text-cream"
                   title={`Hapus role ${role}`}
                   aria-label={`Hapus role ${role}`}
                 >
@@ -531,7 +531,7 @@ const AddEventPage = () => {
           </div>
         </div>
 
-        <div className="bg-brand-800/50 p-8 rounded-lg ">
+        <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg ">
           <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
             Content Sections
           </h2>
@@ -548,7 +548,7 @@ const AddEventPage = () => {
                   <button
                     type="button"
                     onClick={() => removeContentSection(index)}
-                    className="p-1 text-red-500 text-red-400 bg-red-500/10 rounded-full"
+                    className="min-h-11 min-w-11 grid place-items-center p-1 text-red-500 text-red-400 bg-red-500/10 rounded-full"
                     aria-label={`Hapus section ${index + 1}`}
                   >
                     <Trash2 aria-hidden="true" className="w-5 h-5" />
@@ -598,11 +598,13 @@ const AddEventPage = () => {
                             alt={`Preview ${i + 1}`}
                             className="w-full h-full object-cover"
                           />
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          {/* Kept visible on phones: hover does not exist there,
+                              and the delete control must stay reachable. */}
+                          <div className="absolute inset-0 bg-black/60 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <button
                               type="button"
                               onClick={() => removeContentImage(index, i)}
-                              className="p-2 bg-red-600 hover:bg-red-700 text-cream rounded-full transition-colors"
+                              className="min-h-11 min-w-11 grid place-items-center p-2 bg-red-600 hover:bg-red-700 text-cream rounded-full transition-colors"
                               aria-label={`Hapus gambar ${i + 1}`}
                             >
                               <Trash2 aria-hidden="true" className="w-5 h-5" />

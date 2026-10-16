@@ -151,7 +151,7 @@ const EventList = ({ events, deleteEvent }) => {
                       onClick={() =>
                         navigate(`/admin/events/registrations/${event.id}`)
                       }
-                      className="group/btn flex items-center justify-center w-10 h-10 text-cream bg-brand-600 rounded-lg transition-all duration-300 ease-in-out transform "
+                      className="group/btn flex items-center justify-center w-11 h-11 text-cream bg-brand-600 rounded-lg transition-all duration-300 ease-in-out transform "
                       title="Lihat Peserta Terdaftar"
                       aria-label="Lihat Peserta Terdaftar"
                     >
@@ -164,7 +164,7 @@ const EventList = ({ events, deleteEvent }) => {
                     {/* Edit button */}
                     <Link
                       to={`/admin/events/edit/${event.id}`}
-                      className="group/btn flex items-center justify-center w-10 h-10 text-cream bg-yellow-500 rounded-lg transition-all duration-300 ease-in-out transform "
+                      className="group/btn flex items-center justify-center w-11 h-11 text-cream bg-yellow-500 rounded-lg transition-all duration-300 ease-in-out transform "
                       title="Edit Event"
                       aria-label="Edit Event"
                     >
@@ -177,7 +177,7 @@ const EventList = ({ events, deleteEvent }) => {
                     {/* Delete button */}
                     <button
                       onClick={() => deleteEvent(event.id)}
-                      className="group/btn flex items-center justify-center w-10 h-10 text-cream bg-red-500 rounded-lg transition-all duration-300 ease-in-out transform "
+                      className="group/btn flex items-center justify-center w-11 h-11 text-cream bg-red-500 rounded-lg transition-all duration-300 ease-in-out transform "
                       title="Hapus Event"
                       aria-label="Hapus Event"
                     >
@@ -196,13 +196,13 @@ const EventList = ({ events, deleteEvent }) => {
 
       {/* Footer untuk informasi tambahan */}
       <div className="bg-brand-900/30 px-6 py-4 border-t border-border/30">
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
           <span className="text-cream/60">
             Total:{" "}
             <span className="font-semibold text-cream/80">{events.length}</span>{" "}
             event
           </span>
-          <div className="flex items-center gap-4 text-cream/70">
+          <div className="flex flex-wrap items-center gap-4 text-cream/70">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-brand-400 rounded-full"></div>
               <span>Peserta</span>

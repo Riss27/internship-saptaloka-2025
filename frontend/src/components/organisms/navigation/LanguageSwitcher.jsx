@@ -42,7 +42,7 @@ const LanguageSwitcher = ({ currentLang, onChange, isMobile = false }) => {
             aria-pressed={isActive}
             title={lang.name}
             className={[
-              "grid h-9 w-9 place-items-center rounded-full overflow-hidden",
+              "grid h-11 w-11 place-items-center rounded-full overflow-hidden",
               "transition-colors duration-200",
               "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400",
               isActive

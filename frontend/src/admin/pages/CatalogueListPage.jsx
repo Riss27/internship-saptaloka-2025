@@ -62,13 +62,13 @@ const CatalogueListPage = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             {categoryOptions && (
-              <div className="relative">
+              <div className="relative w-full md:w-auto">
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full md:w-56 p-2 bg-brand-800 border border-border text-cream/80 rounded-md focus:outline-none focus:border-brand-400 "
+                  className="w-full md:w-56 min-h-11 p-2 bg-brand-800 border border-border text-cream/80 rounded-md focus:outline-none focus:border-brand-400 "
                 >
                   <option value="All">Semua Kategori</option>
                   {categoryOptions.map((opt) => (

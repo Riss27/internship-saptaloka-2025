@@ -86,7 +86,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive("bold")
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -100,7 +100,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive("italic")
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -114,7 +114,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive("underline")
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -128,7 +128,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive("strike")
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -142,7 +142,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleCode().run()}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive("code")
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -159,7 +159,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={addLink}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive("link")
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -176,7 +176,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive("bulletList")
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -190,7 +190,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive("orderedList")
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -207,7 +207,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleSubscript().run()}
-          className={`p-2 rounded bg-brand-700 transition-colors text-xs ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors text-xs ${
             editor.isActive("subscript")
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -220,7 +220,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleSuperscript().run()}
-          className={`p-2 rounded bg-brand-700 transition-colors text-xs ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors text-xs ${
             editor.isActive("superscript")
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -236,7 +236,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive({ textAlign: "left" })
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -250,7 +250,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive({ textAlign: "center" })
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -264,7 +264,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive({ textAlign: "right" })
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -278,7 +278,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-          className={`p-2 rounded bg-brand-700 transition-colors ${
+          className={`p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors ${
             editor.isActive({ textAlign: "justify" })
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
@@ -297,7 +297,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
           onClick={() =>
             editor.chain().focus().clearNodes().unsetAllMarks().run()
           }
-          className="p-2 rounded bg-brand-700 transition-colors text-cream/80"
+          className="p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors text-cream/80"
           title="Clear Formatting"
           aria-label="Clear Formatting"
         >

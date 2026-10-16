@@ -51,7 +51,7 @@ const GenericCatalogueList = ({ items, itemType, deleteItem }) => {
                       {/* Tombol Edit */}
                       <Link
                         to={`${editPath}${item.id}`}
-                        className="p-2.5 rounded-full bg-brand-600/30 text-brand-400 hover:bg-brand-600/50 hover:text-cream transition-all duration-200 hover:scale-110"
+                        className="min-h-11 min-w-11 grid place-items-center p-2.5 rounded-full bg-brand-600/30 text-brand-400 hover:bg-brand-600/50 hover:text-cream transition-all duration-200 hover:scale-110"
                         title="Edit Item"
                         aria-label="Edit Item"
                       >
@@ -61,7 +61,7 @@ const GenericCatalogueList = ({ items, itemType, deleteItem }) => {
                       {/* Tombol Delete */}
                       <button
                         onClick={() => deleteItem(item.id)}
-                        className="p-2.5 rounded-full bg-red-700/30 text-red-400 hover:bg-red-700/50 hover:text-red-300 transition-all duration-200 hover:scale-110"
+                        className="min-h-11 min-w-11 grid place-items-center p-2.5 rounded-full bg-red-700/30 text-red-400 hover:bg-red-700/50 hover:text-red-300 transition-all duration-200 hover:scale-110"
                         title="Delete Item"
                         aria-label="Delete Item"
                       >
