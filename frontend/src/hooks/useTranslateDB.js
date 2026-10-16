@@ -1,70 +1,41 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import apiClient from "./apiClient";
+import requestTranslation from "./translateClient";
 
-const translationCache = new Map();
-
+/**
+ * Returns the database text in the active language.
+ *
+ * Indonesian is the source language, so it needs no request at all. Any other
+ * language goes through the batched client, which caches results and caches
+ * failures so a failed lookup is not retried on every render.
+ */
 export const useTranslateDB = (text, isHTML = false) => {
   const { i18n } = useTranslation();
   const targetLanguage = i18n.language;
+  const needsTranslation = targetLanguage !== "id" && Boolean(text);
 
   const [translatedText, setTranslatedText] = useState(text);
 
   useEffect(() => {
-    if (
-      text !== translatedText &&
-      !translationCache.has(`${text}|${targetLanguage}`)
-    ) {
+    if (!text) {
       setTranslatedText(text);
-    }
-
-    if (targetLanguage === "id" || !text) {
-      if (translatedText !== text) {
-        setTranslatedText(text);
-      }
       return;
     }
 
-    const cacheKey = `${text}|${targetLanguage}`;
-    if (translationCache.has(cacheKey)) {
-      setTranslatedText(translationCache.get(cacheKey));
+    if (!needsTranslation) {
+      setTranslatedText(text);
       return;
     }
 
     let isMounted = true;
-    const translateText = async () => {
-      try {
-        const response = await apiClient.post("/api/translate", {
-          text: text,
-          target: targetLanguage,
-          source: "id",
-          format: isHTML ? "html" : "text",
-        });
-
-        const newTranslatedText = response.data.translatedText;
-        if (isMounted && newTranslatedText) {
-          translationCache.set(cacheKey, newTranslatedText);
-          setTranslatedText(newTranslatedText);
-        } else if (isMounted) {
-          // Jika API mengembalikan hasil kosong, tetap gunakan teks asli.
-          setTranslatedText(text);
-        }
-      } catch (error) {
-        console.error("Translation API error:", error);
-        if (isMounted) {
-          // Jika terjadi error, pastikan untuk kembali ke teks asli.
-          setTranslatedText(text);
-        }
-      }
-    };
-
-    translateText();
+    requestTranslation(text, targetLanguage, isHTML).then((value) => {
+      if (isMounted) setTranslatedText(value || text);
+    });
 
     return () => {
       isMounted = false;
     };
-  }, [text, targetLanguage, isHTML, translatedText]);
+  }, [text, targetLanguage, isHTML, needsTranslation]);
 
-  // Selalu kembalikan `translatedText` yang dijamin memiliki nilai.
   return translatedText;
 };

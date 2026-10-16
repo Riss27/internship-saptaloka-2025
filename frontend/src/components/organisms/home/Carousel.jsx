@@ -131,7 +131,10 @@ const Carousel = () => {
                   className="my-6 w-16 border-t border-dashed border-cream/40"
                   aria-hidden="true"
                 />
-                <p className="max-w-2xl text-voice text-cream/90">
+                {/* Database copy runs far longer than a caption. At the editorial
+                    body size an unclamped paragraph fills the whole hero and
+                    buries the photograph, so it is held to three lines. */}
+                <p className="line-clamp-3 max-w-xl text-base text-cream/90 sm:text-lg lg:text-xl">
                   {slide.paragraph}
                 </p>
               </motion.div>
