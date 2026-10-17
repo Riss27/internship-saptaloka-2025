@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
+import { useDelayedLoading } from "../../../hooks/useDelayedLoading";
 import { ShoppingCart, Store, FileText, ArrowLeft, CircleAlert } from "lucide-react";
 // The lint config does not track JSX usage, so the motion import looks unused.
  
@@ -36,6 +37,7 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const showLoader = useDelayedLoading(isLoading);
   const [error, setError] = useState(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const { t } = useTranslation();
@@ -76,7 +78,7 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
 
   // LOADING STATE
   if (isLoading) {
-    return (
+    return showLoader ? (
       <div
         role="status"
         aria-live="polite"
@@ -85,7 +87,7 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
         <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
         <p className="text-cream/80 text-lg">Loading...</p>
       </div>
-    );
+    ) : null;
   }
 
   // ERROR STATE

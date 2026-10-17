@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
+import { useDelayedLoading } from "../hooks/useDelayedLoading";
 import { MapPin, Phone, Mail, Instagram } from "lucide-react";
 import PageHeader from "../components/atoms/layout/PageHeader";
 import SectionHeading from "../components/atoms/layout/SectionHeading";
@@ -33,6 +34,7 @@ const AboutPage = () => {
   const { t } = useTranslation();
   const [aboutInfo, setAboutInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const showLoader = useDelayedLoading(isLoading);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -67,7 +69,7 @@ const AboutPage = () => {
   };
 
   if (isLoading) {
-    return (
+    return showLoader ? (
       <div
         role="status"
         aria-live="polite"
@@ -76,7 +78,7 @@ const AboutPage = () => {
         <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
         <p className="text-cream/80 text-lg">Loading...</p>
       </div>
-    );
+    ) : null;
   }
 
   if (!aboutInfo) {

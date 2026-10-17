@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
+import { useDelayedLoading } from "../hooks/useDelayedLoading";
 import EventCard from "../components/molecules/cards/EventCard";
 import Pagination from "../components/molecules/Pagination";
 import PageHeader from "../components/atoms/layout/PageHeader";
@@ -14,6 +15,7 @@ const EventsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [deferredSearch, setDeferredSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const showLoader = useDelayedLoading(isLoading);
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
@@ -57,7 +59,7 @@ const EventsPage = () => {
   const handleClearSearch = () => setSearchQuery("");
 
   if (isLoading) {
-    return (
+    return showLoader ? (
       <div
         role="status"
         aria-live="polite"
@@ -66,7 +68,7 @@ const EventsPage = () => {
         <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
         <p className="text-cream/80 text-lg">Loading...</p>
       </div>
-    );
+    ) : null;
   }
 
   return (

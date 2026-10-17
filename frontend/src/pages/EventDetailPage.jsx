@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import apiClient from "../hooks/apiClient";
+import { useDelayedLoading } from "../hooks/useDelayedLoading";
 import RegistrationForm from "../components/molecules/forms/RegistrationForm";
 import Popup from "../components/atoms/feedback/Popup";
 import RichTextDisplay from "../components/common/RichTextDisplay";
@@ -59,6 +60,7 @@ const EventDetailPage = () => {
   const { t } = useTranslation();
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const showLoader = useDelayedLoading(isLoading);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
@@ -100,7 +102,7 @@ const EventDetailPage = () => {
   };
 
   if (isLoading) {
-    return (
+    return showLoader ? (
       <div
         role="status"
         aria-live="polite"
@@ -109,7 +111,7 @@ const EventDetailPage = () => {
         <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
         <p className="text-cream/80 text-lg">Loading...</p>
       </div>
-    );
+    ) : null;
   }
 
   if (!event) {

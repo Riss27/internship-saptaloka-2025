@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import apiClient from "../hooks/apiClient";
+import { useDelayedLoading } from "../hooks/useDelayedLoading";
 import WorkshopCard from "../components/molecules/cards/WorkshopCard";
 import Pagination from "../components/molecules/Pagination";
 import PageHeader from "../components/atoms/layout/PageHeader";
@@ -15,6 +16,7 @@ const WorkshopsPage = () => {
   const [filteredWorkshops, setFilteredWorkshops] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const showLoader = useDelayedLoading(isLoading);
   const [searchQuery, setSearchQuery] = useState("");
   const [deferredSearch, setDeferredSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(
@@ -93,7 +95,7 @@ const WorkshopsPage = () => {
   };
 
   if (isLoading) {
-    return (
+    return showLoader ? (
       <div
         role="status"
         aria-live="polite"
@@ -102,7 +104,7 @@ const WorkshopsPage = () => {
         <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
         <p className="text-cream/80 text-lg">Loading...</p>
       </div>
-    );
+    ) : null;
   }
 
   const secondaryButtonClass = `min-h-11 px-6 py-2.5 rounded-buttons-pill bg-brand-800 border border-border text-cream/90 hover:bg-brand-700 hover:text-cream font-medium uppercase tracking-wide text-sm transition-colors ${FOCUS_RING}`;

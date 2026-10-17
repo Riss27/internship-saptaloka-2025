@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import apiClient from "../hooks/apiClient";
+import { useDelayedLoading } from "../hooks/useDelayedLoading";
 import { Calendar, User } from "lucide-react";
 import RichTextDisplay from "../components/common/RichTextDisplay";
 import { useTranslateDB } from "../hooks/useTranslateDB";
@@ -27,6 +28,7 @@ const ArticleDetailPage = () => {
   const { id } = useParams();
   const [article, setArticle] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const showLoader = useDelayedLoading(isLoading);
   const { t } = useTranslation();
   const prefersReducedMotion = useReducedMotion();
 
@@ -49,7 +51,7 @@ const ArticleDetailPage = () => {
   }, [id]);
 
   if (isLoading) {
-    return (
+    return showLoader ? (
       <div
         role="status"
         aria-live="polite"
@@ -58,7 +60,7 @@ const ArticleDetailPage = () => {
         <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
         <p className="text-cream/80 text-lg">Loading...</p>
       </div>
-    );
+    ) : null;
   }
 
   if (!article) {

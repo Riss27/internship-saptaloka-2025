@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../hooks/apiClient";
+import { useDelayedLoading } from "../hooks/useDelayedLoading";
 import Pagination from "../components/molecules/Pagination";
 import PageHeader from "../components/atoms/layout/PageHeader";
 import { ImageIcon } from "lucide-react";
@@ -9,6 +10,7 @@ import API_BASE from "../lib/apiBase";
 const GalleryPage = () => {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const showLoader = useDelayedLoading(isLoading);
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState(null);
   const { t } = useTranslation();
@@ -28,7 +30,7 @@ const GalleryPage = () => {
   }, [page]);
 
   if (isLoading) {
-    return (
+    return showLoader ? (
       <div
         role="status"
         aria-live="polite"
@@ -39,7 +41,7 @@ const GalleryPage = () => {
           {t("gallery_page.loading", "Loading Gallery...")}
         </p>
       </div>
-    );
+    ) : null;
   }
 
   return (

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import apiClient from "../hooks/apiClient";
+import { useDelayedLoading } from "../hooks/useDelayedLoading";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 // The lint config does not track JSX usage, so the motion import looks unused.
@@ -26,6 +27,7 @@ const HomePage = () => {
     gallery: [],
   });
   const [loading, setLoading] = useState(true);
+  const showLoader = useDelayedLoading(loading);
   const { t } = useTranslation();
   const prefersReducedMotion = useReducedMotion();
 
@@ -130,6 +132,7 @@ const HomePage = () => {
 
       {/* The hero renders immediately; only the sections below wait for data. */}
       {loading ? (
+        showLoader ? (
         <div
           role="status"
           aria-live="polite"
@@ -138,6 +141,7 @@ const HomePage = () => {
           <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
           <p className="text-cream/80 text-lg">Loading...</p>
         </div>
+        ) : null
       ) : (
         <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-28">
           <div className="space-y-16 sm:space-y-24 lg:space-y-32">

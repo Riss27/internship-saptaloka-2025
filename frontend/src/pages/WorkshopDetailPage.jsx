@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import apiClient from "../hooks/apiClient";
+import { useDelayedLoading } from "../hooks/useDelayedLoading";
 import RichTextDisplay from "../components/common/RichTextDisplay";
 import Section from "../components/atoms/layout/Section";
 import SectionHeading from "../components/atoms/layout/SectionHeading";
@@ -28,6 +29,7 @@ const WorkshopDetailPage = () => {
   const { id } = useParams();
   const [workshop, setWorkshop] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const showLoader = useDelayedLoading(isLoading);
   const { t } = useTranslation();
   const prefersReducedMotion = useReducedMotion();
 
@@ -51,7 +53,7 @@ const WorkshopDetailPage = () => {
   }, [id]);
 
   if (isLoading) {
-    return (
+    return showLoader ? (
       <div
         role="status"
         aria-live="polite"
@@ -60,7 +62,7 @@ const WorkshopDetailPage = () => {
         <div className="w-12 h-12 rounded-full border-2 border-border border-t-brand-400 animate-spin motion-reduce:animate-none"></div>
         <p className="text-cream/80 text-lg">Loading...</p>
       </div>
-    );
+    ) : null;
   }
 
   if (!workshop) {
