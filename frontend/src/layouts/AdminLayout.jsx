@@ -63,17 +63,17 @@ const AdminLayout = () => {
   const menuItems = [
     {
       path: "/admin",
-      name: "Dasbor",
+      name: "Dashboard",
       icon: <LayoutDashboard aria-hidden="true" className="w-4 h-4" />,
     },
     {
       path: "/admin/homepage",
-      name: "Slide homepage",
+      name: "Homepage",
       icon: <House aria-hidden="true" className="w-4 h-4" />,
     },
     {
       path: "/admin/events",
-      name: "Event",
+      name: "Events",
       icon: <Calendar aria-hidden="true" className="w-4 h-4" />,
     },
     {
@@ -82,36 +82,36 @@ const AdminLayout = () => {
       icon: <Briefcase aria-hidden="true" className="w-4 h-4" />,
     },
     {
-      name: "Katalog",
+      name: "Catalogue",
       icon: <LayoutGrid aria-hidden="true" className="w-4 h-4" />,
       children: [
         {
           path: "/admin/catalogue/products",
-          name: "Produk",
+          name: "Products",
         },
         {
           path: "/admin/catalogue/ingredients",
-          name: "Bahan",
+          name: "Ingredients",
         },
         {
           path: "/admin/catalogue/lab-tools",
-          name: "Alat laboratorium",
+          name: "Lab Tools",
         },
       ],
     },
     {
       path: "/admin/about",
-      name: "Tentang",
+      name: "About",
       icon: <Info aria-hidden="true" className="w-4 h-4" />,
     },
     {
       path: "/admin/articles",
-      name: "Artikel",
+      name: "Articles",
       icon: <FileText aria-hidden="true" className="w-4 h-4" />,
     },
     {
       path: "/admin/gallery",
-      name: "Galeri",
+      name: "Gallery",
       icon: <ImageIcon aria-hidden="true" className="w-4 h-4" />,
     },
   ];
@@ -135,7 +135,7 @@ const AdminLayout = () => {
           type="button"
           className="hidden md:flex h-20 items-center justify-center border-b border-border cursor-pointer transition-all duration-300 hover:bg-brand-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-400"
           onClick={() => setCollapsed(!collapsed)}
-          aria-label={collapsed ? "Buka sidebar" : "Tutup sidebar"}
+          aria-label={collapsed ? "Open sidebar" : "Close sidebar"}
         >
           <Wordmark
             size={collapsed ? "text-lg" : "text-xl"}
@@ -242,7 +242,7 @@ const AdminLayout = () => {
               aria-hidden="true"
               className={`w-4 h-4 transition-transform duration-300 ${collapsed ? "scale-150" : "scale-100 mr-3"}`}
             />
-            {!collapsed && "Keluar"}
+            {!collapsed && "Log out"}
           </button>
         </div>
       </aside>
@@ -264,7 +264,7 @@ const AdminLayout = () => {
           <button
             type="button"
             onClick={() => setMobileNavOpen(true)}
-            aria-label="Buka menu sidebar"
+            aria-label="Open sidebar menu"
             aria-expanded={mobileNavOpen}
             aria-controls="admin-sidebar"
             className="h-11 w-11 grid place-items-center rounded-lg text-cream hover:bg-brand-700 transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-400"

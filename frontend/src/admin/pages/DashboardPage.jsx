@@ -94,7 +94,7 @@ const DashboardPage = () => {
     <div className="max-w-7xl mx-auto" aria-busy={loading}>
       {/* Header */}
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-cream">Dasbor</h1>
+        <h1 className="text-3xl font-bold text-cream">Dashboard</h1>
         <p className="mt-1 text-cream/60">
           Ringkasan katalog dan pendaftaran terbaru.
         </p>
