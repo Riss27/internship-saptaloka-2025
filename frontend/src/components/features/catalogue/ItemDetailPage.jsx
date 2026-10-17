@@ -145,18 +145,20 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
     );
   }
 
-  // The two storefronts get different marks so they can be told apart at a
-  // glance, since the palette has no room for either of their brand colours.
+  // Each storefront wears its own brand colour so the two buttons can be told
+  // apart at a glance: Shopee orange, Tokopedia green.
   const storeLinks = [
     {
       href: item.linkShopee,
       label: t("shopee"),
       icon: <ShoppingCart className="w-5 h-5 shrink-0" aria-hidden="true" />,
+      colorClass: "bg-[#EE4D2D] hover:bg-[#D93F27]",
     },
     {
       href: item.linkTokopedia,
       label: t("tokopedia"),
       icon: <Store className="w-5 h-5 shrink-0" aria-hidden="true" />,
+      colorClass: "bg-[#03AC0E] hover:bg-[#028F0C]",
     },
   ].filter((link) => link.href);
 
@@ -230,13 +232,13 @@ const ItemDetailPage = ({ apiEndpoint, breadcrumbName, breadcrumbPath }) => {
 
             {storeLinks.length > 0 && (
               <div className="mt-8 flex flex-wrap gap-3">
-                {storeLinks.map(({ href, label, icon }) => (
+                {storeLinks.map(({ href, label, icon, colorClass }) => (
                   <a
                     key={href}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`inline-flex items-center justify-center gap-2 min-h-11 bg-brand-600 hover:bg-brand-700 text-cream font-medium uppercase tracking-wide px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
+                    className={`inline-flex items-center justify-center gap-2 min-h-11 ${colorClass} text-cream font-medium uppercase tracking-wide px-6 rounded-buttons-pill transition-colors ${FOCUS_RING}`}
                   >
                     {icon}
                     <span>{label}</span>

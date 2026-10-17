@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import {
   Info,
@@ -196,7 +197,15 @@ const AboutPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto text-cream">
-      <h1 className="text-3xl font-bold mb-8">Tentang kami</h1>
+      <header className="mb-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-3xl font-bold">Tentang kami</h1>
+        <Link
+          to="/admin"
+          className="min-h-11 px-4 rounded-buttons-outlined border border-border text-sm font-medium text-cream/90 hover:border-brand-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 inline-flex items-center no-underline"
+        >
+          Kembali
+        </Link>
+      </header>
 
       <ErrorBanner
         title="Gagal menyimpan"

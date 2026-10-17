@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../../../hooks/apiClient";
+import API_BASE from "../../../lib/apiBase";
 import { Instagram, Phone, Mail, MapPin, ArrowUp } from "lucide-react";
 import Wordmark from "../../atoms/brand/Wordmark";
 
@@ -38,12 +39,22 @@ const Footer = () => {
       <footer className="relative bg-brand-700 text-cream pt-10 md:pt-14 pb-6 md:pb-8 mt-12 md:mt-20 border-t border-border">
         <div className="container mx-auto px-4 sm:px-6 lg:px-10 relative">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-12 mb-10 md:mb-12">
-            {/* Brand lockup */}
+            {/* Brand lockup — pakai "Logo footer" dari menu Tentang kami (admin)
+                bila sudah diunggah; wordmark teks sebagai cadangan. */}
             <div className="w-full flex items-center lg:col-span-2">
-              <Wordmark
-                size="text-4xl md:text-5xl lg:text-6xl"
-                className="text-cream"
-              />
+              {aboutInfo.logoFooter ? (
+                <img
+                  src={`${API_BASE}${aboutInfo.logoFooter}`}
+                  alt="Logo Askreative"
+                  className="h-14 md:h-16 w-auto max-w-full object-contain"
+                  loading="lazy"
+                />
+              ) : (
+                <Wordmark
+                  size="text-4xl md:text-5xl lg:text-6xl"
+                  className="text-cream"
+                />
+              )}
             </div>
 
             {/* Hubungi Kami */}

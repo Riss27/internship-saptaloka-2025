@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { Trash2 } from "lucide-react";
 import ConfirmDialog from "../../../components/atoms/feedback/ConfirmDialog";
@@ -78,11 +78,20 @@ const RegisteredPeoplePage = () => {
             Total pendaftar: {registrations.length} / {event.quota}
           </p>
         </div>
-        <span
-          title={
-            registrations.length === 0 ? "Tidak ada data untuk diekspor." : ""
-          }
-        >
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            to="/admin/events"
+            className="min-h-11 px-4 rounded-buttons-outlined border border-border text-sm font-medium text-cream/90 hover:border-brand-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 inline-flex items-center no-underline"
+          >
+            Kembali
+          </Link>
+          <span
+            title={
+              registrations.length === 0
+                ? "Tidak ada data untuk diekspor."
+                : ""
+            }
+          >
           <ExportCsvButton
             rows={registrations}
             headers={["Nama", "Email", "Acara", "Tanggal daftar"]}
@@ -96,7 +105,8 @@ const RegisteredPeoplePage = () => {
             disabled={registrations.length === 0}
             onExported={() => toast.success("Ekspor CSV berhasil diunduh.")}
           />
-        </span>
+          </span>
+        </div>
       </header>
 
       {/* Error state */}
