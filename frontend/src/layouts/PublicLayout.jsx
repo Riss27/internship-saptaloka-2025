@@ -30,9 +30,11 @@ const PublicLayout = () => {
 
   const location = useLocation();
 
-  // Every navigation starts at the top. Without this the browser restores the
-  // previous scroll position and a route change looks like a glitch.
-  useEffect(() => {
+  // Every navigation starts at the top. useLayoutEffect so the scroll happens
+  // before the browser paints the new route: with useEffect the first painted
+  // frame still had the old scroll position (clamped against the new, still
+  // short document) which flashed the footer above the incoming page.
+  useLayoutEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [location.pathname]);
 
@@ -95,7 +97,7 @@ const PublicLayout = () => {
       <main
         id="main-content"
         style={{ paddingTop: `${paddingTop}px` }}
-        className="flex-grow"
+        className="flex-grow min-h-[60vh]"
       >
         <Outlet />
       </main>
