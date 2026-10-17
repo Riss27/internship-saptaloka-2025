@@ -5,6 +5,7 @@ const { deleteFile } = require("../utils/fileHelper");
 const { getPagination } = require("../utils/pagination");
 const sequelize = require("../config/database");
 const { searchWhere } = require("../utils/search");
+const { getSort } = require("../utils/sort");
 
 // Buang origin dari URL gambar yang dikirim client, simpan sebagai path relatif
 // (mis. "http://localhost:3000/uploads/x.png" -> "/uploads/x.png")
@@ -15,7 +16,7 @@ exports.getAllEvents = async (req, res) => {
     const { search } = req.query;
 
     const options = {
-      order: [["startDateTime", "DESC"]],
+      order: getSort(req.query, ["startDateTime", "createdAt", "title"], [["startDateTime", "DESC"]]),
       // Subquery korrelated: aman dipakai bersama limit/offset (group+include
       // membuat Sequelize memecah query ke derived table yang kehilangan join)
       attributes: {

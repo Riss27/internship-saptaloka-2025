@@ -86,6 +86,21 @@ npm run seed   # buat akun admin dari ADMIN_EMAIL/ADMIN_PASSWORD
 npm run dev    # development (nodemon) — atau: npm start
 ```
 
+#### Langkah rilis satu kali (backend)
+
+Setelah deploy perubahan backend, jalankan sekali dari `backend/` **sebelum**
+melayani trafik:
+
+```bash
+node scripts/add-sort-order.js
+```
+
+Skrip ini menambahkan kolom `sortOrder` pada tabel landing page dan galeri,
+lalu mengisi ulang urutan (backfill) agar urutan publik lama tetap sama.
+**Peringatan:** menjalankannya lagi akan mereset urutan manual yang sudah diatur
+admin lewat `PATCH /api/landing-page/order` dan `PATCH /api/gallery/order`
+(peringatan keras juga ada di dalam skrip).
+
 ### 2. Frontend
 
 ```bash

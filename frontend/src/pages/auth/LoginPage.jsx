@@ -4,15 +4,23 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../../hooks/apiClient";
 import { useAuth } from "../../hooks/useAuth";
-import { LogIn, Mail, Lock } from "lucide-react";
+import { LogIn, Mail, Lock, ClockAlert } from "lucide-react";
 import Wordmark from "../../components/atoms/brand/Wordmark";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
   const navigate = useNavigate();
   const { login, isLoggedIn } = useAuth();
+
+  useEffect(() => {
+    if (localStorage.getItem("sessionExpired") === "1") {
+      setSessionExpired(true);
+      localStorage.removeItem("sessionExpired");
+    }
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -53,6 +61,22 @@ const LoginPage = () => {
           <h2 className="text-heading-sm text-cream uppercase">Admin Login</h2>
           <p className="mt-2 text-cream/70">Selamat datang kembali!</p>
         </div>
+
+        {sessionExpired && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="mb-6 flex items-start gap-3 rounded-lg border border-red-500/40 bg-red-500/10 p-4"
+          >
+            <ClockAlert
+              aria-hidden="true"
+              className="w-5 h-5 mt-0.5 shrink-0 text-red-400"
+            />
+            <span className="text-sm text-cream/90">
+              Sesi Anda telah berakhir. Silakan masuk kembali.
+            </span>
+          </div>
+        )}
 
         <form className="space-y-6" onSubmit={handleSubmit}>
           {error && (

@@ -11,19 +11,26 @@ import {
   CircleAlert,
 } from "lucide-react";
 import API_BASE from "../../../lib/apiBase";
+import ConfirmDialog from "../../../components/atoms/feedback/ConfirmDialog";
+import { useToast } from "../../../components/atoms/feedback/ToastProvider";
+import ReorderButtons from "../../components/ReorderButtons";
 
 const Homepage = () => {
+  const { toast } = useToast();
   const [slides, setSlides] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchSlides = async () => {
     try {
       setLoading(true);
       setError(null);
       const response = await apiClient.get("/api/landing-page");
-      const sortedSlides = response.data.data.sort((a, b) => a.id - b.id);
-      setSlides(sortedSlides);
+      // Server sudah mengurutkan; render apa adanya.
+      setSlides(response.data.data);
     } catch (error) {
       console.error("Gagal mengambil data slide:", error);
       setError("Gagal memuat data slide. Silakan coba lagi.");
@@ -36,16 +43,44 @@ const Homepage = () => {
     fetchSlides();
   }, []);
 
-  const deleteSlide = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus slide ini?")) {
-      try {
-        await apiClient.delete(`/api/landing-page/${id}`);
-        setSlides(slides.filter((slide) => slide.id !== id));
-        // Optional: Show success notification
-      } catch (error) {
-        console.error("Gagal menghapus slide:", error);
-        setError("Gagal menghapus slide. Silakan coba lagi.");
-      }
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await apiClient.delete(`/api/landing-page/${deleteTarget.id}`);
+      setSlides((prev) => prev.filter((slide) => slide.id !== deleteTarget.id));
+      toast.success("Slide berhasil dihapus.");
+      setDeleteTarget(null);
+    } catch (error) {
+      console.error("Gagal menghapus slide:", error);
+      toast.error("Gagal menghapus slide.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Geser posisi optimistik di state lokal, lalu simpan urutan penuh ke server.
+  const moveSlide = async (index, delta) => {
+    const target = index + delta;
+    if (target < 0 || target >= slides.length) return;
+    const ids = slides.map((slide) => slide.id);
+    if (ids.length > 100) {
+      toast.error("Maksimal 100 slide untuk diurutkan.");
+      return;
+    }
+    const previous = slides;
+    const next = [...slides];
+    [next[index], next[target]] = [next[target], next[index]];
+    setSlides(next);
+    try {
+      await apiClient.patch("/api/landing-page/order", {
+        ids: next.map((slide) => slide.id),
+      });
+      toast.success("Urutan diperbarui.");
+    } catch (error) {
+      console.error("Gagal memperbarui urutan:", error);
+      setSlides(previous);
+      toast.error("Gagal memperbarui urutan.");
     }
   };
 
@@ -70,14 +105,14 @@ const Homepage = () => {
         <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-cream mb-2">
-              Homepage Management
+              Kelola slide homepage
             </h1>
             <p className="text-cream/60 text-lg">
               Kelola konten carousel yang akan ditampilkan di halaman utama
             </p>
             <div className="flex items-center gap-4 mt-3">
               <span className="text-sm text-cream/70">
-                Total Slides:{" "}
+                Total slide:{" "}
                 <span className="font-semibold text-brand-400">
                   {slides.length}
                 </span>
@@ -164,11 +199,17 @@ const Homepage = () => {
 
                     {/* Action Buttons */}
                     <div className="flex items-center gap-2">
+                      <ReorderButtons
+                        isFirst={index === 0}
+                        isLast={index === slides.length - 1}
+                        onMove={(delta) => moveSlide(index, delta)}
+                        itemName={`slide ${index + 1}`}
+                      />
                       <Link
                         to={`/admin/homepage/edit/${slide.id}`}
-                        className="min-h-11 min-w-11 grid place-items-center p-2.5 text-yellow-400 text-yellow-300 bg-yellow-500/10 rounded-lg transition-all duration-200 group/edit"
+                        className="min-h-11 min-w-11 grid place-items-center p-2.5 text-yellow-300 bg-yellow-500/10 rounded-lg transition-all duration-200 group/edit"
                         title="Edit slide"
-                        aria-label="Edit slide"
+                        aria-label={`Edit slide ${index + 1}`}
                       >
                         <Pencil
                           aria-hidden="true"
@@ -176,10 +217,11 @@ const Homepage = () => {
                         />
                       </Link>
                       <button
-                        onClick={() => deleteSlide(slide.id)}
-                        className="min-h-11 min-w-11 grid place-items-center p-2.5 text-red-400 text-red-300 bg-red-500/10 rounded-lg transition-all duration-200 group/delete"
+                        type="button"
+                        onClick={() => setDeleteTarget(slide)}
+                        className="min-h-11 min-w-11 grid place-items-center p-2.5 text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-all duration-200 group/delete"
                         title="Hapus slide"
-                        aria-label="Hapus slide"
+                        aria-label={`Hapus slide ${index + 1}`}
                       >
                         <Trash2
                           aria-hidden="true"
@@ -277,6 +319,15 @@ const Homepage = () => {
           </div>
         )}
       </main>
+
+      <ConfirmDialog
+        isOpen={Boolean(deleteTarget)}
+        title="Hapus slide?"
+        message="Apakah Anda yakin ingin menghapus slide ini?"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+        loading={isDeleting}
+      />
     </div>
   );
 };

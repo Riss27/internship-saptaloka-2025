@@ -5,11 +5,14 @@ const sequelize = require("../config/database");
 const { deleteFile } = require("../utils/fileHelper");
 const { getPagination } = require("../utils/pagination");
 const { searchWhere } = require("../utils/search");
+const { getSort } = require("../utils/sort");
 
 // --- Controller Functions ---
 exports.getAllArticles = async (req, res) => {
   try {
-    const options = { order: [["publishedAt", "DESC"]] };
+    const options = {
+      order: getSort(req.query, ["publishedAt", "title", "author", "createdAt"], [["publishedAt", "DESC"]]),
+    };
     const where = searchWhere(req.query.search, ["title", "mainDescription", "author"]);
     if (where) {
       options.where = where;

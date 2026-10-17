@@ -2,6 +2,8 @@ const LabTool = require("../models/LabTool");
 const { deleteFile } = require("../utils/fileHelper");
 const { getPagination } = require("../utils/pagination");
 const { searchWhere } = require("../utils/search");
+const { getSort } = require("../utils/sort");
+const { parseIds } = require("../utils/ids");
 
 // Catatan: upload file sudah ditangani middleware upload.single("image") di route —
 // controller hanya membaca req.file.
@@ -39,11 +41,13 @@ exports.getAllLabTools = async (req, res) => {
     const where = searchWhere(req.query.search, ["name"]);
 
     const pagination = getPagination(req.query);
+    // Default ikut perilaku lama: terpaginasi -> id DESC, tanpa pagination -> tanpa ORDER
+    const order = getSort(req.query, ["name", "createdAt", "price"], pagination ? [["id", "DESC"]] : undefined);
     let data;
     let meta;
     if (pagination) {
       const options = {
-        order: [["id", "DESC"]],
+        order,
         limit: pagination.limit,
         offset: pagination.offset,
       };
@@ -52,7 +56,10 @@ exports.getAllLabTools = async (req, res) => {
       data = rows;
       meta = { page: pagination.page, limit: pagination.limit, total: count, totalPages: Math.ceil(count / pagination.limit) };
     } else {
-      data = await LabTool.findAll(where ? { where } : undefined);
+      const options = {};
+      if (where) options.where = where;
+      if (order) options.order = order;
+      data = await LabTool.findAll(options);
     }
     res.status(200).json({
       status: "success",
@@ -122,6 +129,27 @@ exports.deleteLabTool = async (req, res) => {
     res.status(204).json();
   } catch (error) {
     console.error("ERROR di deleteLabTool:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
+  }
+};
+
+// Controller untuk (DELETE) - Menghapus banyak alat lab sekaligus
+exports.bulkDeleteLabTools = async (req, res) => {
+  try {
+    const { ids, error: idsError } = parseIds(req.body.ids);
+    if (idsError) {
+      return res.status(400).json({ status: "fail", message: idsError });
+    }
+
+    const labTools = await LabTool.findAll({ where: { id: ids }, attributes: ["id", "imageUrl"] });
+    const deleted = await LabTool.destroy({ where: { id: ids } });
+
+    // Pola sama dengan deleteLabTool: hapus file gambar best-effort
+    labTools.forEach((labTool) => deleteFile(labTool.imageUrl));
+
+    res.status(200).json({ status: "success", deleted });
+  } catch (error) {
+    console.error("ERROR di bulkDeleteLabTools:", error);
     res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };

@@ -4,6 +4,8 @@ const fs = require("fs");
 const path = require("path");
 const { getPagination } = require("../utils/pagination");
 const { searchWhere } = require("../utils/search");
+const { getSort } = require("../utils/sort");
+const { parseIds } = require("../utils/ids");
 
 // Controller untuk (CREATE) - Membuat ingredient baru
 exports.createIngredient = async (req, res) => {
@@ -47,6 +49,12 @@ exports.getAllIngredients = async (req, res) => {
     };
 
     // Lakukan pencarian dengan opsi filter
+    // Default: tanpa ORDER (perilaku lama dipertahankan)
+    const order = getSort(req.query, ["name", "createdAt", "price"], undefined);
+    if (order) {
+      filterOptions.order = order;
+    }
+
     const pagination = getPagination(req.query);
     let data;
     let meta;
@@ -138,6 +146,35 @@ exports.deleteIngredient = async (req, res) => {
     res.status(204).json();
   } catch (error) {
     console.error("ERROR di deleteIngredient:", error);
+    res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
+  }
+};
+
+// Controller untuk (DELETE) - Menghapus banyak ingredient sekaligus
+exports.bulkDeleteIngredients = async (req, res) => {
+  try {
+    const { ids, error: idsError } = parseIds(req.body.ids);
+    if (idsError) {
+      return res.status(400).json({ status: "fail", message: idsError });
+    }
+
+    const ingredients = await Ingredient.findAll({ where: { id: ids }, attributes: ["id", "imageUrl"] });
+    const deleted = await Ingredient.destroy({ where: { id: ids } });
+
+    // Pola sama dengan deleteIngredient: hapus file gambar best-effort
+    ingredients.forEach((ingredient) => {
+      if (!ingredient.imageUrl) return;
+      const fullPathImage = path.join(__dirname, "..", "public", ingredient.imageUrl);
+      if (fs.existsSync(fullPathImage)) {
+        fs.unlink(fullPathImage, (err) => {
+          if (err) console.error("Gagal menghapus file gambar:", err);
+        });
+      }
+    });
+
+    res.status(200).json({ status: "success", deleted });
+  } catch (error) {
+    console.error("ERROR di bulkDeleteIngredients:", error);
     res.status(500).json({ status: "error", message: "Terjadi kesalahan pada server." });
   }
 };

@@ -13,8 +13,12 @@ const FOCUS_RING =
  * content the way it would in a printed index. The position sits between them
  * and takes the remaining width, so it stays centred even when the two controls
  * are different widths on a narrow phone.
+ *
+ * itemLabel optionally prints a "Menampilkan 1–20 dari 134" summary above
+ * the controls; the labels stay English by default so existing callers
+ * render exactly as before.
  */
-const Pagination = ({ meta, onPageChange }) => {
+const Pagination = ({ meta, onPageChange, prevLabel = "Prev", nextLabel = "Next", itemLabel = null }) => {
   if (!meta || !meta.totalPages || meta.totalPages <= 1) {
     return null;
   }
@@ -45,6 +49,9 @@ const Pagination = ({ meta, onPageChange }) => {
       aria-label="Pagination"
       className="mt-12 sm:mt-16 border-t border-border pt-6 sm:pt-7"
     >
+      {itemLabel && (
+        <p className="mb-3 text-meta text-cream/60">{itemLabel}</p>
+      )}
       <div className="flex items-center justify-between gap-2 sm:gap-6">
         <button
           type="button"
@@ -53,7 +60,7 @@ const Pagination = ({ meta, onPageChange }) => {
           className={controlClass}
         >
           <ChevronLeft className="h-4 w-4 shrink-0" aria-hidden="true" />
-          Prev
+          {prevLabel}
         </button>
 
         <p className="flex-1 px-2 text-center text-meta text-cream/60 sm:border-x sm:border-border sm:px-6 sm:py-2">
@@ -67,7 +74,7 @@ const Pagination = ({ meta, onPageChange }) => {
           disabled={page >= totalPages}
           className={controlClass}
         >
-          Next
+          {nextLabel}
           <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />
         </button>
       </div>

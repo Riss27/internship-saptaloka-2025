@@ -8,6 +8,7 @@ const { createIngredientRules, updateIngredientRules, validate } = require("../m
 router.get("/", ingredientController.getAllIngredients);
 router.get("/:id", ingredientController.getIngredientById);
 
+router.post("/bulk-delete", protect, requireAdmin, ingredientController.bulkDeleteIngredients);
 router.post("/", protect, requireAdmin, upload.single("image"), createIngredientRules(), validate, ingredientController.createIngredient);
 router.put("/:id", protect, requireAdmin, upload.single("image"), updateIngredientRules(), validate, ingredientController.updateIngredient);
 router.delete("/:id", protect, requireAdmin, ingredientController.deleteIngredient);

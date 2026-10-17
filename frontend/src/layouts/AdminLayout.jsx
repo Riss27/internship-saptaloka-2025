@@ -4,6 +4,7 @@ import {
   ChevronDown,
   ChevronUp,
   House,
+  LayoutDashboard,
   LayoutGrid,
   Info,
   FileText,
@@ -61,13 +62,18 @@ const AdminLayout = () => {
 
   const menuItems = [
     {
+      path: "/admin",
+      name: "Dasbor",
+      icon: <LayoutDashboard aria-hidden="true" className="w-4 h-4" />,
+    },
+    {
       path: "/admin/homepage",
-      name: "Homepage",
+      name: "Slide homepage",
       icon: <House aria-hidden="true" className="w-4 h-4" />,
     },
     {
       path: "/admin/events",
-      name: "Events",
+      name: "Event",
       icon: <Calendar aria-hidden="true" className="w-4 h-4" />,
     },
     {
@@ -76,36 +82,36 @@ const AdminLayout = () => {
       icon: <Briefcase aria-hidden="true" className="w-4 h-4" />,
     },
     {
-      name: "Catalogue",
+      name: "Katalog",
       icon: <LayoutGrid aria-hidden="true" className="w-4 h-4" />,
       children: [
         {
           path: "/admin/catalogue/products",
-          name: "Produk Parfume & Aromaterapi",
+          name: "Produk",
         },
         {
           path: "/admin/catalogue/ingredients",
-          name: "Bahan Parfume & Aromaterapi",
+          name: "Bahan",
         },
         {
           path: "/admin/catalogue/lab-tools",
-          name: "Alat Laboratorium Skala Mikro",
+          name: "Alat laboratorium",
         },
       ],
     },
     {
       path: "/admin/about",
-      name: "About",
+      name: "Tentang",
       icon: <Info aria-hidden="true" className="w-4 h-4" />,
     },
     {
       path: "/admin/articles",
-      name: "Articles",
+      name: "Artikel",
       icon: <FileText aria-hidden="true" className="w-4 h-4" />,
     },
     {
       path: "/admin/gallery",
-      name: "Gallery",
+      name: "Galeri",
       icon: <ImageIcon aria-hidden="true" className="w-4 h-4" />,
     },
   ];
@@ -129,7 +135,7 @@ const AdminLayout = () => {
           type="button"
           className="hidden md:flex h-20 items-center justify-center border-b border-border cursor-pointer transition-all duration-300 hover:bg-brand-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-400"
           onClick={() => setCollapsed(!collapsed)}
-          aria-label={collapsed ? "Expand the sidebar" : "Collapse the sidebar"}
+          aria-label={collapsed ? "Buka sidebar" : "Tutup sidebar"}
         >
           <Wordmark
             size={collapsed ? "text-lg" : "text-xl"}
@@ -209,7 +215,7 @@ const AdminLayout = () => {
               <NavLink
                 key={item.name}
                 to={item.path}
-                end={item.path === "/admin/homepage"}
+                end={item.path === "/admin"}
                 onClick={() => setMobileNavOpen(false)}
                 className={({ isActive }) =>
                   `flex items-center min-h-11 px-4 py-2.5 rounded-lg border-l-2 transition-all duration-200 ${isActive ? "bg-brand-700 text-cream border-brand-400" : "text-cream/90 bg-brand-700/60 text-cream border-transparent"}`
@@ -236,7 +242,7 @@ const AdminLayout = () => {
               aria-hidden="true"
               className={`w-4 h-4 transition-transform duration-300 ${collapsed ? "scale-150" : "scale-100 mr-3"}`}
             />
-            {!collapsed && "Log Out"}
+            {!collapsed && "Keluar"}
           </button>
         </div>
       </aside>
@@ -258,7 +264,7 @@ const AdminLayout = () => {
           <button
             type="button"
             onClick={() => setMobileNavOpen(true)}
-            aria-label="Open the sidebar menu"
+            aria-label="Buka menu sidebar"
             aria-expanded={mobileNavOpen}
             aria-controls="admin-sidebar"
             className="h-11 w-11 grid place-items-center rounded-lg text-cream hover:bg-brand-700 transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-400"

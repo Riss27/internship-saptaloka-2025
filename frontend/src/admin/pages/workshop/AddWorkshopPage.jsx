@@ -14,8 +14,13 @@ import {
 } from "lucide-react";
 import RichTextEditor from "../../components/RichTextEditor";
 import API_BASE from "../../../lib/apiBase";
+import FieldError from "../../../components/atoms/feedback/FieldError";
+import ErrorBanner from "../../../components/atoms/feedback/ErrorBanner";
+import { useToast } from "../../../components/atoms/feedback/ToastProvider";
+import UploadProgress from "../../components/UploadProgress";
+import formatBytes from "../../../lib/formatBytes";
 
-const InputField = ({ label, name, value, onChange, icon, ...props }) => (
+const InputField = ({ label, name, value, onChange, icon, error, ...props }) => (
   <div className="mb-6">
     <label className="block mb-2 font-medium text-cream/80">{label}</label>
     <div className="relative">
@@ -27,9 +32,12 @@ const InputField = ({ label, name, value, onChange, icon, ...props }) => (
         name={name}
         value={value || ""}
         onChange={onChange}
-        className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${name}-error` : undefined}
+        className={`w-full min-h-11 p-2 pl-10 bg-brand-800 border rounded-md focus:outline-none focus:border-brand-400 ${error ? "border-red-400" : "border-border"}`}
       />
     </div>
+    <FieldError name={name} message={error} />
   </div>
 );
 
@@ -51,6 +59,12 @@ const AddWorkshopPage = () => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [categoryError, setCategoryError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [saveError, setSaveError] = useState("");
+  const [uploadPhase, setUploadPhase] = useState(null);
+  const [uploadPercent, setUploadPercent] = useState(0);
+  const { toast } = useToast();
 
   const fetchCategories = async () => {
     try {
@@ -99,8 +113,12 @@ const AddWorkshopPage = () => {
     }
   }, [id, isEditMode]);
 
-  const handleWorkshopChange = (e) =>
+  const handleWorkshopChange = (e) => {
     setWorkshop((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFieldErrors((prev) =>
+      e.target.name in prev ? { ...prev, [e.target.name]: "" } : prev,
+    );
+  };
   const handleDescriptionChange = (value) =>
     setWorkshop((prev) => ({ ...prev, description: value }));
   const handleImageChange = (e) => {
@@ -123,9 +141,10 @@ const AddWorkshopPage = () => {
   const handleAddCategory = async (e) => {
     e.preventDefault();
     if (!newCategoryName.trim()) {
-      alert("Nama kategori tidak boleh kosong.");
+      setCategoryError("Nama kategori tidak boleh kosong.");
       return;
     }
+    setCategoryError("");
 
     setIsAddingCategory(true);
     try {
@@ -143,38 +162,91 @@ const AddWorkshopPage = () => {
       setShowCategoryModal(false);
       setNewCategoryName("");
 
-      alert("Kategori berhasil ditambahkan!");
+      toast.success("Kategori berhasil ditambahkan.");
     } catch (error) {
       console.error("Gagal menambahkan kategori:", error);
-      alert(error.response?.data?.message || "Gagal menambahkan kategori.");
+      toast.error(
+        error.response?.data?.message || "Gagal menambahkan kategori.",
+      );
     } finally {
       setIsAddingCategory(false);
     }
   };
 
+  // Petakan errors[] backend ke state; sisa pesan tetap tampil di ErrorBanner.
+  const applySaveError = (error) => {
+    const data = error.response?.data;
+    const apiErrors = Array.isArray(data?.errors) ? data.errors : [];
+    const mapped = {};
+    apiErrors.forEach(({ field, message }) => {
+      if (field in workshop) mapped[field] = message;
+    });
+    setFieldErrors(mapped);
+
+    let bannerMessage =
+      data?.message || "Gagal menyimpan workshop. Periksa kembali isian Anda.";
+    if (apiErrors.length && data?.message) {
+      let rest = data.message;
+      Object.values(mapped).forEach((m) => {
+        rest = rest.split(m).join(" ");
+      });
+      rest = rest
+        .replace(/\s+/g, " ")
+        .replace(/^[\s,;:.]+|[\s,;:.]+$/g, "")
+        .trim();
+      bannerMessage = rest;
+    }
+    setSaveError(bannerMessage);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setFieldErrors({});
+    setSaveError("");
     const formData = new FormData();
     formData.append("title", workshop.title);
     formData.append("description", workshop.description);
     formData.append("category", workshop.category);
     if (image) formData.append("imageUrl", image);
     formData.append("eventIds", JSON.stringify(Array.from(selectedEventIds)));
+
+    const hasFile = Boolean(image);
+    if (hasFile) {
+      setUploadPhase("uploading");
+      setUploadPercent(0);
+    }
+
     try {
-      if (isEditMode) {
-        await apiClient.put(`/api/workshops/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      } else {
-        await apiClient.post("/api/workshops", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+      const config = {
+        headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          const { loaded, total } = progressEvent;
+          if (!total) return;
+          setUploadPercent(Math.round((loaded * 100) / total));
+          if (loaded >= total) setUploadPhase("processing");
+        },
+      };
+      const res = isEditMode
+        ? await apiClient.put(`/api/workshops/${id}`, formData, config)
+        : await apiClient.post("/api/workshops", formData, config);
+      setUploadPhase(null);
+
+      const uploadInfo = res.data?.uploadInfo;
+      if (uploadInfo && uploadInfo.size < uploadInfo.originalSize) {
+        toast.success(
+          `Gambar dikompres: ${formatBytes(uploadInfo.originalSize)} → ${formatBytes(uploadInfo.size)} (WebP)`,
+        );
       }
+      toast.success("Workshop disimpan.");
       navigate("/admin/workshop");
     } catch (error) {
       console.error("Gagal menyimpan workshop:", error.response?.data || error);
-      alert("Gagal menyimpan workshop.");
+      if (hasFile) {
+        setUploadPhase("failed");
+        toast.error("Unggahan gagal. Coba lagi.");
+      }
+      applySaveError(error);
     } finally {
       setIsLoading(false);
     }
@@ -184,15 +256,22 @@ const AddWorkshopPage = () => {
     <div className="max-w-7xl mx-auto text-cream">
       <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <h1 className="text-3xl font-bold">
-          {isEditMode ? "Edit Workshop" : "Create New Workshop"}
+          {isEditMode ? "Edit workshop" : "Tambah workshop"}
         </h1>
         <Link
           to="/admin/workshop"
           className="bg-red-600 hover:bg-red-700 px-5 py-2 min-h-11 inline-flex items-center rounded-md font-semibold no-underline"
         >
-          BACK
+          Kembali
         </Link>
       </header>
+
+      <ErrorBanner
+        title="Gagal menyimpan"
+        message={saveError}
+        onDismiss={() => setSaveError("")}
+        className="mb-6"
+      />
 
       <form
         onSubmit={handleSubmit}
@@ -201,21 +280,22 @@ const AddWorkshopPage = () => {
         <div className="lg:col-span-2 space-y-8">
           <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg">
             <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
-              Workshop Details
+              Detail workshop
             </h2>
             <InputField
-              label="Workshop Title"
+              label="Judul workshop"
               name="title"
               value={workshop.title}
               onChange={handleWorkshopChange}
               icon={<Type aria-hidden="true" className="w-5 h-5" />}
               required
               placeholder="Judul workshop..."
+              error={fieldErrors.title}
             />
 
             <div className="mb-6">
               <label className="block mb-2 font-medium text-cream/80">
-                Category
+                Kategori
               </label>
               <div className="flex flex-col sm:flex-row gap-2">
                 <div className="relative w-full sm:flex-1">
@@ -227,7 +307,13 @@ const AddWorkshopPage = () => {
                     value={workshop.category}
                     onChange={handleWorkshopChange}
                     required
-                    className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+                    aria-invalid={
+                      fieldErrors.category ? true : undefined
+                    }
+                    aria-describedby={
+                      fieldErrors.category ? "category-error" : undefined
+                    }
+                    className={`w-full min-h-11 p-2 pl-10 bg-brand-800 border rounded-md focus:outline-none focus:border-brand-400 ${fieldErrors.category ? "border-red-400" : "border-border"}`}
                   >
                     <option value="" disabled>
                       -- Pilih Kategori Workshop --
@@ -248,6 +334,7 @@ const AddWorkshopPage = () => {
                   Kategori
                 </button>
               </div>
+              <FieldError name="category" message={fieldErrors.category} />
             </div>
 
             <div>
@@ -256,7 +343,7 @@ const AddWorkshopPage = () => {
                   aria-hidden="true"
                   className="w-5 h-5 text-brand-400"
                 />
-                Workshop Poster
+                Poster workshop
               </label>
               <div className="relative group">
                 <input
@@ -270,13 +357,14 @@ const AddWorkshopPage = () => {
                 />
                 <label
                   htmlFor="poster-upload"
-                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-border rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden"
+                  className="relative flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-border rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden"
                 >
+                  <UploadProgress phase={uploadPhase} percent={uploadPercent} />
                   {previewImage ? (
                     <div className="relative w-full h-full">
                       <img
                         src={previewImage}
-                        alt="Poster Preview"
+                        alt="Pratinjau poster"
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
@@ -285,10 +373,10 @@ const AddWorkshopPage = () => {
                           className="w-10 h-10 text-cream mb-2"
                         />
                         <span className="text-cream font-semibold">
-                          Click to change poster
+                          Klik untuk mengubah poster
                         </span>
                         <span className="text-cream/80 text-sm mt-1">
-                          PNG, JPG up to 10MB
+                          PNG, JPG maksimal 10 MB
                         </span>
                       </div>
                     </div>
@@ -301,13 +389,13 @@ const AddWorkshopPage = () => {
                         />
                       </div>
                       <span className="block text-cream/80 font-semibold mb-1">
-                        Click to upload poster
+                        Klik untuk mengunggah poster
                       </span>
                       <span className="text-cream/60 text-sm">
-                        or drag and drop
+                        atau seret dan lepas
                       </span>
                       <p className="text-cream/70 text-xs mt-2">
-                        PNG, JPG up to 10MB
+                        PNG, JPG maksimal 10 MB
                       </p>
                     </div>
                   )}
@@ -316,13 +404,14 @@ const AddWorkshopPage = () => {
             </div>
             <div className="mt-6">
               <label className="block mb-2 font-medium text-cream/80">
-                Description
+                Deskripsi
               </label>
               <RichTextEditor
                 content={workshop.description}
                 onUpdate={handleDescriptionChange}
                 maxLength={5000}
               />
+              <FieldError name="description" message={fieldErrors.description} />
             </div>
           </div>
         </div>
@@ -330,7 +419,7 @@ const AddWorkshopPage = () => {
         <div className="space-y-8">
           <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg">
             <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
-              Select Events
+              Pilih event
             </h2>
             <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
               {workshop.category ? (
@@ -398,10 +487,10 @@ const AddWorkshopPage = () => {
           >
             <Save aria-hidden="true" className="w-5 h-5 mr-2" />
             {isLoading
-              ? "Saving..."
+              ? "Menyimpan…"
               : isEditMode
-                ? "SAVE CHANGES"
-                : "CREATE WORKSHOP"}
+                ? "Simpan perubahan"
+                : "Buat workshop"}
           </button>
         </div>
       </form>
@@ -418,6 +507,7 @@ const AddWorkshopPage = () => {
                 onClick={() => {
                   setShowCategoryModal(false);
                   setNewCategoryName("");
+                  setCategoryError("");
                 }}
                 className="min-h-11 min-w-11 grid place-items-center text-cream/60 hover:text-cream"
                 aria-label="Tutup modal tambah kategori"
@@ -427,16 +517,31 @@ const AddWorkshopPage = () => {
             </div>
             <form onSubmit={handleAddCategory}>
               <div className="mb-4">
-                <label className="block mb-2 font-medium text-cream/80">
+                <label
+                  htmlFor="new-category-name"
+                  className="block mb-2 font-medium text-cream/80"
+                >
                   Nama Kategori
                 </label>
                 <input
                   type="text"
+                  id="new-category-name"
                   value={newCategoryName}
-                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  onChange={(e) => {
+                    setNewCategoryName(e.target.value);
+                    if (categoryError) setCategoryError("");
+                  }}
                   placeholder="Masukkan nama kategori..."
-                  className="w-full min-h-11 p-2 bg-brand-900 border border-border rounded-md focus:outline-none focus:border-brand-400  text-cream"
+                  aria-invalid={categoryError ? true : undefined}
+                  aria-describedby={
+                    categoryError ? "new-category-name-error" : undefined
+                  }
+                  className={`w-full min-h-11 p-2 bg-brand-900 border rounded-md focus:outline-none focus:border-brand-400 text-cream ${categoryError ? "border-red-400" : "border-border"}`}
                   autoFocus
+                />
+                <FieldError
+                  name="new-category-name"
+                  message={categoryError}
                 />
               </div>
               <div className="flex gap-2 justify-end">
@@ -445,6 +550,7 @@ const AddWorkshopPage = () => {
                   onClick={() => {
                     setShowCategoryModal(false);
                     setNewCategoryName("");
+                    setCategoryError("");
                   }}
                   className="px-4 py-2 min-h-11 bg-brand-700 hover:bg-brand-600 rounded-md font-semibold transition-colors"
                 >
@@ -455,7 +561,7 @@ const AddWorkshopPage = () => {
                   disabled={isAddingCategory || !newCategoryName.trim()}
                   className="px-4 py-2 min-h-11 bg-brand-600 hover:bg-brand-500 disabled:bg-brand-800 disabled:cursor-not-allowed rounded-md font-semibold transition-colors"
                 >
-                  {isAddingCategory ? "Menambahkan..." : "Tambah"}
+                  {isAddingCategory ? "Menambahkan…" : "Tambah"}
                 </button>
               </div>
             </form>

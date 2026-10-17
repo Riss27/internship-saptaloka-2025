@@ -10,6 +10,13 @@ const GalleryImage = sequelize.define("GalleryImage", {
     type: DataTypes.STRING,
     allowNull: false, // Gambar wajib diisi
   },
+  // Nomor urut tampil; TANPA unique/index — sync({ alter: true }) pernah bikin
+  // index duplikat dari field unique: true, jangan diulang.
+  sortOrder: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
 });
 
 module.exports = GalleryImage;

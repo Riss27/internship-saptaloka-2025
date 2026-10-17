@@ -3,6 +3,11 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { Type, FileText, Image as ImageIcon, Save, Upload } from "lucide-react";
 import API_BASE from "../../../lib/apiBase";
+import FieldError from "../../../components/atoms/feedback/FieldError";
+import ErrorBanner from "../../../components/atoms/feedback/ErrorBanner";
+import { useToast } from "../../../components/atoms/feedback/ToastProvider";
+import UploadProgress from "../../components/UploadProgress";
+import formatBytes from "../../../lib/formatBytes";
 
 // Komponen InputField dengan Ikon
 const InputField = ({
@@ -15,6 +20,7 @@ const InputField = ({
   icon,
   required = false,
   maxLength,
+  error,
 }) => (
   <div className="mb-6">
     <label className="block mb-2 font-medium text-cream/80">
@@ -33,7 +39,9 @@ const InputField = ({
           rows="6"
           placeholder={placeholder}
           maxLength={maxLength}
-          className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${name}-error` : undefined}
+          className={`w-full min-h-11 p-2 pl-10 bg-brand-800 border rounded-md focus:outline-none focus:border-brand-400 ${error ? "border-red-400" : "border-border"}`}
         />
       ) : (
         <input
@@ -43,10 +51,13 @@ const InputField = ({
           onChange={onChange}
           placeholder={placeholder}
           maxLength={maxLength}
-          className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${name}-error` : undefined}
+          className={`w-full min-h-11 p-2 pl-10 bg-brand-800 border rounded-md focus:outline-none focus:border-brand-400 ${error ? "border-red-400" : "border-border"}`}
         />
       )}
     </div>
+    <FieldError name={name} message={error} />
   </div>
 );
 
@@ -57,6 +68,12 @@ const AddLandingHeadingPage = () => {
   const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [imageError, setImageError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [saveError, setSaveError] = useState("");
+  const [uploadPhase, setUploadPhase] = useState(null);
+  const [uploadPercent, setUploadPercent] = useState(0);
+  const { toast } = useToast();
   const isEditMode = Boolean(id);
 
   useEffect(() => {
@@ -79,6 +96,9 @@ const AddLandingHeadingPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setFieldErrors((prev) =>
+      name in prev ? { ...prev, [name]: "" } : prev,
+    );
   };
 
   const handleImageChange = (e) => {
@@ -86,16 +106,17 @@ const AddLandingHeadingPage = () => {
     if (file) {
       // Validasi ukuran file (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert("Ukuran file maksimal 5MB");
+        setImageError("Ukuran file maksimal 5 MB.");
         return;
       }
 
       // Validasi tipe file
       if (!file.type.startsWith("image/")) {
-        alert("File harus berupa gambar");
+        setImageError("File harus berupa gambar.");
         return;
       }
 
+      setImageError("");
       setImageFile(file);
       setPreviewImage(URL.createObjectURL(file));
     }
@@ -104,6 +125,8 @@ const AddLandingHeadingPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setFieldErrors({});
+    setSaveError("");
 
     const submissionData = new FormData();
     submissionData.append("heading", formData.heading || "");
@@ -112,17 +135,68 @@ const AddLandingHeadingPage = () => {
       submissionData.append("image", imageFile);
     }
 
+    const hasFile = Boolean(imageFile);
+    if (hasFile) {
+      setUploadPhase("uploading");
+      setUploadPercent(0);
+    }
+
     try {
-      const config = { headers: { "Content-Type": "multipart/form-data" } };
-      if (isEditMode) {
-        await apiClient.put(`/api/landing-page/${id}`, submissionData, config);
-      } else {
-        await apiClient.post("/api/landing-page", submissionData, config);
+      const config = {
+        headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          const { loaded, total } = progressEvent;
+          if (!total) return;
+          setUploadPercent(Math.round((loaded * 100) / total));
+          if (loaded >= total) setUploadPhase("processing");
+        },
+      };
+      const res = isEditMode
+        ? await apiClient.put(
+            `/api/landing-page/${id}`,
+            submissionData,
+            config,
+          )
+        : await apiClient.post("/api/landing-page", submissionData, config);
+      setUploadPhase(null);
+
+      const uploadInfo = res.data?.uploadInfo;
+      if (uploadInfo && uploadInfo.size < uploadInfo.originalSize) {
+        toast.success(
+          `Gambar dikompres: ${formatBytes(uploadInfo.originalSize)} → ${formatBytes(uploadInfo.size)} (WebP)`,
+        );
       }
+      toast.success("Slide disimpan.");
       navigate("/admin/homepage");
     } catch (error) {
       console.error("Gagal menyimpan slide:", error);
-      alert("Gagal menyimpan. Pastikan semua kolom wajib diisi.");
+      if (hasFile) {
+        setUploadPhase("failed");
+        toast.error("Unggahan gagal. Coba lagi.");
+      }
+
+      const data = error.response?.data;
+      const apiErrors = Array.isArray(data?.errors) ? data.errors : [];
+      const mapped = {};
+      apiErrors.forEach(({ field, message }) => {
+        if (field in formData) mapped[field] = message;
+      });
+      setFieldErrors(mapped);
+
+      let bannerMessage =
+        data?.message || "Gagal menyimpan. Periksa kembali isian Anda.";
+      if (apiErrors.length && data?.message) {
+        let rest = data.message;
+        Object.values(mapped).forEach((m) => {
+          rest = rest.split(m).join(" ");
+        });
+        rest = rest
+          .replace(/\s+/g, " ")
+          .replace(/^[\s,;:.]+|[\s,;:.]+$/g, "")
+          .trim();
+        bannerMessage = rest;
+      }
+      setSaveError(bannerMessage);
     } finally {
       setIsLoading(false);
     }
@@ -132,37 +206,45 @@ const AddLandingHeadingPage = () => {
     <div className="max-w-7xl mx-auto text-cream">
       <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <h1 className="text-3xl font-bold">
-          {isEditMode ? "Edit Slide" : "Add New Slide"}
+          {isEditMode ? "Edit slide" : "Tambah slide"}
         </h1>
         <Link
           to="/admin/homepage"
           className="bg-red-600 hover:bg-red-700 px-5 py-2 min-h-11 inline-flex items-center rounded-md font-semibold text-cream no-underline"
         >
-          BACK
+          Kembali
         </Link>
       </header>
+
+      <ErrorBanner
+        title="Gagal menyimpan"
+        message={saveError}
+        onDismiss={() => setSaveError("")}
+        className="mb-6"
+      />
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Slide Details */}
           <div className="lg:col-span-2 bg-brand-700 p-4 sm:p-8 rounded-lg ">
             <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
-              Slide Details
+              Detail slide
             </h2>
 
             <InputField
-              label="Slide Heading"
+              label="Judul slide"
               name="heading"
               value={formData.heading}
               onChange={handleChange}
               required={true}
-              placeholder="Contoh: 'Welcome to Our Platform'"
+              placeholder="Contoh: 'Selamat datang di platform kami'"
               icon={<Type aria-hidden="true" className="w-5 h-5" />}
               maxLength={100}
+              error={fieldErrors.heading}
             />
 
             <InputField
-              label="Paragraph"
+              label="Paragraf"
               name="paragraph"
               type="textarea"
               value={formData.paragraph}
@@ -171,6 +253,7 @@ const AddLandingHeadingPage = () => {
               placeholder="Deskripsi singkat untuk slide..."
               icon={<FileText aria-hidden="true" className="w-5 h-5" />}
               maxLength={500}
+              error={fieldErrors.paragraph}
             />
 
             {/* Character Counter */}
@@ -182,7 +265,7 @@ const AddLandingHeadingPage = () => {
                     : "text-cream/60"
                 }
               >
-                Heading: {formData.heading?.length || 0}/100 karakter
+                Judul: {formData.heading?.length || 0}/100 karakter
               </div>
               <div
                 className={
@@ -191,7 +274,7 @@ const AddLandingHeadingPage = () => {
                     : "text-cream/60"
                 }
               >
-                Paragraph: {formData.paragraph?.length || 0}/500 karakter
+                Paragraf: {formData.paragraph?.length || 0}/500 karakter
               </div>
             </div>
           </div>
@@ -199,7 +282,7 @@ const AddLandingHeadingPage = () => {
           {/* Right Column - Image & Settings */}
           <div className="bg-brand-700 p-4 sm:p-8 rounded-lg ">
             <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
-              Slide Image
+              Gambar slide
             </h2>
 
             {/* Image Upload */}
@@ -209,7 +292,7 @@ const AddLandingHeadingPage = () => {
                   aria-hidden="true"
                   className="w-5 h-5 text-brand-400"
                 />
-                Slide Image
+                Gambar slide
                 <span className="text-red-400 ml-1">*</span>
               </label>
               <div className="relative group">
@@ -220,16 +303,19 @@ const AddLandingHeadingPage = () => {
                   onChange={handleImageChange}
                   className="hidden"
                   accept="image/*"
+                  aria-invalid={imageError ? true : undefined}
+                  aria-describedby={imageError ? "image-error" : undefined}
                 />
                 <label
                   htmlFor="slide-upload"
-                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-border rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden"
+                  className={`relative flex flex-col justify-center items-center w-full h-64 border-2 border-dashed rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden ${imageError ? "border-red-400" : "border-border"}`}
                 >
+                  <UploadProgress phase={uploadPhase} percent={uploadPercent} />
                   {previewImage ? (
                     <div className="relative w-full h-full">
                       <img
                         src={previewImage}
-                        alt="Slide Preview"
+                        alt="Pratinjau slide"
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
@@ -238,10 +324,10 @@ const AddLandingHeadingPage = () => {
                           className="w-10 h-10 text-cream mb-2"
                         />
                         <span className="text-cream font-semibold">
-                          Click to change image
+                          Klik untuk mengubah gambar
                         </span>
                         <span className="text-cream/80 text-sm mt-1">
-                          PNG, JPG up to 10MB
+                          PNG, JPG maksimal 10 MB
                         </span>
                       </div>
                     </div>
@@ -254,18 +340,19 @@ const AddLandingHeadingPage = () => {
                         />
                       </div>
                       <span className="block text-cream/80 font-semibold mb-1">
-                        Click to upload slide image
+                        Klik untuk mengunggah gambar slide
                       </span>
                       <span className="text-cream/60 text-sm">
-                        or drag and drop
+                        atau seret dan lepas
                       </span>
                       <p className="text-cream/70 text-xs mt-2">
-                        PNG, JPG up to 10MB
+                        PNG, JPG maksimal 10 MB
                       </p>
                     </div>
                   )}
                 </label>
               </div>
+              <FieldError name="image" message={imageError} />
             </div>
           </div>
         </div>
@@ -302,10 +389,10 @@ const AddLandingHeadingPage = () => {
               <Save aria-hidden="true" className="w-5 h-5 mr-2" />
             )}
             {isLoading
-              ? "Saving..."
+              ? "Menyimpan…"
               : isEditMode
-                ? "SAVE CHANGES"
-                : "ADD SLIDE"}
+                ? "Simpan perubahan"
+                : "Tambah slide"}
           </button>
         </div>
       </form>

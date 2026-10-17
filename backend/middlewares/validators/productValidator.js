@@ -25,6 +25,8 @@ const validate = (req, res, next) => {
   return res.status(400).json({
     status: "fail",
     message: extractedErrors,
+    // Detail per-field untuk frontend (field = path express-validator)
+    errors: errors.array().map((err) => ({ field: err.path, message: err.msg })),
   });
 };
 

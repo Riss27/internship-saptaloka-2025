@@ -62,7 +62,10 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
   });
 
   React.useEffect(() => {
-    if (editor && content !== editor.getHTML()) {
+    // Guard: @tiptap bisa menyerahkan instance yang sudah di-destroy (schema null)
+    // pada race mount — getHTML() melempar TypeError di kondisi itu.
+    if (!editor || editor.isDestroyed || !editor.schema) return;
+    if (content !== editor.getHTML()) {
       editor.commands.setContent(content || "");
       const text = editor.getText();
       setCharCount(text.length);
@@ -72,7 +75,7 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
   if (!editor) return null;
 
   const addLink = () => {
-    const url = window.prompt("Enter URL:");
+    const url = window.prompt("Masukkan URL:");
     if (url) {
       editor.chain().focus().setLink({ href: url }).run();
     }
@@ -91,8 +94,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Bold"
-          aria-label="Bold"
+          title="Tebal"
+          aria-label="Tebal"
         >
           <Bold aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -105,8 +108,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Italic"
-          aria-label="Italic"
+          title="Miring"
+          aria-label="Miring"
         >
           <Italic aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -119,8 +122,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Underline"
-          aria-label="Underline"
+          title="Garis bawahi"
+          aria-label="Garis bawahi"
         >
           <UnderlineIcon aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -133,8 +136,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Strikethrough"
-          aria-label="Strikethrough"
+          title="Coret"
+          aria-label="Coret"
         >
           <Strikethrough aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -147,8 +150,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Code"
-          aria-label="Code"
+          title="Kode"
+          aria-label="Kode"
         >
           <Code aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -164,8 +167,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Add Link"
-          aria-label="Add Link"
+          title="Tambah tautan"
+          aria-label="Tambah tautan"
         >
           <LinkIcon aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -181,8 +184,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Bullet List"
-          aria-label="Bullet List"
+          title="Daftar berbutir"
+          aria-label="Daftar berbutir"
         >
           <List aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -195,8 +198,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Numbered List"
-          aria-label="Numbered List"
+          title="Daftar bernomor"
+          aria-label="Daftar bernomor"
         >
           <ListOrdered aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -241,8 +244,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Align Left"
-          aria-label="Align Left"
+          title="Rata kiri"
+          aria-label="Rata kiri"
         >
           <AlignLeft aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -255,8 +258,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Align Center"
-          aria-label="Align Center"
+          title="Rata tengah"
+          aria-label="Rata tengah"
         >
           <AlignCenter aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -269,8 +272,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Align Right"
-          aria-label="Align Right"
+          title="Rata kanan"
+          aria-label="Rata kanan"
         >
           <AlignRight aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -283,8 +286,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
               ? "bg-brand-600 text-cream"
               : "text-cream/80"
           }`}
-          title="Justify"
-          aria-label="Justify"
+          title="Rata kiri-kanan"
+          aria-label="Rata kiri-kanan"
         >
           <AlignJustify aria-hidden="true" className="w-4 h-4" />
         </button>
@@ -298,8 +301,8 @@ const RichTextEditor = ({ content, onUpdate, maxLength }) => {
             editor.chain().focus().clearNodes().unsetAllMarks().run()
           }
           className="p-2 min-h-11 min-w-11 grid place-items-center rounded bg-brand-700 transition-colors text-cream/80"
-          title="Clear Formatting"
-          aria-label="Clear Formatting"
+          title="Hapus formatan"
+          aria-label="Hapus formatan"
         >
           <RefreshCw aria-hidden="true" className="w-4 h-4" />
         </button>

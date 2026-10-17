@@ -69,6 +69,9 @@ async function safeUnlink(filePath) {
 async function processUploadedFile(file) {
   if (!file || !file.path) return;
 
+  // Ukuran asli SEBELUM sharp menimpa file.size — dilaporkan lewat uploadInfo.
+  file.originalSize = file.size;
+
   const originalPath = file.path;
 
   // 1. Gerbang validasi nyata: sharp harus bisa membaca metadata-nya.

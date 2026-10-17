@@ -21,6 +21,12 @@ import {
 } from "lucide-react";
 import RichTextEditor from "../../components/RichTextEditor";
 import API_BASE from "../../../lib/apiBase";
+import FieldError from "../../../components/atoms/feedback/FieldError";
+import ErrorBanner from "../../../components/atoms/feedback/ErrorBanner";
+import { useToast } from "../../../components/atoms/feedback/ToastProvider";
+import UploadProgress from "../../components/UploadProgress";
+import formatBytes from "../../../lib/formatBytes";
+import { DATEPICKER_LOCALE, DATEPICKER_FORMAT } from "../../lib/datepickerId";
 
 const InputField = ({
   label,
@@ -30,6 +36,7 @@ const InputField = ({
   icon,
   as = "input",
   options = [],
+  error,
   ...props
 }) => (
   <div className="mb-6">
@@ -45,8 +52,10 @@ const InputField = ({
             name={name}
             value={value}
             onChange={onChange}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? `${name}-error` : undefined}
             {...props}
-            className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400  appearance-none"
+            className={`w-full min-h-11 p-2 pl-10 bg-brand-800 border rounded-md focus:outline-none focus:border-brand-400 appearance-none ${error ? "border-red-400" : "border-border"}`}
           >
             {options.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -65,10 +74,13 @@ const InputField = ({
           name={name}
           value={value || ""}
           onChange={onChange}
-          className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${name}-error` : undefined}
+          className={`w-full min-h-11 p-2 pl-10 bg-brand-800 border rounded-md focus:outline-none focus:border-brand-400 ${error ? "border-red-400" : "border-border"}`}
         />
       )}
     </div>
+    <FieldError name={name} message={error} />
   </div>
 );
 
@@ -95,6 +107,11 @@ const AddEventPage = () => {
   const [newRole, setNewRole] = useState("");
   const [contents, setContents] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [saveError, setSaveError] = useState("");
+  const [uploadPhase, setUploadPhase] = useState(null);
+  const [uploadPercent, setUploadPercent] = useState(0);
+  const { toast } = useToast();
 
   const fetchCategories = async () => {
     try {
@@ -173,8 +190,12 @@ const AddEventPage = () => {
       .finally(() => setIsLoading(false));
   }, [id, isEditMode]);
 
-  const handleEventChange = (e) =>
+  const handleEventChange = (e) => {
     setEvent((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFieldErrors((prev) =>
+      e.target.name in prev ? { ...prev, [e.target.name]: "" } : prev,
+    );
+  };
   const handleDescriptionChange = (value) =>
     setEvent((prev) => ({ ...prev, description: value }));
   const handleBannerChange = (e) => {
@@ -220,11 +241,46 @@ const AddEventPage = () => {
     setContents(newContents);
   };
 
+  // Petakan errors[] backend ke state; sisa pesan tetap tampil di ErrorBanner.
+  const applySaveError = (error) => {
+    const data = error.response?.data;
+    const apiErrors = Array.isArray(data?.errors) ? data.errors : [];
+    const mapped = {};
+    apiErrors.forEach(({ field, message }) => {
+      if (field in event) mapped[field] = message;
+    });
+    setFieldErrors(mapped);
+
+    let bannerMessage =
+      data?.message || "Gagal menyimpan event. Periksa kembali isian Anda.";
+    if (apiErrors.length && data?.message) {
+      let rest = data.message;
+      Object.values(mapped).forEach((m) => {
+        rest = rest.split(m).join(" ");
+      });
+      rest = rest
+        .replace(/\s+/g, " ")
+        .replace(/^[\s,;:.]+|[\s,;:.]+$/g, "")
+        .trim();
+      bannerMessage = rest;
+    }
+    setSaveError(bannerMessage);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setFieldErrors({});
+    setSaveError("");
     const formData = new FormData();
-    Object.keys(event).forEach((key) => formData.append(key, event[key]));
+    Object.keys(event).forEach((key) =>
+      formData.append(
+        key,
+        event[key] instanceof Date
+          ? event[key].toISOString()
+          : event[key],
+      ),
+    );
     if (imageBanner) formData.append("imageBanner", imageBanner);
     formData.append("participantRoles", JSON.stringify(roles));
     const contentData = contents.map((c) => {
@@ -246,20 +302,42 @@ const AddEventPage = () => {
       }),
     );
 
+    const hasFile = Boolean(imageBanner);
+    if (hasFile) {
+      setUploadPhase("uploading");
+      setUploadPercent(0);
+    }
+
     try {
-      if (isEditMode) {
-        await apiClient.put(`/api/events/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      } else {
-        await apiClient.post("/api/events", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+      const config = {
+        headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          const { loaded, total } = progressEvent;
+          if (!total) return;
+          setUploadPercent(Math.round((loaded * 100) / total));
+          if (loaded >= total) setUploadPhase("processing");
+        },
+      };
+      const res = isEditMode
+        ? await apiClient.put(`/api/events/${id}`, formData, config)
+        : await apiClient.post("/api/events", formData, config);
+      setUploadPhase(null);
+
+      const uploadInfo = res.data?.uploadInfo;
+      if (uploadInfo && uploadInfo.size < uploadInfo.originalSize) {
+        toast.success(
+          `Gambar dikompres: ${formatBytes(uploadInfo.originalSize)} → ${formatBytes(uploadInfo.size)} (WebP)`,
+        );
       }
+      toast.success("Event disimpan.");
       navigate("/admin/events");
     } catch (err) {
       console.error("Gagal menyimpan event:", err.response?.data || err);
-      alert("Gagal menyimpan event. Periksa semua kolom wajib.");
+      if (hasFile) {
+        setUploadPhase("failed");
+        toast.error("Unggahan gagal. Coba lagi.");
+      }
+      applySaveError(err);
     } finally {
       setIsLoading(false);
     }
@@ -269,39 +347,47 @@ const AddEventPage = () => {
     <div className="max-w-7xl mx-auto text-cream">
       <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <h1 className="text-3xl font-bold">
-          {isEditMode ? "Edit Event" : "Create New Event"}
+          {isEditMode ? "Edit event" : "Tambah event"}
         </h1>
         <Link
           to="/admin/events"
           className="bg-red-600 hover:bg-red-700 px-5 py-2 min-h-11 inline-flex items-center rounded-md font-semibold no-underline"
         >
-          BACK
+          Kembali
         </Link>
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-8">
+        <ErrorBanner
+          title="Gagal menyimpan"
+          message={saveError}
+          onDismiss={() => setSaveError("")}
+          className="mb-6"
+        />
         <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg ">
           <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
-            Event Details
+            Detail event
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <InputField
-                label="Event Title"
+                label="Judul event"
                 name="title"
                 value={event.title}
                 onChange={handleEventChange}
                 icon={<Type aria-hidden="true" className="w-5 h-5" />}
                 required
                 placeholder="Judul event..."
+                error={fieldErrors.title}
               />
               <InputField
                 as="select"
-                label="Category"
+                label="Kategori"
                 name="category"
                 value={event.category}
                 onChange={handleEventChange}
                 icon={<Tag aria-hidden="true" className="w-5 h-5" />}
+                error={fieldErrors.category}
                 options={[
                   { value: "", label: "-- Tanpa Kategori --" },
                   ...categories.map((cat) => ({
@@ -311,13 +397,14 @@ const AddEventPage = () => {
                 ]}
               />
               <InputField
-                label="Location"
+                label="Lokasi"
                 name="location"
                 value={event.location}
                 onChange={handleEventChange}
                 icon={<MapPin aria-hidden="true" className="w-5 h-5" />}
                 required
                 placeholder="Lokasi event..."
+                error={fieldErrors.location}
               />
               <div className="mb-6">
                 <label className="block mb-2 font-medium text-cream/80">
@@ -331,18 +418,25 @@ const AddEventPage = () => {
                     name="status"
                     value={event.status}
                     onChange={handleEventChange}
-                    className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md focus:outline-none focus:border-brand-400 "
+                    aria-invalid={
+                      fieldErrors.status ? true : undefined
+                    }
+                    aria-describedby={
+                      fieldErrors.status ? "status-error" : undefined
+                    }
+                    className={`w-full min-h-11 p-2 pl-10 bg-brand-800 border rounded-md focus:outline-none focus:border-brand-400 ${fieldErrors.status ? "border-red-400" : "border-border"}`}
                   >
-                    <option value="Coming Soon">Coming Soon</option>
-                    <option value="Open">Open for Registration</option>
-                    <option value="Closed">Closed</option>
-                    <option value="Finished">Finished</option>
+                    <option value="Coming Soon">Segera hadir</option>
+                    <option value="Open">Pendaftaran dibuka</option>
+                    <option value="Closed">Ditutup</option>
+                    <option value="Finished">Selesai</option>
                   </select>
                 </div>
+                <FieldError name="status" message={fieldErrors.status} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <InputField
-                  label="Quota"
+                  label="Kuota"
                   name="quota"
                   type="number"
                   min="1"
@@ -350,9 +444,10 @@ const AddEventPage = () => {
                   onChange={handleEventChange}
                   icon={<Users aria-hidden="true" className="w-5 h-5" />}
                   required
+                  error={fieldErrors.quota}
                 />
                 <InputField
-                  label="Fee"
+                  label="Biaya"
                   name="fee"
                   type="number"
                   min="0"
@@ -362,6 +457,7 @@ const AddEventPage = () => {
                     <CircleDollarSign aria-hidden="true" className="w-5 h-5" />
                   }
                   required
+                  error={fieldErrors.fee}
                 />
               </div>
             </div>
@@ -373,7 +469,7 @@ const AddEventPage = () => {
                   aria-hidden="true"
                   className="w-5 h-5 text-brand-400"
                 />
-                Event Banner
+                Banner event
               </label>
               <div className="relative group">
                 <input
@@ -387,13 +483,14 @@ const AddEventPage = () => {
                 />
                 <label
                   htmlFor="banner-upload"
-                  className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-border rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden"
+                  className="relative flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-border rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden"
                 >
+                  <UploadProgress phase={uploadPhase} percent={uploadPercent} />
                   {previewBanner ? (
                     <div className="relative w-full h-full">
                       <img
                         src={previewBanner}
-                        alt="Banner Preview"
+                        alt="Pratinjau banner"
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
@@ -402,10 +499,10 @@ const AddEventPage = () => {
                           className="w-10 h-10 text-cream mb-2"
                         />
                         <span className="text-cream font-semibold">
-                          Click to change banner
+                          Klik untuk mengubah banner
                         </span>
                         <span className="text-cream/80 text-sm mt-1">
-                          PNG, JPG up to 10MB
+                          PNG, JPG maksimal 10 MB
                         </span>
                       </div>
                     </div>
@@ -418,13 +515,13 @@ const AddEventPage = () => {
                         />
                       </div>
                       <span className="block text-cream/80 font-semibold mb-1">
-                        Click to upload banner
+                        Klik untuk mengunggah banner
                       </span>
                       <span className="text-cream/60 text-sm">
-                        or drag and drop
+                        atau seret dan lepas
                       </span>
                       <p className="text-cream/70 text-xs mt-2">
-                        PNG, JPG up to 10MB
+                        PNG, JPG maksimal 10 MB
                       </p>
                     </div>
                   )}
@@ -440,7 +537,7 @@ const AddEventPage = () => {
                   className="mt-3 w-full min-h-11 py-2 px-4 bg-red-600/20 hover:bg-red-600/40 text-red-400 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                 >
                   <Trash2 aria-hidden="true" className="w-5 h-5" />
-                  Remove Banner
+                  Hapus banner
                 </button>
               )}
             </div>
@@ -448,19 +545,20 @@ const AddEventPage = () => {
 
           <div className="mt-6">
             <label className="block mb-2 font-medium text-cream/80">
-              Description
+              Deskripsi
             </label>
             <RichTextEditor
               content={event.description}
               onUpdate={handleDescriptionChange}
               maxLength={5000}
             />
+            <FieldError name="description" message={fieldErrors.description} />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
             <div>
               <label className="flex mb-2 font-medium text-cream/80 items-center">
-                <Calendar aria-hidden="true" className="w-5 h-5 mr-2" /> Start
-                Date & Time
+                <Calendar aria-hidden="true" className="w-5 h-5 mr-2" />{" "}
+                Tanggal & waktu mulai
               </label>
               <DatePicker
                 selected={event.startDateTime}
@@ -468,14 +566,22 @@ const AddEventPage = () => {
                   setEvent((prev) => ({ ...prev, startDateTime: date }))
                 }
                 showTimeSelect
-                dateFormat="MMMM d, yyyy h:mm aa"
+                locale={DATEPICKER_LOCALE}
+                dateFormat={DATEPICKER_FORMAT}
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                timeCaption="Waktu"
                 className="w-full min-h-11 p-2 bg-brand-800 border border-border rounded-md"
+              />
+              <FieldError
+                name="startDateTime"
+                message={fieldErrors.startDateTime}
               />
             </div>
             <div>
               <label className="block mb-2 font-medium text-cream/80 items-center">
-                <Calendar aria-hidden="true" className="w-5 h-5 mr-2" /> End
-                Date & Time
+                <Calendar aria-hidden="true" className="w-5 h-5 mr-2" />{" "}
+                Tanggal & waktu selesai
               </label>
               <DatePicker
                 selected={event.endDateTime}
@@ -483,8 +589,16 @@ const AddEventPage = () => {
                   setEvent((prev) => ({ ...prev, endDateTime: date }))
                 }
                 showTimeSelect
-                dateFormat="MMMM d, yyyy h:mm aa"
+                locale={DATEPICKER_LOCALE}
+                dateFormat={DATEPICKER_FORMAT}
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                timeCaption="Waktu"
                 className="w-full min-h-11 p-2 bg-brand-800 border border-border rounded-md"
+              />
+              <FieldError
+                name="endDateTime"
+                message={fieldErrors.endDateTime}
               />
             </div>
           </div>
@@ -492,7 +606,7 @@ const AddEventPage = () => {
 
         <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg ">
           <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
-            Participant Roles
+            Peran peserta
           </h2>
           <div className="flex items-center gap-4 mb-4">
             <input
@@ -507,7 +621,7 @@ const AddEventPage = () => {
               onClick={addRole}
               className="bg-brand-600 hover:bg-brand-500 px-4 py-2 min-h-11 rounded-md font-semibold transition-colors"
             >
-              Add Role
+              Tambah peran
             </button>
           </div>
           <div className="flex flex-wrap gap-2 min-h-[2.5rem]">
@@ -521,8 +635,8 @@ const AddEventPage = () => {
                   type="button"
                   onClick={() => removeRole(index)}
                   className="ml-2 -my-2.5 min-h-11 min-w-11 grid place-items-center text-cream"
-                  title={`Hapus role ${role}`}
-                  aria-label={`Hapus role ${role}`}
+                  title={`Hapus peran ${role}`}
+                  aria-label={`Hapus peran ${role}`}
                 >
                   <X aria-hidden="true" className="w-4 h-4" />
                 </button>
@@ -533,7 +647,7 @@ const AddEventPage = () => {
 
         <div className="bg-brand-800/50 p-4 sm:p-8 rounded-lg ">
           <h2 className="text-2xl font-semibold mb-6 border-b border-border pb-4">
-            Content Sections
+            Bagian konten
           </h2>
           <div className="space-y-6">
             {contents.map((content, index) => (
@@ -543,30 +657,30 @@ const AddEventPage = () => {
               >
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="font-bold text-brand-400 text-lg">
-                    Section {index + 1}
+                    Bagian {index + 1}
                   </h3>
                   <button
                     type="button"
                     onClick={() => removeContentSection(index)}
                     className="min-h-11 min-w-11 grid place-items-center p-1 text-red-500 text-red-400 bg-red-500/10 rounded-full"
-                    aria-label={`Hapus section ${index + 1}`}
+                    aria-label={`Hapus bagian ${index + 1}`}
                   >
                     <Trash2 aria-hidden="true" className="w-5 h-5" />
                   </button>
                 </div>
                 <InputField
-                  label="Header"
+                  label="Judul bagian"
                   name="header"
                   value={content.header}
                   onChange={(e) =>
                     handleContentTextChange(index, "header", e.target.value)
                   }
                   icon={<Type aria-hidden="true" className="w-5 h-5" />}
-                  placeholder="Judul section..."
+                  placeholder="Judul bagian..."
                 />
                 <div>
                   <label className="block mb-2 font-medium text-cream/80">
-                    Content
+                    Konten
                   </label>
                   <RichTextEditor
                     content={content.content}
@@ -584,7 +698,7 @@ const AddEventPage = () => {
                       aria-hidden="true"
                       className="w-5 h-5 text-brand-400"
                     />
-                    Section Images
+                    Gambar bagian
                   </label>
                   <div className="bg-brand-800/70 p-4 rounded-lg border border-border">
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -595,7 +709,7 @@ const AddEventPage = () => {
                         >
                           <img
                             src={p}
-                            alt={`Preview ${i + 1}`}
+                            alt={`Pratinjau ${i + 1}`}
                             className="w-full h-full object-cover"
                           />
                           {/* Kept visible on phones: hover does not exist there,
@@ -620,7 +734,7 @@ const AddEventPage = () => {
                           className="w-5 h-5 text-cream/60 group-hover:text-brand-400 transition-colors mb-2"
                         />
                         <span className="text-xs text-cream/60 group-hover:text-brand-400 transition-colors text-center px-2">
-                          Add Images
+                          Tambah gambar
                         </span>
                         <input
                           type="file"
@@ -634,7 +748,7 @@ const AddEventPage = () => {
 
                     {content.previews.length === 0 && (
                       <p className="text-center text-cream/70 text-sm mt-2">
-                        No images uploaded yet
+                        Belum ada gambar yang diunggah
                       </p>
                     )}
                   </div>
@@ -647,8 +761,8 @@ const AddEventPage = () => {
             onClick={addContentSection}
             className="w-full mt-6 border-2 border-dashed border-border border-brand-500 text-cream/80 text-brand-400 py-3 rounded-md font-semibold flex items-center justify-center transition-colors"
           >
-            <Plus aria-hidden="true" className="w-5 h-5 mr-2" /> Add Content
-            Section
+            <Plus aria-hidden="true" className="w-5 h-5 mr-2" /> Tambah
+            bagian konten
           </button>
         </div>
 
@@ -683,10 +797,10 @@ const AddEventPage = () => {
               <Save aria-hidden="true" className="w-5 h-5 mr-2" />
             )}
             {isLoading
-              ? "Saving..."
+              ? "Menyimpan…"
               : isEditMode
-                ? "SAVE CHANGES"
-                : "CREATE EVENT"}
+                ? "Simpan perubahan"
+                : "Buat event"}
           </button>
         </div>
       </form>

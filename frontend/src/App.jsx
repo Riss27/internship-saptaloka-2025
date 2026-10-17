@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AdminLayout from "./layouts/AdminLayout";
 import PublicLayout from "./layouts/PublicLayout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ToastProvider from "./components/atoms/feedback/ToastProvider";
 
 // Halaman Auth
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
@@ -28,6 +29,7 @@ const ArticleDetailPage = lazy(() => import("./pages/ArticleDetailPage"));
 const ComingSoonPage = lazy(() => import("./pages/ComingSoonPage"));
 
 // Halaman Admin
+const DashboardPage = lazy(() => import("./admin/pages/DashboardPage"));
 const Homepage = lazy(() => import("./admin/pages/homepage/Homepage"));
 const AddLandingHeadingPage = lazy(
   () => import("./admin/pages/homepage/AddLandingHeadingPage"),
@@ -76,6 +78,7 @@ const PageFallback = (
 function App() {
   return (
     <Router>
+      <ToastProvider>
       <Suspense fallback={PageFallback}>
         <Routes>
           {/* Rute Auth */}
@@ -103,7 +106,7 @@ function App() {
           {/* Rute Admin */}
           <Route element={<ProtectedRoute />}>
             <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Homepage />} />
+              <Route index element={<DashboardPage />} />
               <Route path="homepage" element={<Homepage />} />
               <Route path="homepage/add" element={<AddLandingHeadingPage />} />
               <Route
@@ -168,6 +171,7 @@ function App() {
           </Route>
         </Routes>
       </Suspense>
+      </ToastProvider>
     </Router>
   );
 }

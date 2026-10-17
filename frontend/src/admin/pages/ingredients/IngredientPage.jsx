@@ -4,8 +4,8 @@ import CatalogueListPage from "../CatalogueListPage";
 const IngredientPage = () => {
   return (
     <CatalogueListPage
-      pageTitle="Manage Ingredients"
-      itemType="ingredient"
+      pageTitle="Kelola bahan"
+      itemType="bahan"
       apiEndpoint="ingredients"
       categoryOptions={["Essential Oil", "Non Essential Oil"]}
     />

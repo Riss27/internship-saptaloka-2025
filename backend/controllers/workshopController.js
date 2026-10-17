@@ -5,6 +5,7 @@ const sequelize = require("../config/database");
 const { deleteFile } = require("../utils/fileHelper");
 const { getPagination } = require("../utils/pagination");
 const { searchWhere } = require("../utils/search");
+const { getSort } = require("../utils/sort");
 
 // Controller Workshop
 // Ambil semua workshop + daftar event terkait (sudah ada filter kategori)
@@ -19,7 +20,7 @@ exports.getAllWorkshops = async (req, res) => {
         attributes: ["id", "title", "startDateTime", "imageBannerUrl"],
         through: { attributes: [] },
       },
-      order: [["createdAt", "DESC"]],
+      order: getSort(req.query, ["createdAt", "title"], [["createdAt", "DESC"]]),
     };
 
     const where = {

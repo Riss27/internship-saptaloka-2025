@@ -10,6 +10,7 @@ router.get("/:id", landingPageController.getSlideById);
 
 router.post("/", protect, requireAdmin, upload.single("image"), createSlideRules(), validate, landingPageController.createSlide);
 router.put("/:id", protect, requireAdmin, upload.single("image"), updateSlideRules(), validate, landingPageController.updateSlide);
+router.patch("/order", protect, requireAdmin, landingPageController.reorderSlides);
 router.delete("/:id", protect, requireAdmin, landingPageController.deleteSlide);
 
 module.exports = router;

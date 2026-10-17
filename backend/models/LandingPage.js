@@ -26,6 +26,13 @@ const LandingPage = sequelize.define("LandingPage", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  // Nomor urut tampil; TANPA unique/index — sync({ alter: true }) pernah bikin
+  // index duplikat dari field unique: true, jangan diulang.
+  sortOrder: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
 });
 
 module.exports = LandingPage;

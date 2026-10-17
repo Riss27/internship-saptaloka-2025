@@ -3,6 +3,11 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { Upload, Save, Image as ImageIcon } from "lucide-react";
 import API_BASE from "../../../lib/apiBase";
+import FieldError from "../../../components/atoms/feedback/FieldError";
+import ErrorBanner from "../../../components/atoms/feedback/ErrorBanner";
+import { useToast } from "../../../components/atoms/feedback/ToastProvider";
+import UploadProgress from "../../components/UploadProgress";
+import formatBytes from "../../../lib/formatBytes";
 
 const GalleryFormPage = () => {
   const navigate = useNavigate();
@@ -13,6 +18,12 @@ const GalleryFormPage = () => {
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [imageError, setImageError] = useState("");
+  const [saveError, setSaveError] = useState("");
+  const [uploadPhase, setUploadPhase] = useState(null);
+  const [uploadPercent, setUploadPercent] = useState(0);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isEditMode) {
@@ -37,11 +48,22 @@ const GalleryFormPage = () => {
     if (file) {
       setImageFile(file);
       setPreview(URL.createObjectURL(file));
+      setImageError("");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFieldErrors({});
+    setSaveError("");
+
+    // Validasi untuk mode 'add'
+    if (!isEditMode && !imageFile) {
+      setImageError("Gambar wajib diunggah.");
+      return;
+    }
+    setImageError("");
+
     setIsLoading(true);
 
     const formData = new FormData();
@@ -51,24 +73,63 @@ const GalleryFormPage = () => {
       formData.append("image", imageFile);
     }
 
-    // Validasi untuk mode 'add'
-    if (!isEditMode && !imageFile) {
-      alert("Gambar wajib diisi!");
-      setIsLoading(false);
-      return;
+    const hasFile = Boolean(imageFile);
+    if (hasFile) {
+      setUploadPhase("uploading");
+      setUploadPercent(0);
     }
 
     try {
-      const config = { headers: { "Content-Type": "multipart/form-data" } };
-      if (isEditMode) {
-        await apiClient.put(`/api/gallery/${id}`, formData, config);
-      } else {
-        await apiClient.post("/api/gallery", formData, config);
+      const config = {
+        headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          const { loaded, total } = progressEvent;
+          if (!total) return;
+          setUploadPercent(Math.round((loaded * 100) / total));
+          if (loaded >= total) setUploadPhase("processing");
+        },
+      };
+      const res = isEditMode
+        ? await apiClient.put(`/api/gallery/${id}`, formData, config)
+        : await apiClient.post("/api/gallery", formData, config);
+      setUploadPhase(null);
+
+      const uploadInfo = res.data?.uploadInfo;
+      if (uploadInfo && uploadInfo.size < uploadInfo.originalSize) {
+        toast.success(
+          `Gambar dikompres: ${formatBytes(uploadInfo.originalSize)} → ${formatBytes(uploadInfo.size)} (WebP)`,
+        );
       }
+      toast.success("Gambar disimpan.");
       navigate("/admin/gallery");
     } catch (error) {
       console.error("Gagal menyimpan gambar:", error);
-      alert("Gagal menyimpan gambar.");
+      if (hasFile) {
+        setUploadPhase("failed");
+        toast.error("Unggahan gagal. Coba lagi.");
+      }
+      const data = error.response?.data;
+      const apiErrors = Array.isArray(data?.errors) ? data.errors : [];
+      const mapped = {};
+      apiErrors.forEach(({ field, message }) => {
+        if (field === "title") mapped.title = message;
+      });
+      setFieldErrors(mapped);
+
+      let bannerMessage =
+        data?.message || "Gagal menyimpan gambar. Periksa kembali isian Anda.";
+      if (apiErrors.length && data?.message) {
+        let rest = data.message;
+        Object.values(mapped).forEach((m) => {
+          rest = rest.split(m).join(" ");
+        });
+        rest = rest
+          .replace(/\s+/g, " ")
+          .replace(/^[\s,;:.]+|[\s,;:.]+$/g, "")
+          .trim();
+        bannerMessage = rest;
+      }
+      setSaveError(bannerMessage);
     } finally {
       setIsLoading(false);
     }
@@ -78,15 +139,21 @@ const GalleryFormPage = () => {
     <div className="max-w-4xl mx-auto">
       <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <h1 className="text-3xl font-bold text-cream">
-          {isEditMode ? "Edit Image" : "Add New Image to Gallery"}
+          {isEditMode ? "Edit gambar" : "Tambah gambar ke galeri"}
         </h1>
         <Link
           to="/admin/gallery"
           className="bg-red-600 hover:bg-red-700 px-5 py-2 min-h-11 inline-flex items-center rounded-md font-semibold text-cream no-underline"
         >
-          BACK
+          Kembali
         </Link>
       </header>
+      <ErrorBanner
+        title="Gagal menyimpan"
+        message={saveError}
+        onDismiss={() => setSaveError("")}
+        className="mb-6"
+      />
       <form
         onSubmit={handleSubmit}
         className="bg-brand-700 p-4 sm:p-8 rounded-lg text-cream"
@@ -97,24 +164,30 @@ const GalleryFormPage = () => {
             htmlFor="title"
             className="block mb-2 font-medium text-cream/80"
           >
-            Title
+            Judul
           </label>
           <input
             type="text"
             id="title"
             name="title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (fieldErrors.title) setFieldErrors({});
+            }}
             required
-            className="w-full min-h-11 p-2 bg-brand-600/30 rounded border border-border"
+            aria-invalid={fieldErrors.title ? true : undefined}
+            aria-describedby={fieldErrors.title ? "title-error" : undefined}
+            className={`w-full min-h-11 p-2 bg-brand-600/30 rounded border ${fieldErrors.title ? "border-red-400" : "border-border"}`}
           />
+          <FieldError name="title" message={fieldErrors.title} />
         </div>
 
         {/* Input Gambar */}
         <div className="mb-6">
           <label className="mb-2 font-medium text-cream/80 flex items-center gap-2">
             <ImageIcon aria-hidden="true" className="w-5 h-5 text-brand-400" />
-            {isEditMode ? "Ganti Gambar (Opsional)" : "Upload Gambar"}
+            {isEditMode ? "Ganti Gambar (Opsional)" : "Unggah Gambar"}
           </label>
           <div className="relative group">
             <input
@@ -124,17 +197,19 @@ const GalleryFormPage = () => {
               onChange={handleFileChange}
               className="hidden"
               accept="image/*"
-              required={!isEditMode}
+              aria-invalid={imageError ? true : undefined}
+              aria-describedby={imageError ? "image-error" : undefined}
             />
             <label
               htmlFor="image-upload"
-              className="flex flex-col justify-center items-center w-full h-64 border-2 border-dashed border-border rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden"
+              className={`relative flex flex-col justify-center items-center w-full h-64 border-2 border-dashed rounded-xl bg-brand-800 cursor-pointer hover:border-brand-400 hover:bg-brand-900 transition-all duration-300 overflow-hidden ${imageError ? "border-red-400" : "border-border"}`}
             >
+              <UploadProgress phase={uploadPhase} percent={uploadPercent} />
               {preview ? (
                 <div className="relative w-full h-full">
                   <img
                     src={preview}
-                    alt="Preview"
+                    alt="Pratinjau gambar"
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
@@ -143,10 +218,10 @@ const GalleryFormPage = () => {
                       className="w-10 h-10 text-cream mb-2"
                     />
                     <span className="text-cream font-semibold">
-                      Click to change image
+                      Klik untuk mengubah gambar
                     </span>
                     <span className="text-cream/80 text-sm mt-1">
-                      PNG, JPG up to 10MB
+                      PNG, JPG maksimal 10 MB
                     </span>
                   </div>
                 </div>
@@ -159,18 +234,19 @@ const GalleryFormPage = () => {
                     />
                   </div>
                   <span className="block text-cream/80 font-semibold mb-1">
-                    Click to upload image
+                    Klik untuk mengunggah gambar
                   </span>
                   <span className="text-cream/60 text-sm">
-                    or drag and drop
+                    atau seret dan lepas
                   </span>
                   <p className="text-cream/70 text-xs mt-2">
-                    PNG, JPG up to 10MB
+                    PNG, JPG maksimal 10 MB
                   </p>
                 </div>
               )}
             </label>
           </div>
+          <FieldError name="image" message={imageError} />
         </div>
 
         {/* Tombol Submit */}
@@ -182,10 +258,10 @@ const GalleryFormPage = () => {
           >
             <Save aria-hidden="true" className="w-5 h-5 mr-2" />
             {isLoading
-              ? "Saving..."
+              ? "Menyimpan…"
               : isEditMode
-                ? "SAVE CHANGES"
-                : "ADD TO GALLERY"}
+                ? "Simpan perubahan"
+                : "Tambahkan ke galeri"}
           </button>
         </div>
       </form>

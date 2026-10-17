@@ -8,8 +8,17 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import API_BASE from "../../lib/apiBase";
+import SortableHeader from "./SortableHeader";
 
-const EventList = ({ events, deleteEvent }) => {
+const EventList = ({
+  events,
+  total,
+  hasSearch = false,
+  sort = "",
+  order = "desc",
+  onSort,
+  deleteEvent,
+}) => {
   const navigate = useNavigate();
 
   const formatDate = (dateString) => {
@@ -29,10 +38,14 @@ const EventList = ({ events, deleteEvent }) => {
             />
           </div>
           <h3 className="text-cream/80 text-xl font-semibold mb-3">
-            Tidak ada event yang ditemukan
+            {hasSearch
+              ? "Tidak ditemukan event yang cocok."
+              : "Tidak ada event yang ditemukan"}
           </h3>
           <p className="text-cream/70 text-base max-w-md mx-auto leading-relaxed">
-            Coba kata kunci lain atau tambahkan event baru untuk memulai.
+            {hasSearch
+              ? "Coba kata kunci lain untuk menemukan event yang Anda cari."
+              : "Coba kata kunci lain atau tambahkan event baru untuk memulai."}
           </p>
         </div>
       </div>
@@ -52,15 +65,25 @@ const EventList = ({ events, deleteEvent }) => {
               <th className="p-5 font-semibold text-cream/80 text-sm uppercase tracking-wider">
                 Gambar
               </th>
-              <th className="p-5 font-semibold text-cream/80 text-sm uppercase tracking-wider">
-                Judul Event
-              </th>
+              <SortableHeader
+                label="Judul Event"
+                sortKey="title"
+                activeSort={sort}
+                order={order}
+                onSort={onSort}
+                className="p-5 font-semibold text-cream/80 text-sm uppercase tracking-wider"
+              />
               <th className="p-5 font-semibold text-cream/80 text-sm uppercase tracking-wider">
                 Peserta
               </th>
-              <th className="p-5 font-semibold text-cream/80 text-sm uppercase tracking-wider">
-                Tanggal
-              </th>
+              <SortableHeader
+                label="Tanggal"
+                sortKey="startDateTime"
+                activeSort={sort}
+                order={order}
+                onSort={onSort}
+                className="p-5 font-semibold text-cream/80 text-sm uppercase tracking-wider"
+              />
               <th className="p-5 font-semibold text-cream/80 text-sm uppercase tracking-wider text-center">
                 Aksi
               </th>
@@ -71,7 +94,7 @@ const EventList = ({ events, deleteEvent }) => {
             {events.map((event, index) => (
               <tr
                 key={event.id}
-                className="group bg-brand-800/60 transition-all duration-300 ease-in-out"
+                className="group bg-brand-800/60 hover:bg-brand-700/60 transition-all duration-300 ease-in-out"
               >
                 <td className="p-5 align-middle">
                   <div className="flex items-center justify-center w-8 h-8 bg-brand-700 rounded-full text-cream/60 font-semibold text-sm">
@@ -88,7 +111,7 @@ const EventList = ({ events, deleteEvent }) => {
                       className="h-16 w-28 object-cover rounded-lg border border-border transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => {
                         e.target.src =
-                          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='112' height='64' viewBox='0 0 112 64'%3E%3Crect width='112' height='64' fill='%2364748b'/%3E%3Ctext x='56' y='35' font-family='system-ui' font-size='12' fill='%23cbd5e1' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
+                          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='112' height='64' viewBox='0 0 112 64'%3E%3Crect width='112' height='64' fill='%23334155'/%3E%3Ctext x='56' y='35' font-family='system-ui' font-size='12' fill='%23e2e8f0' text-anchor='middle'%3ETanpa gambar%3C/text%3E%3C/svg%3E";
                       }}
                     />
                     <div className="absolute inset-0 bg-black/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -145,7 +168,7 @@ const EventList = ({ events, deleteEvent }) => {
                 </td>
 
                 <td className="p-5 align-middle">
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex justify-center gap-2">
                     {/* View registrations button */}
                     <button
                       onClick={() =>
@@ -153,7 +176,7 @@ const EventList = ({ events, deleteEvent }) => {
                       }
                       className="group/btn flex items-center justify-center w-11 h-11 text-cream bg-brand-600 rounded-lg transition-all duration-300 ease-in-out transform "
                       title="Lihat Peserta Terdaftar"
-                      aria-label="Lihat Peserta Terdaftar"
+                      aria-label={`Lihat peserta terdaftar untuk ${event.title}`}
                     >
                       <Users
                         aria-hidden="true"
@@ -165,8 +188,8 @@ const EventList = ({ events, deleteEvent }) => {
                     <Link
                       to={`/admin/events/edit/${event.id}`}
                       className="group/btn flex items-center justify-center w-11 h-11 text-cream bg-yellow-500 rounded-lg transition-all duration-300 ease-in-out transform "
-                      title="Edit Event"
-                      aria-label="Edit Event"
+                      title="Edit event"
+                      aria-label={`Edit event ${event.title}`}
                     >
                       <Pencil
                         aria-hidden="true"
@@ -176,10 +199,10 @@ const EventList = ({ events, deleteEvent }) => {
 
                     {/* Delete button */}
                     <button
-                      onClick={() => deleteEvent(event.id)}
+                      onClick={() => deleteEvent(event)}
                       className="group/btn flex items-center justify-center w-11 h-11 text-cream bg-red-500 rounded-lg transition-all duration-300 ease-in-out transform "
                       title="Hapus Event"
-                      aria-label="Hapus Event"
+                      aria-label={`Hapus event ${event.title}`}
                     >
                       <Trash2
                         aria-hidden="true"
@@ -198,8 +221,7 @@ const EventList = ({ events, deleteEvent }) => {
       <div className="bg-brand-900/30 px-6 py-4 border-t border-border/30">
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
           <span className="text-cream/60">
-            Total:{" "}
-            <span className="font-semibold text-cream/80">{events.length}</span>{" "}
+            Total: <span className="font-semibold text-cream/80">{total}</span>{" "}
             event
           </span>
           <div className="flex flex-wrap items-center gap-4 text-cream/70">

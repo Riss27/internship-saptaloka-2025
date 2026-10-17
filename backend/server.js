@@ -6,6 +6,7 @@ const compression = require("compression");
 const path = require("path");
 const sequelize = require("./config/database");
 const allRoutes = require("./routes/index");
+const { collectUploadedFiles } = require("./middlewares/upload");
 
 const Article = require("./models/Article");
 const ArticleContent = require("./models/ArticleContent");
@@ -50,6 +51,32 @@ app.use(
     etag: true,
   })
 );
+
+// Sisipkan info upload (ukuran asli vs hasil kompresi) ke payload sukses yang
+// membawa file upload — satu wrapping res.json, tanpa menyentuh controller.
+app.use((req, res, next) => {
+  const originalJson = res.json.bind(res);
+  res.json = (payload) => {
+    if (
+      payload &&
+      typeof payload === "object" &&
+      !Array.isArray(payload) &&
+      payload.status === "success"
+    ) {
+      const uploaded = collectUploadedFiles(req);
+      if (uploaded.length > 0) {
+        const file = uploaded[0];
+        payload.uploadInfo = {
+          originalSize: file.originalSize,
+          size: file.size,
+          mimetype: file.mimetype,
+        };
+      }
+    }
+    return originalJson(payload);
+  };
+  next();
+});
 
 app.use("/api", allRoutes);
 

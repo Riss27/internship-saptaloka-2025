@@ -14,6 +14,7 @@ const workshopRoutes = require("./workshopRoutes");
 const categoryRoutes = require("./categoryRoutes");
 const authRoutes = require("./authRoutes");
 const translateRoutes = require("./translateRoutes");
+const dashboardRoutes = require("./dashboardRoutes");
 
 // Rute publik
 router.use("/auth", authRoutes);
@@ -28,5 +29,6 @@ router.use("/gallery", galleryRoutes);
 router.use("/landing-page", landingPageRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/about", aboutRoutes);
+router.use("/dashboard", dashboardRoutes);
 
 module.exports = router;

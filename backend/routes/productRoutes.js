@@ -14,6 +14,9 @@ router.get("/", productController.getAllProducts);
 // Alamat: GET /api/products/:id
 router.get("/:id", productController.getProductById);
 
+// Alamat: POST /api/products/bulk-delete (admin)
+router.post("/bulk-delete", protect, requireAdmin, productController.bulkDeleteProducts);
+
 // Alamat: POST /api/products/
 router.post("/", protect, requireAdmin, upload.single("image"), createProductRules(), validate, productController.createProduct);
 
