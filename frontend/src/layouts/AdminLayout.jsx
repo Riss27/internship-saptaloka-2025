@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   ChevronDown,
@@ -20,6 +20,12 @@ import Wordmark from "../components/atoms/brand/Wordmark";
 const AdminLayout = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
+  // Labels mount the moment the rail starts expanding, but the rail is still
+  // narrow for the 300ms width transition — rendering them early makes the
+  // nav content overflow sideways (horizontal scrollbar + wrapped Log out).
+  // Gate them until the transition has settled.
+  const [labelsReady, setLabelsReady] = useState(true);
+  const railTimerRef = useRef(null);
   // Below md the sidebar sits off-canvas and is opened from the header bar.
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { logout } = useAuth();
@@ -59,6 +65,15 @@ const AdminLayout = () => {
     logout();
     navigate("/login");
   };
+
+  const toggleCollapsed = () => {
+    setCollapsed((prev) => !prev);
+    setLabelsReady(false);
+    window.clearTimeout(railTimerRef.current);
+    railTimerRef.current = window.setTimeout(() => setLabelsReady(true), 300);
+  };
+
+  useEffect(() => () => window.clearTimeout(railTimerRef.current), []);
 
   const menuItems = [
     {
@@ -134,7 +149,7 @@ const AdminLayout = () => {
         <button
           type="button"
           className="hidden md:flex h-20 items-center justify-center border-b border-border cursor-pointer transition-all duration-300 hover:bg-brand-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-400"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={toggleCollapsed}
           aria-label={collapsed ? "Open sidebar" : "Close sidebar"}
         >
           <Wordmark
@@ -144,7 +159,9 @@ const AdminLayout = () => {
         </button>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        <nav
+          className={`flex-1 px-4 py-6 space-y-2 ${collapsed ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
+        >
           {menuItems.map((item) =>
             item.children ? (
               <div key={item.name} className="dropdown-container relative">
@@ -158,7 +175,7 @@ const AdminLayout = () => {
                     >
                       {item.icon}
                     </span>
-                    {!collapsed && item.name}
+                    {!collapsed && labelsReady && item.name}
                   </div>
                   {!collapsed &&
                     (openDropdown === item.name ? (
@@ -226,7 +243,7 @@ const AdminLayout = () => {
                 >
                   {item.icon}
                 </span>
-                {!collapsed && item.name}
+                {!collapsed && labelsReady && item.name}
               </NavLink>
             ),
           )}
@@ -242,7 +259,7 @@ const AdminLayout = () => {
               aria-hidden="true"
               className={`w-4 h-4 transition-transform duration-300 ${collapsed ? "scale-150" : "scale-100 mr-3"}`}
             />
-            {!collapsed && "Log out"}
+            {!collapsed && labelsReady && "Log out"}
           </button>
         </div>
       </aside>
