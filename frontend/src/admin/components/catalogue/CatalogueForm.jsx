@@ -224,7 +224,7 @@ const CatalogueForm = ({
         </h1>
         <Link
           to={navigateBackUrl}
-          className="bg-red-700 hover:bg-red-800 px-5 py-2 min-h-11 inline-flex items-center rounded-md font-semibold text-cream no-underline"
+          className="min-h-11 px-4 rounded-buttons-outlined border border-border text-sm font-medium text-cream/90 hover:border-brand-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 inline-flex items-center no-underline"
         >
           Kembali
         </Link>

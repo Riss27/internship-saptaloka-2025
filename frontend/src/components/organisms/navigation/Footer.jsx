@@ -46,7 +46,7 @@ const Footer = () => {
                 <img
                   src={`${API_BASE}${aboutInfo.logoFooter}`}
                   alt="Logo Askreative"
-                  className="h-14 md:h-16 w-auto max-w-full object-contain"
+                  className="h-20 md:h-24 lg:h-28 w-auto max-w-full object-contain"
                   loading="lazy"
                 />
               ) : (
