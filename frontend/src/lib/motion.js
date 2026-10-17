@@ -20,10 +20,21 @@ export const DURATION = {
   micro: 0.2,
   reveal: 0.7,
   panel: 0.35,
+  pageIn: 0.25,
+  pageOut: 0.18,
 };
 
 /** How far content travels when it is revealed. */
 const REVEAL_Y = 24;
+
+/**
+ * How far a page settles when it arrives. Half a line of leading: enough to
+ * feel the page land, short enough that the reader never waits for it.
+ */
+const PAGE_Y = 10;
+
+/** The outgoing page drifts up by this much, continuing the incoming rise. */
+const PAGE_EXIT_Y = -6;
 
 /**
  * Reveal props for one element, keyed to when it scrolls into view.
@@ -88,7 +99,11 @@ export const revealItem = (prefersReducedMotion) => {
 
 /**
  * Page transition. Keyed on the route pathname in PublicLayout, this fades the
- * outgoing page out before the incoming one fades in.
+ * outgoing page out before the incoming one fades in. The new page rises a few
+ * pixels into place - enough to read as arrival, not enough to feel like a
+ * slide. The exit is deliberately faster than the enter: a reader who clicks
+ * should see the old page leave promptly, while the new page is allowed a
+ * beat to settle. Both share the single site easing curve.
  */
 export const pageTransition = (prefersReducedMotion) => {
   if (prefersReducedMotion) {
@@ -96,10 +111,17 @@ export const pageTransition = (prefersReducedMotion) => {
   }
 
   return {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
-    transition: { duration: DURATION.panel, ease: EASE },
+    initial: { opacity: 0, y: PAGE_Y },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: DURATION.pageIn, ease: EASE },
+    },
+    exit: {
+      opacity: 0,
+      y: PAGE_EXIT_Y,
+      transition: { duration: DURATION.pageOut, ease: EASE },
+    },
   };
 };
 
