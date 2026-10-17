@@ -97,7 +97,7 @@ const PublicLayout = () => {
       <main
         id="main-content"
         style={{ paddingTop: `${paddingTop}px` }}
-        className="flex-grow min-h-[60vh]"
+        className="flex-grow min-h-screen"
       >
         <Outlet />
       </main>
