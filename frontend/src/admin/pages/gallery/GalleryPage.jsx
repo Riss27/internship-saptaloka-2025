@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import apiClient from "../../../hooks/apiClient";
 import { Plus, Trash2, Pencil, Search } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -15,9 +15,6 @@ const FOCUS_RING =
 const GalleryPage = () => {
   const { toast } = useToast();
   const reducedMotion = useReducedMotion();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const sort = searchParams.get("sort") || "";
-  const order = searchParams.get("order") === "asc" ? "asc" : "desc";
 
   const [images, setImages] = useState([]);
   const [meta, setMeta] = useState(null);
@@ -53,7 +50,6 @@ const GalleryPage = () => {
           page,
           limit: 12,
           ...(deferredSearch && { search: deferredSearch }),
-          ...(sort && { sort, order }),
         },
       })
       .then((response) => {
@@ -73,7 +69,7 @@ const GalleryPage = () => {
     return () => {
       active = false;
     };
-  }, [page, deferredSearch, sort, order, reloadKey]);
+  }, [page, deferredSearch, reloadKey]);
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -199,50 +195,19 @@ const GalleryPage = () => {
         </Link>
       </header>
 
-      {/* Search bar + sort */}
-      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="relative w-full md:w-1/3">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
-            <Search aria-hidden="true" className="w-5 h-5" />
-          </span>
-          <input
-            type="text"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Cari gambar…"
-            aria-label="Cari gambar"
-            className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400 text-cream"
-          />
-        </div>
-        <div className="flex items-center gap-3">
-          <label className="text-sm text-cream/70" htmlFor="gallery-sort">
-            Urutkan
-          </label>
-          <select
-            id="gallery-sort"
-            value={sort ? `${sort}:${order}` : ""}
-            onChange={(e) => {
-              const [field, fieldOrder] = e.target.value.split(":");
-              const next = new URLSearchParams(searchParams);
-              if (field) {
-                next.set("sort", field);
-                next.set("order", fieldOrder);
-              } else {
-                next.delete("sort");
-                next.delete("order");
-              }
-              setSearchParams(next, { replace: true });
-              setPage(1);
-            }}
-            className="min-h-11 p-2 bg-brand-800 border border-border text-cream/80 rounded-md focus:outline-none focus:border-brand-400"
-          >
-            <option value="">Urutan bawaan</option>
-            <option value="createdAt:asc">Tanggal (lama ke baru)</option>
-            <option value="createdAt:desc">Tanggal (baru ke lama)</option>
-            <option value="id:asc">ID (kecil ke besar)</option>
-            <option value="id:desc">ID (besar ke kecil)</option>
-          </select>
-        </div>
+      {/* Search bar */}
+      <div className="mb-6 relative w-full md:w-1/3">
+        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-cream/60">
+          <Search aria-hidden="true" className="w-5 h-5" />
+        </span>
+        <input
+          type="text"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          placeholder="Cari gambar…"
+          aria-label="Cari gambar"
+          className="w-full min-h-11 p-2 pl-10 bg-brand-800 border border-border rounded-md transition duration-300 ease-in-out focus:outline-none focus:border-brand-400 text-cream"
+        />
       </div>
 
       {/* Error state */}
