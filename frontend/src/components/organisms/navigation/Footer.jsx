@@ -39,20 +39,20 @@ const Footer = () => {
       <footer className="relative bg-brand-700 text-cream pt-10 md:pt-14 pb-6 md:pb-8 mt-12 md:mt-20 border-t border-border">
         <div className="container mx-auto px-4 sm:px-6 lg:px-10 relative">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-12 mb-10 md:mb-12">
-            {/* Brand lockup — pakai "Logo footer" dari menu Tentang kami (admin)
-                bila sudah diunggah; wordmark teks sebagai cadangan. */}
-            <div className="w-full flex items-center lg:col-span-2">
+            {/* Brand lockup — logo mengisi seluruh kolom kiri (setara tinggi
+                kolom info di sebelahnya); wordmark teks sebagai cadangan. */}
+            <div className="w-full flex lg:col-span-2">
               {aboutInfo.logoFooter ? (
                 <img
                   src={`${API_BASE}${aboutInfo.logoFooter}`}
                   alt="Logo Askreative"
-                  className="h-20 md:h-24 lg:h-28 w-auto max-w-full object-contain"
+                  className="w-full h-40 sm:h-56 lg:h-full lg:max-h-[26rem] object-contain object-left"
                   loading="lazy"
                 />
               ) : (
                 <Wordmark
                   size="text-4xl md:text-5xl lg:text-6xl"
-                  className="text-cream"
+                  className="text-cream self-center"
                 />
               )}
             </div>

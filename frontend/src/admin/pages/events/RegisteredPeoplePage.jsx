@@ -81,7 +81,7 @@ const RegisteredPeoplePage = () => {
         <div className="flex flex-wrap items-center gap-3">
           <Link
             to="/admin/events"
-            className="min-h-11 px-4 rounded-buttons-outlined border border-border text-sm font-medium text-cream/90 hover:border-brand-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 inline-flex items-center no-underline"
+            className="min-h-11 px-5 rounded-lg font-semibold text-cream bg-red-600 hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 inline-flex items-center no-underline"
           >
             Kembali
           </Link>

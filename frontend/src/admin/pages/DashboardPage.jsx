@@ -181,7 +181,10 @@ const DashboardPage = () => {
                         {reg.name}
                       </p>
                       <p className="text-sm text-cream/70 truncate">
-                        {reg.eventTitle}
+                        Mendaftar di{" "}
+                        <span className="font-medium text-cream">
+                          {reg.eventTitle}
+                        </span>
                       </p>
                       <p className="text-meta text-cream/50 truncate">
                         {reg.email}

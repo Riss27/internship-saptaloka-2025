@@ -201,7 +201,7 @@ const AboutPage = () => {
         <h1 className="text-3xl font-bold">Tentang kami</h1>
         <Link
           to="/admin"
-          className="min-h-11 px-4 rounded-buttons-outlined border border-border text-sm font-medium text-cream/90 hover:border-brand-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 inline-flex items-center no-underline"
+          className="min-h-11 px-5 rounded-lg font-semibold text-cream bg-red-600 hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 inline-flex items-center no-underline"
         >
           Kembali
         </Link>
