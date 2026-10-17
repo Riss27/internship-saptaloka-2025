@@ -5,7 +5,7 @@ import PageHeader from "../components/atoms/layout/PageHeader";
 import SectionHeading from "../components/atoms/layout/SectionHeading";
 import { useTranslation } from "react-i18next";
 // The lint config does not track JSX usage, so the motion import looks unused.
- 
+
 import { motion, useReducedMotion } from "framer-motion";
 import { reveal } from "../lib/motion";
 
@@ -93,7 +93,10 @@ const AboutPage = () => {
   const contactEntries = [
     {
       icon: (
-        <MapPin className="h-4 w-4 shrink-0 text-brand-400" aria-hidden="true" />
+        <MapPin
+          className="h-4 w-4 shrink-0 text-brand-400"
+          aria-hidden="true"
+        />
       ),
       label: t("about_page.address"),
       value: aboutInfo.address,
@@ -140,15 +143,57 @@ const AboutPage = () => {
   return (
     <div className="bg-brand-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-28">
-        <PageHeader
-          title={t("about_page.about_us")}
-          subtitle={aboutInfo.about}
-        />
-
         <motion.div
           {...reveal(prefersReducedMotion)}
           className="grid grid-cols-1 gap-12 sm:gap-14 lg:grid-cols-2 lg:gap-20"
         >
+          {/* Kolom kiri: intro + kolofon kontak. */}
+          <div>
+            <PageHeader
+              title={t("about_page.about_us")}
+              subtitle={aboutInfo.about}
+            />
+
+            <div>
+              <SectionHeading title={t("about_page.contact_us")} />
+
+              <dl className="border-t border-border">
+                {contactEntries.map(
+                  ({ icon, label, value, href, external, wraps }) => (
+                    <div
+                      key={label}
+                      className="grid grid-cols-1 gap-1.5 border-t border-border py-5 first:border-t-0 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-baseline sm:gap-6"
+                    >
+                      <dt className="flex items-center gap-2.5 text-meta uppercase tracking-[0.18em] text-cream/60">
+                        {icon}
+                        {label}
+                      </dt>
+                      <dd className="min-w-0 text-body text-cream">
+                        {href ? (
+                          <a
+                            href={href}
+                            {...(external && {
+                              target: "_blank",
+                              rel: "noopener noreferrer",
+                            })}
+                            className={`inline-flex items-center min-h-11 hover:text-brand-400 transition-colors ${wraps || "break-words"} ${FOCUS_RING}`}
+                          >
+                            {value}
+                          </a>
+                        ) : (
+                          <span className={wraps || "break-words"}>
+                            {value}
+                          </span>
+                        )}
+                      </dd>
+                    </div>
+                  ),
+                )}
+              </dl>
+            </div>
+          </div>
+
+          {/* Kolom kanan: peta lokasi sejajar intro, formulir di bawahnya. */}
           <div className="space-y-12 sm:space-y-14">
             <div className="aspect-[4/3] w-full overflow-hidden rounded-cards border border-border bg-brand-800">
               <iframe
@@ -166,116 +211,82 @@ const AboutPage = () => {
               ></iframe>
             </div>
 
-            <div>
-              <SectionHeading title={t("about_page.contact_us")} />
+            {/* The form is the one surface on this page. */}
+            <div className="rounded-cards bg-brand-800 border border-border p-6 sm:p-8">
+              <SectionHeading title={t("about_page.send_message")} />
 
-              <dl className="border-t border-border">
-                {contactEntries.map(({ icon, label, value, href, external, wraps }) => (
-                  <div
-                    key={label}
-                    className="grid grid-cols-1 gap-1.5 border-t border-border py-5 first:border-t-0 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-baseline sm:gap-6"
-                  >
-                    <dt className="flex items-center gap-2.5 text-meta uppercase tracking-[0.18em] text-cream/60">
-                      {icon}
-                      {label}
-                    </dt>
-                    <dd className="min-w-0 text-body text-cream">
-                      {href ? (
-                        <a
-                          href={href}
-                          {...(external && {
-                            target: "_blank",
-                            rel: "noopener noreferrer",
-                          })}
-                          className={`inline-flex items-center min-h-11 hover:text-brand-400 transition-colors ${wraps || "break-words"} ${FOCUS_RING}`}
-                        >
-                          {value}
-                        </a>
-                      ) : (
-                        <span className={wraps || "break-words"}>{value}</span>
-                      )}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label htmlFor="about-name" className={labelClass}>
+                    {t("about_page.full_name")}
+                  </label>
+                  <input
+                    id="about-name"
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder={t("about_page.your_name")}
+                    className={fieldClass}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="about-email" className={labelClass}>
+                    Email
+                  </label>
+                  <input
+                    id="about-email"
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="email@example.com"
+                    className={fieldClass}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="about-phone" className={labelClass}>
+                    {t("about_page.phone_number")}
+                  </label>
+                  <input
+                    id="about-phone"
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="+62 xxx xxxx xxxx"
+                    className={fieldClass}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="about-message" className={labelClass}>
+                    {t("about_page.message")}
+                  </label>
+                  <textarea
+                    id="about-message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder={t("about_page.write_message")}
+                    rows={6}
+                    className={`${fieldClass} resize-none`}
+                    required
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className={`w-full min-h-11 bg-brand-600 hover:bg-brand-700 text-cream py-3.5 rounded-buttons-pill font-medium uppercase tracking-wide transition-colors ${FOCUS_RING}`}
+                >
+                  {t("about_page.send")}
+                </button>
+              </form>
             </div>
-          </div>
-
-          {/* The form is the one surface on this page. */}
-          <div className="self-start rounded-cards bg-brand-800 border border-border p-6 sm:p-8">
-            <SectionHeading title={t("about_page.send_message")} />
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label htmlFor="about-name" className={labelClass}>
-                  {t("about_page.full_name")}
-                </label>
-                <input
-                  id="about-name"
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder={t("about_page.your_name")}
-                  className={fieldClass}
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="about-email" className={labelClass}>
-                  Email
-                </label>
-                <input
-                  id="about-email"
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="email@example.com"
-                  className={fieldClass}
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="about-phone" className={labelClass}>
-                  {t("about_page.phone_number")}
-                </label>
-                <input
-                  id="about-phone"
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="+62 xxx xxxx xxxx"
-                  className={fieldClass}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="about-message" className={labelClass}>
-                  {t("about_page.message")}
-                </label>
-                <textarea
-                  id="about-message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder={t("about_page.write_message")}
-                  rows={6}
-                  className={`${fieldClass} resize-none`}
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                className={`w-full min-h-11 bg-brand-600 hover:bg-brand-700 text-cream py-3.5 rounded-buttons-pill font-medium uppercase tracking-wide transition-colors ${FOCUS_RING}`}
-              >
-                {t("about_page.send")}
-              </button>
-            </form>
           </div>
         </motion.div>
       </div>
